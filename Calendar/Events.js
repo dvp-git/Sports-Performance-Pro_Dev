@@ -21,6 +21,7 @@ team_node.forEach((t) =>
       let vis_ = target.getAttribute("visibility");
       console.log(vis_);
       if (Number(vis_) === 0) {
+        // Expand Tree
         console.log("Entered function ");
         // console.log(target)
         const exc_nodes = target.querySelectorAll(".exc_nodes");
@@ -28,13 +29,17 @@ team_node.forEach((t) =>
         exc_nodes.forEach((ex) => ex.classList.remove(["hidden"]));
         target.setAttribute("visibility", 1);
       } else {
+        // Shrink Tree
         const exc_nodes = target.querySelectorAll(".exc_nodes");
         console.log(exc_nodes);
         exc_nodes.forEach((t) => t.classList.add(["hidden"]));
         target.setAttribute("visibility", 0);
       }
-    } else {
+    }
+    // TEAM/ATHLETE Name is clicked
+    else {
       if (Number(vis_) === 0) {
+        // Expand Tree
         console.log("Entered Parent Team function ");
         // console.log(target)
         const block_nodes = target.querySelectorAll(".block-nodes");
@@ -42,16 +47,32 @@ team_node.forEach((t) =>
         block_nodes.forEach((t) => t.classList.remove(["hidden"]));
         target.setAttribute("visibility", 1);
         console.log(target.querySelectorAll(".block-nodes"));
+        console.log(target);
         //
       } else {
+        // Shrink Tree : NOTE while shrinking Tree, both the block and exec should become hidden
+        console.log(e.target);
         const block_nodes = target.querySelectorAll(".block-nodes");
         console.log(block_nodes);
-        block_nodes.forEach((t) => t.classList.add(["hidden"]));
-        target.setAttribute("visibility", 0);
+        block_nodes.forEach((t) => {
+          //   console.log("EXEC NODES TO BE PRINTED");
+          //   t.classList.add(["hidden"]);
+          //console.log(t.querySelectorAll(".exc_nodes"));
+          t.querySelectorAll(".exc_nodes").forEach((x) =>
+            x.classList.add(["hidden"])
+          );
+          block_nodes.forEach((t) => t.classList.add(["hidden"]));
+          target.setAttribute("visibility", 0);
+        });
       }
     }
   })
 );
+
+// When Closing the Team click , Refactor as above to have single event handler. Used class to change functionaloty. Might need refactoring further for DRY principle.
+
+// Blocks visibility should become 0
+// Execs visibility should become 0
 
 // Testing SEPEARATE block : USE delegation above instead Bubbling up
 // block_nodes.forEach(block => block.addEventListener("click", (e) => {
@@ -80,14 +101,16 @@ team_node.forEach((t) =>
 //      }
 // }}));
 
+// JavaScript for team/Athlete search
 document.getElementById("team-search").addEventListener("keyup", function () {
   const searchText = this.value.toLowerCase();
-  const teamList = document.querySelectorAll(".team-section ul li");
-
+  //console.log(searchText);
+  const teamList = document.querySelectorAll(".team-nodes");
+  //console.log(teamList);
   teamList.forEach(function (team) {
-    const teamName = team
-      .querySelector(".column:nth-child(1)")
-      .textContent.toLowerCase();
+    //console.log(team);
+    const teamName = team.outerText.toLowerCase();
+    //console.log(teamName);
     if (teamName.includes(searchText)) {
       team.style.display = "";
     } else {
@@ -96,21 +119,22 @@ document.getElementById("team-search").addEventListener("keyup", function () {
   });
 });
 
-// JavaScript for athlete search
-document
-  .getElementById("athlete-search")
-  .addEventListener("keyup", function () {
-    const searchText = this.value.toLowerCase();
-    const athleteList = document.querySelectorAll(".athlete-section ul li");
+// // JavaScript for athlete search If needed
+// document.getElementById("athlete-search").addEventListener("keyup", function () {
+//     const searchText = this.value.toLowerCase();
+//     console.log(searchText);
+//     const teamList = document.querySelectorAll(".team-nodes");
+//     //console.log(teamList);
+//     teamList.forEach(function (team) {
+//       console.log(team);
+//       const teamName = team.outerText.toLowerCase();
+//       console.log(teamName);
+//       if (teamName.includes(searchText)) {
+//         team.style.display = "";
+//       } else {
+//         team.style.display = "none";
+//       }
+//     });
+//   });
 
-    athleteList.forEach(function (athlete) {
-      const athleteName = athlete
-        .querySelector(".column:nth-child(1)")
-        .textContent.toLowerCase();
-      if (athleteName.includes(searchText)) {
-        athlete.style.display = "";
-      } else {
-        athlete.style.display = "none";
-      }
-    });
-  });
+// FOR Refactoring:
