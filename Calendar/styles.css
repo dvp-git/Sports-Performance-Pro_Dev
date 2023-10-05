@@ -105,7 +105,7 @@ button:hover {
 }
 
 footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   background-color: #fff;
@@ -122,36 +122,39 @@ footer {
 
 /* Style for Team nodes */
 .team-nodes {
-    list-style: none;
+  list-style: none;
   cursor: pointer;
-  color: #007bff; /* Blue color, customize as needed */
+  color: #fff; /* Blue color, customize as needed */
   font-weight: bold;
   margin-bottom: 10px;
   border: 1px solid #d6d9da; /* Add border */
   padding: 20px; /* Increase padding */
-  background-color: #f0f2f6; /* Light gray background color */
+  background-color: #0077b5; /* Light gray background color */
+  text-align: center;
 }
 
 /* Style for Block nodes */
 .block-nodes {
-    list-style: none;
+  list-style: none;
   cursor: pointer;
-  color: #28a745; /* Green color, customize as needed */
-  margin-left: 20px;
-  border: 1px solid #28a745;
+  color: #fff; /* Green color, customize as needed */
+  margin-left: 2px;
+  border: 1px solid #d6d9da;
   padding: 20px; /* Increase padding */
-  background-color: #e1f3d8; /* Slightly different shade of green */
+  background-color: #377381; /* Slightly different shade of green */
+  text-align: left;
 }
 
 /* Style for Exercise nodes */
 .exc_nodes {
-    list-style: none;
+  list-style: none;
   cursor: pointer;
-  color: #dc3545; /* Red color, customize as needed */
-  margin-left: 20px; */
+  color: #fff; /* Red color, customize as needed */
+  margin-left: 2px;
   border: 1px solid #dc3545;
   padding: 20px; /* Increase padding */
   background-color: #f6d7d7; /* Slightly different shade of red */
+  text-align: left;
 }
 
 /* Hover effect */
@@ -159,4 +162,51 @@ footer {
 .block-nodes:hover,
 .exc_nodes:hover {
   text-decoration: underline;
+}
+
+/*Search Bar*/
+.search-bar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#team-search,
+#athlete-search {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.team-train-sessions {
+  max-height: 450px; /* Adjust the height as needed */
+  overflow-y: scroll; /* Add a vertical scrollbar */
+}
+
+.athlete-train-sessions {
+  max-height: 450px; /* Adjust the height as needed */
+  overflow-y: scroll; /* Add a vertical scrollbar */
+}
+
+/* Hide the scrollbar until it's needed */
+.team-train-sessions ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.athlete-train-sessions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.team-train-sessions ::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+
+.athlete-train-sessions::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
 }

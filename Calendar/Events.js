@@ -3,6 +3,7 @@ const team_node = document.querySelectorAll(".team-nodes");
 const btnCloseModal = document.querySelector(".close-modal");
 const btnshowModal = document.querySelectorAll(".show-modal"); //
 const block_nodes = document.querySelectorAll(".block_nodes");
+const exercise_nodes = document.querySelectorAll(".exc_nodes");
 
 // Add click event listeners to tree nodes
 team_node.forEach((t) =>
@@ -52,6 +53,7 @@ team_node.forEach((t) =>
   })
 );
 
+// Testing SEPEARATE block : USE delegation above instead Bubbling up
 // block_nodes.forEach(block => block.addEventListener("click", (e) => {
 //     const target = e.target;
 //     // console.log(`Target:`,target)
@@ -77,3 +79,38 @@ team_node.forEach((t) =>
 //     target.setAttribute('visibility', 0);
 //      }
 // }}));
+
+document.getElementById("team-search").addEventListener("keyup", function () {
+  const searchText = this.value.toLowerCase();
+  const teamList = document.querySelectorAll(".team-section ul li");
+
+  teamList.forEach(function (team) {
+    const teamName = team
+      .querySelector(".column:nth-child(1)")
+      .textContent.toLowerCase();
+    if (teamName.includes(searchText)) {
+      team.style.display = "";
+    } else {
+      team.style.display = "none";
+    }
+  });
+});
+
+// JavaScript for athlete search
+document
+  .getElementById("athlete-search")
+  .addEventListener("keyup", function () {
+    const searchText = this.value.toLowerCase();
+    const athleteList = document.querySelectorAll(".athlete-section ul li");
+
+    athleteList.forEach(function (athlete) {
+      const athleteName = athlete
+        .querySelector(".column:nth-child(1)")
+        .textContent.toLowerCase();
+      if (athleteName.includes(searchText)) {
+        athlete.style.display = "";
+      } else {
+        athlete.style.display = "none";
+      }
+    });
+  });
