@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkedIn-like Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Sports Performance Pro</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li>Game On: Elevate Your Sports Experience with Our App!</li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <h2>Welcome Athlete, we're rooting for you</h2>
+      <!-- Container for login forms -->
+      <div class="login-forms">
+        <div class="login-container-1" style="margin-right: 20px">
+          <p>Calendar view is here</p>
+        </div>
+
+        <div class="login-container-2">
+          <p>Event view will be here</p>
+          <!--- Dynamically changing events-->
+        </div>
+      </div>
+
+      <div style="margin-top: 100px"></div>
+    </div>
+
+    <footer>2023 Sports Performance Pro</footer>
+
+    <script>
+      function validateCoachEmail() {
+        const coachEmailInput = document.getElementsByName("coach_username")[0];
+        const coachEmailError = document.getElementById("coachEmailError");
+
+        // Regular expression for email validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(coachEmailInput.value)) {
+          coachEmailError.textContent = "Invalid email format";
+        } else {
+          coachEmailError.textContent = "";
+          // Add your sign-in logic for coaches here
+        }
+      }
+
+      function validateAthleteEmail() {
+        const athleteEmailInput =
+          document.getElementsByName("athlete_username")[0];
+        const athleteEmailError = document.getElementById("athleteEmailError");
+
+        // Regular expression for email validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(athleteEmailInput.value)) {
+          athleteEmailError.textContent = "Invalid email format";
+        } else {
+          athleteEmailError.textContent = "";
+          // Add your sign-in logic for athletes here
+        }
+      }
+    </script>
+  </body>
+</html>

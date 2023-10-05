@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Calendar</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      .calendar {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
+
+      th {
+        background-color: #333;
+        color: #fff;
+      }
+
+      td {
+        cursor: pointer;
+        position: relative;
+      }
+
+      td:hover {
+        background-color: #f2f2f2;
+      }
+
+      .dialog-box {
+        position: absolute;
+        top: 0;
+        left: -250px;
+        width: 200px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: none;
+      }
+
+      .dialog-box.active {
+        display: block;
+      }
+
+      .current-date {
+        background-color: #4caf50;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar">
+      <h2 id="month-year"></h2>
+      <table id="calendar-table">
+        <thead>
+          <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+          </tr>
+        </thead>
+        <tbody id="calendar-body"></tbody>
+      </table>
+    </div>
+
+    <div class="dialog-box" id="dialog-box">
+      Clicked on: <span id="clicked-date"></span>
+    </div>
+
+    <div id="content">
+      <!-- Content that changes with the date -->
+    </div>
+
+    <script>
+      // Function to generate the calendar
+      function generateCalendar(month, year) {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+        const calendarBody = document.getElementById("calendar-body");
+        const monthYearHeader = document.getElementById("month-year");
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        const dialogBox = document.getElementById("dialog-box");
+        const clickedDate = document.getElementById("clicked-date");
+        const contentDiv = document.getElementById("content");
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        monthYearHeader.textContent = `${monthNames[month]} ${year}`;
+        calendarBody.innerHTML = "";
+
+        let date = 1;
+
+        for (let i = 0; i < 6; i++) {
+          const row = document.createElement("tr");
+
+          for (let j = 0; j < 7; j++) {
+            const cell = document.createElement("td");
+
+            if (i === 0 && j < firstDay) {
+              // Empty cell before the first day of the month
+              cell.textContent = "";
+            } else if (date <= daysInMonth) {
+              cell.textContent = date;
+              date++;
+
+              // Add click event to open dialog box and update content
+              cell.addEventListener("click", () => {
+                dialogBox.style.left =
+                  cell.offsetLeft + cell.offsetWidth + 10 + "px";
+                (clickedDate.textContent = `${monthNames[month]}``${cell.textContent}`),
+                  `${year}`;
+                dialogBox.classList.add("active");
+
+                // Update content based on the selected date
+                const selectedDate = new Date(
+                  year,
+                  month,
+                  parseInt(cell.textContent)
+                );
+                contentDiv.innerHTML = `You selected: ${selectedDate.toDateString()}`;
+              });
+
+              // Highlight the current date
+              if (
+                currentMonth === month &&
+                currentYear === year &&
+                date - 1 === currentDate.getDate()
+              ) {
+                cell.classList.add("current-date");
+              }
+            } else {
+              // Empty cell after the last day of the month
+              cell.textContent = "";
+            }
+
+            row.appendChild(cell);
+          }
+
+          calendarBody.appendChild(row);
+        }
+      }
+
+      // Initial calendar generation for the current month
+      const today = new Date();
+      generateCalendar(today.getMonth(), today.getFullYear());
+    </script>
+  </body>
+</html>
