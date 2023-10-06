@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkedIn-like Login</title>
+    <link rel="stylesheet" href="athlete-styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Sports Performance Pro</h1>
+    </header>
+    <nav>
+      <ul class="nav-links">
+        <li class="nav_link">
+          <a href="#1">Home
+        </li>
+
+        <li class="nav_link"> <a href="#1">Add a coach</a></li>
+        <li class="nav_link"> <a href="#2">View all coaches</a></li>
+        <li class="nav_link"> <a href="#3">Messaging</a></li>
+        <li class="nav_link"> <a href="#4">Notifications</a></li>
+        <li class="nav_link"> <a href="#5">Me</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+
+
+      <!--  ADDING LOGIN FORM -->
+    <section>
+      <button id="add_coach">Add a coach</button>
+      <div id="add_coach_dialog" style="display: none">
+        <h2>Add a new Coach</h2>
+        <form id="add__coach_form">
+          <label for="name">Name:</label>
+          <input type="text" id="name"><br>
+
+          <label for="address">Address:</label>
+          <input type="text" id="address"><br>
+
+          <label for="email">Email:</label>
+          <input type="email" id="email style="width: 100%; height: 2rem;><br>
+
+          <label for="gender">Coach Name:</label>
+          <input type="text" id="gender"><br>
+
+          <button id="submit_" type="submit">Submit</button>
+          <button id="cancel_addCoach">Cancel</button>
+        </form>
+      </div>
+  <!--  MODIFY the data entry -->
+      <section>
+        <button id="modify_coach">Modify a coach entry</button>
+        <div id="mod_coach_dialog" style="display: none">
+          <h2>Modify Coach</h2>
+          <form id="mod_coach_form">
+            <div> Previous Name : </div>
+            <label for="mod_name">Current Name:</label>
+            <input type="text" id="mod_name"><br>
+            <br>
+            <div>Previous Address : </div>
+            <label for="mod_address">Current Address:</label>
+            <input type="text" id="mod_address"><br>
+            <br>
+            <div>Previous Email : </div>
+            <label for="mod_email"> CurrentEmail:</label>
+            <input type="email" id="mod_email" style="width: 100%; height: 2rem;"><br>
+            <br>
+            <div>Previous Gender : </div>
+            <label for="mod_gender">Current Gender:</label>
+            <input type="text" id="mod_gender"><br>
+  
+            <button id="mod_submit_" type="submit">Submit</button>
+            <button id="cancel_modCoach">Cancel</button>
+          </form>
+        </div>
+
+    </section>
+    <section>
+      <table id="coach__table">
+        <thead>
+          <tr>
+            <th>Coach ID</th>
+            <th>Coach Name</th>
+          </tr>
+        </thead>
+        <tbody class="buttons__">
+          <tr>
+            <td class="data-1">CC1</td>
+            <td class="coach_name">
+              John Doe
+              <button class="delete-button" href="#" id="delete-pop-up">
+                🗑️
+              </button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC2</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC3</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC4</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC5</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC6</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC7</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC8</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="data-2">CC9</td>
+            <td class="coach_name">
+              Jonas Smith
+              <button class="delete-button">🗑️</button>
+              <button class="update-button">✏️</button>
+            </td>
+          </tr>
+        
+<!-- Form for adding a table entry -->
+    
+
+        </section>
+          <div id="popup-window-delete">
+            <h2>Delete Coach?</h1>
+            <p>Are you sure you want to delete this coach?</p>
+            <button id="delete__confirm">Delete</button>
+            <button id="delete__cancel">Cancel</button>
+          </div>
+          <div id="popup-window-modify">
+            <h2>Modify the coach</h1>
+            <p>Current coach details</p>
+            <button id="modify__confirm">Modify</button>
+            <button id="modify__cancel">Cancel</button>
+
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+
+
+      <script>
+        // JAVASCRIPT delegation
+        // Get the elements by their ID
+        const getButtonclass = document.querySelector(".buttons__");
+        const deletePopUp = document.getElementById("popup-window-delete");
+        const modifyPopUp = document.getElementById("popup-window-modify");
+
+        // For delete Pop-up
+        const cancelButton = document.getElementById("delete__cancel");
+        const deleteButton = document.getElementById("delete__confirm");
+
+        // For Modify Pop-up
+        const cancelModButton = document.getElementById("modify__cancel");
+        const modifyButton = document.getElementById("modify__confirm");
+        
+        // For modifying a coach
+        const modCoachButton = document.getElementById("modify_coach")
+        const modCoachDialogBox = document.getElementById("mod_coach_dialog");
+        const modCoachForm = document.getElementById("mod_coach_form");
+        const cancelModCoach = document.getElementById("cancel_modCoach");
+        const submitModCoach = document.getElementById("mod_submit_")
+
+
+        // For adding a coach
+        const addCoachButton = document.getElementById("add_coach");
+        const tableCoach = document.querySelector("#coach__table tbody");
+        const addCoachDialogBox = document.getElementById("add_coach_dialog");
+        const addCoachForm = document.getElementById("add__coach_form");
+        const cancelAddCoach = document.getElementById("cancel_addCoach");
+        const submitAddCoach = document.getElementById("submit_")
+        // Hide the pop-up window when the close button is clicked
+    
+        let coachRecover = [];
+
+        // DELETE AND MODIFY BUTTONS ON THE TABLE ENTRY
+        
+        getButtonclass.addEventListener("click", function (e) {
+          const targ_c = e.target.closest('tr'); // Find closest parent `tr` for the button
+          console.log(e.target.classList)
+          if (e.target.classList.contains("delete-button")){
+            // DELETE THE USER ENTRY
+              console.log("DELETE A BUTTON POPUP");
+              deletePopUp.style.display = "block";
+              const targ_c = e.target.closest('tr'); 
+              console.log(targ_c)
+              deleteButton.addEventListener("click", function(e) {
+                console.log("Inside Delete")
+                 // Find the parent row
+                // Extract data from the row and perform modification
+                console.log('Deleted row', targ_c);
+                coachRecover.push(targ_c);
+                console.log(coachRecover);
+                targ_c.remove();
+              // Functionality to delete the element on the backend and update HTML
+              // Back-end stuff
+              // PENDING: Add function clicking Delete , popup with delete
+              // Delete user from the table
+                deletePopUp.style.display = "none";
+              })      
+              // CANCEL BUTTON
+              cancelButton.addEventListener("click", function(e) {
+                console.log("Cancelled the delete")
+              // Do nothing
+              deletePopUp.style.display = "none";
+              })      
+            }
+            // MODIFY THE USER ENTRY
+          else if (e.target.classList.contains("update-button"))
+          {
+              console.log("MODIFY a BUTTON POPUP");
+              modifyPopUp.style.display = "block";
+
+
+              modifyButton.addEventListener("click", function(e) {
+                console.log("Inside Modify")
+                modifyPopUp.style.display = "";
+              modCoachDialogBox.style.display = "block"}
+              );
+
+              
+              // Input fields for modifying the user
+              // Functionality to delete the element on the backend and update HTML
+              // Back-end stuff
+              // Form submission
+              modCoachForm.addEventListener('submit',function(e) {
+                e.preventDefault();
+                if (e.submitter === submitModCoach){
+                console.log(targ_c)
+                console.log(e.submitter)
+                console.log("Inside event listender")
+                const name_ = document.getElementById("mod_name").value
+                const email_ = document.getElementById("mod_email").value
+                
+                const address_ = document.getElementById("mod_address").value
+                const gender_ = document.getElementById("mod_gender").value
+                //const arr_ = [name_, email_, address_, gender_]
+                //console.log(arr_)
+                // NEEDS TO BE PROCESSES ON BACK_END BEFORE 
+                //       const response = await fetch("/addCoach", {
+                //   method: "POST",
+                //   body: JSON.stringify({ name: nameInput, email: emailInput }),
+                //   headers: {
+                //     "Content-Type": "application/json",
+                //   },
+                targ_c.innerHTML = `
+              <td>${email_}</td>
+              <td class="coach_name">${name_}<button class="delete-button" href="#" id="delete-pop-up">
+                      🗑️
+                    </button>
+                    <button class="update-button">✏️</button>
+                  </td>`
+              //console.log(tableCoach.innerHTML)
+              modCoachForm.reset();
+                modCoachDialogBox.style.display = 'none';
+                } else {
+                  // This code block will run when the "Cancel" button is clicked
+                  e.preventDefault(); // Prevent form submission
+                  // alert('Form submission canceled.');
+                }
+              });
+
+              cancelModCoach.addEventListener('click', function(e) {
+                modCoachForm.reset();
+                modCoachDialogBox.style.display = 'none';
+                const cancelEvent = new Event('submit', { bubbles: true, cancelable: true });
+                modCoachForm.dispatchEvent(cancelEvent);
+                });
+
+
+
+
+
+
+
+
+                    // modifyPopUp.style.display = "none";
+
+                    // })      
+
+
+                    // CANCEL BUTTON
+                    cancelModButton.addEventListener("click", function(e) {
+                      console.log("Cancelled the modification")
+                    // Do nothing
+                    modifyPopUp.style.display = "none";
+                    })      
+                } 
+                // PENDING: Add function clikcing Update, popup with details to add coach
+                // Add coach to database , increment row, display the coach entered
+              });
+
+
+        // ADD A COACH DIALOG AND FUNCTION
+        addCoachButton.addEventListener('click', () => {
+          addCoachDialogBox.style.display = 'block';
+        });
+
+        // Form submission
+        addCoachForm.addEventListener('submit',function(e) {
+          e.preventDefault();
+          if (e.submitter === submitAddCoach){
+          console.log(e.submitter)
+          console.log("Inside event listender")
+          const name_ = document.getElementById("name").value
+          const email_ = document.getElementById("email").value
+          
+          const address_ = document.getElementById("address").value
+          const gender_ = document.getElementById("gender").value
+          //const arr_ = [name_, email_, address_, gender_]
+          //console.log(arr_)
+          // NEEDS TO BE PROCESSES ON BACK_END BEFORE 
+          //       const response = await fetch("/addCoach", {
+          //   method: "POST",
+          //   body: JSON.stringify({ name: nameInput, email: emailInput }),
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //   },
+          const newRow = document.createElement('tr');
+          console.log(newRow)
+
+          // Re-factoring required , hardcoding is not a good option.
+          newRow.innerHTML = `
+        <td>${name_}</td>
+        <td class="coach_name">${email_}<button class="delete-button" href="#" id="delete-pop-up">
+                🗑️
+              </button>
+              <button class="update-button">✏️</button>
+            </td>`
+        tableCoach.appendChild(newRow);
+        //console.log(tableCoach.innerHTML)
+        addCoachForm.reset();
+          addCoachDialogBox.style.display = 'none';
+          } else {
+            // This code block will run when the "Cancel" button is clicked
+            e.preventDefault(); // Prevent form submission
+            // alert('Form submission canceled.');
+          }
+        });
+
+        cancelAddCoach.addEventListener('click', function(e) {
+          addCoachForm.reset();
+          addCoachDialogBox.style.display = 'none';
+          const cancelEvent = new Event('submit', { bubbles: true, cancelable: true });
+          addCoachForm.dispatchEvent(cancelEvent);
+          });
+
+
+      // Add an event listener to the "Cancel" button
+      // cancelButton.addEventListener('click', function() {
+      //   // Trigger a "submit" event on the form to handle the cancellation
+      //   const cancelEvent = new Event('submit', { bubbles: true, cancelable: true });
+      //   addCoachForm.dispatchEvent(cancelEvent);
+      // });
+
+        
+
+
+
+
+      </script>
+    </div>
+
+    <footer>2023 Sports Performance Pro</footer>
+  </body>
+</html>

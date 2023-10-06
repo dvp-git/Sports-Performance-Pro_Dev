@@ -119,7 +119,8 @@ document.getElementById("team-search").addEventListener("keyup", function () {
   });
 });
 
-// // JavaScript for athlete search If needed
+// // JavaScript for athlete search If needed:
+
 // document.getElementById("athlete-search").addEventListener("keyup", function () {
 //     const searchText = this.value.toLowerCase();
 //     console.log(searchText);
@@ -136,5 +137,3 @@ document.getElementById("team-search").addEventListener("keyup", function () {
 //       }
 //     });
 //   });
-
-// FOR Refactoring:

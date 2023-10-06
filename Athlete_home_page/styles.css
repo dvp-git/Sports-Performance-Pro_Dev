@@ -141,7 +141,7 @@ footer {
   margin-left: 2px;
   border: 1px solid #d6d9da;
   padding: 20px; /* Increase padding */
-  background-color: #377381; /* Slightly different shade of green */
+  background-color: #2a8fc5; /* Slightly different shade of green */
   text-align: left;
 }
 
@@ -151,9 +151,9 @@ footer {
   cursor: pointer;
   color: #fff; /* Red color, customize as needed */
   margin-left: 2px;
-  border: 1px solid #dc3545;
+  border: 1px solid #d6d9da;
   padding: 20px; /* Increase padding */
-  background-color: #f6d7d7; /* Slightly different shade of red */
+  background-color: #2e769d; /* Slightly different shade of red */
   text-align: left;
 }
 
