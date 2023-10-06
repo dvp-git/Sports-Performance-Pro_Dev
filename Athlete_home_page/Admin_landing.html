@@ -25,7 +25,7 @@
       </ul>
     </nav>
     <div class="container">
-
+      <h1 style="color : black; margin: 20px 20px;"> Welcome TJ, Here are your list of Coaches</h1>
 
       <!--  ADDING LOGIN FORM -->
     <section>
@@ -50,24 +50,27 @@
         </form>
       </div>
   <!--  MODIFY the data entry -->
+
+
+
       <section>
         <button id="modify_coach">Modify a coach entry</button>
         <div id="mod_coach_dialog" style="display: none">
           <h2>Modify Coach</h2>
           <form id="mod_coach_form">
-            <div> Previous Name : </div>
+            <div id="prev_name"> Previous Name : </div>
             <label for="mod_name">Current Name:</label>
             <input type="text" id="mod_name"><br>
             <br>
-            <div>Previous Address : </div>
+            <div id="prev_address">Previous Address : </div>
             <label for="mod_address">Current Address:</label>
             <input type="text" id="mod_address"><br>
             <br>
-            <div>Previous Email : </div>
+            <div id="prev_email">Previous Email : </div>
             <label for="mod_email"> CurrentEmail:</label>
             <input type="email" id="mod_email" style="width: 100%; height: 2rem;"><br>
             <br>
-            <div>Previous Gender : </div>
+            <div  id="prev_gender">Previous Gender : </div>
             <label for="mod_gender">Current Gender:</label>
             <input type="text" id="mod_gender"><br>
   
@@ -78,6 +81,9 @@
 
     </section>
     <section>
+      <div class="search-bar">
+        <input type="text" id="coach-search" placeholder="Search for a team">
+    </div>
       <table id="coach__table">
         <thead>
           <tr>
@@ -107,7 +113,7 @@
           <tr>
             <td class="data-2">CC3</td>
             <td class="coach_name">
-              Jonas Smith
+              Mary Hopkins
               <button class="delete-button">🗑️</button>
               <button class="update-button">✏️</button>
             </td>
@@ -123,7 +129,7 @@
           <tr>
             <td class="data-2">CC5</td>
             <td class="coach_name">
-              Jonas Smith
+              Abhigail Conor
               <button class="delete-button">🗑️</button>
               <button class="update-button">✏️</button>
             </td>
@@ -131,7 +137,7 @@
           <tr>
             <td class="data-2">CC6</td>
             <td class="coach_name">
-              Jonas Smith
+              Sarah Jane
               <button class="delete-button">🗑️</button>
               <button class="update-button">✏️</button>
             </td>
@@ -139,7 +145,7 @@
           <tr>
             <td class="data-2">CC7</td>
             <td class="coach_name">
-              Jonas Smith
+              Ramesh Reddy
               <button class="delete-button">🗑️</button>
               <button class="update-button">✏️</button>
             </td>
@@ -258,12 +264,35 @@
               modifyButton.addEventListener("click", function(e) {
                 console.log("Inside Modify")
                 modifyPopUp.style.display = "";
-              modCoachDialogBox.style.display = "block"}
+              modCoachDialogBox.style.display = "block";
+              
+              // Refactor : Put function out.
+              const removeButtons = function(tdElement)
+              {
+              // Create a clone of the <td> element
+              let tdClone = tdElement.cloneNode(true);
+
+              // Remove the button elements from the clone
+              let buttons_ = tdClone.querySelectorAll('button');
+              buttons_.forEach(function(button) {
+                button.remove();
+              })
+              let textContentWithoutButtons = tdClone.textContent.trim();
+              console.log(textContentWithoutButtons); // Outputs: "This is some text"
+              return textContentWithoutButtons
+              //console.log(tdClone);
+              };
+
+              // console.log(targ_c.querySelector('tr .coach_name'));
+              const prev_name = removeButtons(targ_c.querySelector('tr .coach_name'))
+              console.log(modCoachForm.querySelector("#prev_name").textContent = 'Previous name :' + prev_name)
+              }
               );
 
               
+        
               // Input fields for modifying the user
-              // Functionality to delete the element on the backend and update HTML
+              // Functionality to modify the element on the backend and update HTML
               // Back-end stuff
               // Form submission
               modCoachForm.addEventListener('submit',function(e) {
@@ -383,8 +412,23 @@
       //   const cancelEvent = new Event('submit', { bubbles: true, cancelable: true });
       //   addCoachForm.dispatchEvent(cancelEvent);
       // });
-
-        
+      document.getElementById("coach-search").addEventListener("keyup", function () {
+      const searchText = this.value.toLowerCase();
+      //console.log(searchText);
+      const coachList = document.querySelectorAll(".coach_name");
+      //console.log(teamList);
+      coachList.forEach(function (team) {
+        //console.log(team);
+        const teamName = team.outerText.toLowerCase();
+        //console.log(teamName);
+        if (teamName.includes(searchText)) {
+          team.style.display = "";
+        } else {
+          team.style.display = "none";
+        }
+      });
+    });
+            
 
 
 
