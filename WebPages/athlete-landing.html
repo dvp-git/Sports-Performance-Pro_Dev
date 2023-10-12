@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LinkedIn-like Login</title>
-    <link rel="stylesheet" href="athlete-styles.css" />
+    <link rel="stylesheet" href="athlete-landing-styles.css" />
     <!-- Include Bootstrap CSS -->
   <!-- <link
     rel="stylesheet"
@@ -28,7 +28,7 @@
         <li class="nav_link"> <a href="tests.html">Tests</a></li>
         <li class="nav_link"> <a href="notes.html">Notes</a></li>
         <li class="nav_link"> <a href="messages.html">Messaging</a></li>
-        <li class="nav_link"> Notifications</a></li>
+        <li class="nav_link"> <a href="">Notifications</a></li>
         <li class="nav_link"> <a href="profile.html">Me</a></li>
       </ul>
       <ul>
@@ -56,8 +56,7 @@
                     <h3 class="card-header" id="monthAndYear"></h3>
                     <table
                       class="table table-bordered table-responsive-sm"
-                      id="calendar"
-                    >
+                      id="calendar">
                       <thead>
                         <tr>
                           <th>Sun</th>
@@ -176,14 +175,14 @@
         <div class="login-container-2">
           <p>Training Sessions</p>
           <div class="search-bar">
-            <input type="text" id="team-search" placeholder="Search for a team">
+            <input type="text" id="team-search" placeholder="Search for a session">
         </div>
         </head>
         <body>
           <h1>Tree View</h1>
       
           <ul id="treeview">
-            <h3>Team Training sessions </h3>
+            <h3>Training sessions Assigned</h3>
             <div class="team-train-sessions">
             <li class="team-nodes" visibility=0>
               Team 1
@@ -325,94 +324,95 @@
                   </li>
                 </ul>
               </li>
-            </div>
-        <br>
-        <h3>Athlete Training sessions </h3>
+
+            <!-- </div> -->
+        <!-- <br> -->
+        <!-- <h3>Athlete Training sessions </h3>
         <div class="search-bar">
-            <input type="text" id="team-search" placeholder="Search for a team">
+            <input type="text" id="team-search" placeholder="Search for a session">
         </div>
-        <div class="athlete-train-sessions"> 
-        <li class="team-nodes" visibility=0>
-            Athlete T1
-            <ul>
-              <li class="block-nodes hidden" visibility=0>
-                    Block 1
+        <div class="athlete-train-sessions">  -->
+              <li class="team-nodes" visibility=0>
+                  Athlete T1
+                  <ul>
+                    <li class="block-nodes hidden" visibility=0>
+                          Block 1
+                          <ul>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 1</li>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 2</li>
+                          </ul>
+                        </li>
+                    </li>
+                    <li class="block-nodes hidden" visibility=0>
+                      Block 2
+                      <ul>
+                        <li class="exc_nodes hidden" visibility=0>Exercise 3</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li class="team-nodes" visibility=0>
+                  Athlete T2
+                  <ul>
+                    <li class="block-nodes hidden" visibility=0>
+                      Block 3
+                      <ul>
+                          <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li class="team-nodes" visibility=0>
+                    Athlete T3
                     <ul>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 1</li>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 2</li>
+                      <li class="block-nodes hidden" visibility=0>
+                        Block 3
+                        <ul>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
+                        </ul>
+                      </li>
                     </ul>
                   </li>
-              </li>
-              <li class="block-nodes hidden" visibility=0>
-                Block 2
-                <ul>
-                  <li class="exc_nodes hidden" visibility=0>Exercise 3</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="team-nodes" visibility=0>
-            Athlete T2
-            <ul>
-              <li class="block-nodes hidden" visibility=0>
-                Block 3
-                <ul>
-                    <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="team-nodes" visibility=0>
-              Athlete T3
-              <ul>
-                <li class="block-nodes hidden" visibility=0>
-                  Block 3
-                  <ul>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li class="team-nodes" visibility=0>
-              Athlete T4
-              <ul>
-                <li class="block-nodes hidden" visibility=0>
-                  Block 3
-                  <ul>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li class="team-nodes" visibility=0>
-              Athlete T5
-              <ul>
-                <li class="block-nodes hidden" visibility=0>
-                  Block 3
-                  <ul>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li class="team-nodes" visibility=0>
-              Athlete T6
-              <ul>
-                <li class="block-nodes hidden" visibility=0>
-                  Block 3
-                  <ul>
-                      <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
+                  <li class="team-nodes" visibility=0>
+                    Athlete T4
+                    <ul>
+                      <li class="block-nodes hidden" visibility=0>
+                        Block 3
+                        <ul>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="team-nodes" visibility=0>
+                    Athlete T5
+                    <ul>
+                      <li class="block-nodes hidden" visibility=0>
+                        Block 3
+                        <ul>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="team-nodes" visibility=0>
+                    Athlete T6
+                    <ul>
+                      <li class="block-nodes hidden" visibility=0>
+                        Block 3
+                        <ul>
+                            <li class="exc_nodes hidden" visibility=0>Exercise 4</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
         </div>
-        </ul>
+        <!-- </ul> -->
         
         <div>
         </div>
           <!--- Dynamically changing events-->
-        </div>
+      <div>
       </div>
 
       <div style="margin-top: 100px"></div>
@@ -421,6 +421,6 @@
     <footer>2023 Sports Performance Pro</footer>
 
     <script src="calendar.js"></script>
-    <script src="Events.js" defer></script>
+    <script src="athlete-landing.js" defer></script>
   </body>
 </html>
