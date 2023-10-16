@@ -381,13 +381,7 @@ team_nodes.forEach((t) =>
                 });
                 e.setAttribute("visibility", 0);
                 e.classList.add(["hidden"]);
-                e.querySelector(".ex").setAttribute("visibility", 0);
-                e.querySelector(".ex").classList.add(["hidden"]);
               }
-              e.querySelector(".ex").setAttribute("visibility", 0);
-              e.querySelector(".ex").classList.add(["hidden"]);
-              e.setAttribute("visibility", 0);
-              e.classList.add(["hidden"]);
             });
           }
           //   block_nodes.forEach((b) => {
@@ -405,7 +399,9 @@ team_nodes.forEach((t) =>
   })
 );
 
-// FIXME: ADD EXERCISE BUTTON IN DIALOGUE BOX  // THIS CODE IS INCREASING CUMULATIVELY WITH EACH CLICK
+// FIXME: ADD EXERCISE BUTTON IN DIALOGUE BOX  // THIS CODE IS INCREASING CUMULATIVELY WITH EACH CLICK✅
+// FIXED: Moved the ExerciseEvent hanlder outside the previous event handler. Created global variables for exerciseTarget, newExercise and exerciseAdd. Re-assigned them inside the specific loops
+
 addExerciseButton.addEventListener("click", (event) => {
   console.log("Clicked 'ADD EXERCISE'");
   const countNodes = document.querySelectorAll(".exc_nodes");
@@ -429,6 +425,7 @@ addExerciseButton.addEventListener("click", (event) => {
   if (!loadsValue || !repsValue || !setsValue) {
     console.log(`I'm here the bug`);
     alert("Please fill in all the required fields (Loads, Reps, and Sets).");
+    return;
   } else {
     console.log("THIS IS THE FORM DATA JSON");
     // Form submission:
