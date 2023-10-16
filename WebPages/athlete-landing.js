@@ -6,23 +6,49 @@ const block_nodes = document.querySelectorAll(".block_nodes");
 const exercise_nodes = document.querySelectorAll(".exc_nodes");
 
 // Add click event listeners to tree nodes
+// TODO: Refactor to use Event delegation on the main training container
+// TODO: Change visibility attribute on the nodes once expanded or shrinked
 team_node.forEach((t) =>
   t.addEventListener("click", (e) => {
     const target = e.target;
-    // console.log(`Outer Target:`,target)
+    console.log(`Outer Target:`, target);
 
     let vis_ = target.getAttribute("visibility");
     console.log(vis_);
 
+    // EXERCISE node clicked
+    if (target.classList.contains("exc_nodes")) {
+      console.log("Entered Exercise function");
+      let vis_ = target.getAttribute("visibility");
+      console.log(target);
+      // Expanding the Exercise node
+      if (Number(vis_) === 0) {
+        console.log("Entered inner exercise function ");
+        // Expand Exercise Tree
+        // console.log(target)
+        const div_ex = target.querySelector("div");
+        // console.log(div_ex);
+        // div_ex.forEach((div_el) => div_el.classList.remove(["hidden"]));
+        div_ex.classList.remove(["hidden"]);
+        target.setAttribute("visibility", 1);
+      } else {
+        // Shrink Tree
+        const div_ex = target.querySelector("div");
+        console.log(div_ex);
+        div_ex.classList.add(["hidden"]);
+        target.setAttribute("visibility", 0);
+      }
+    }
+
     // BLOCK node clicked
     if (target.classList.contains("block-nodes")) {
-      console.log("Entered is the block function");
+      console.log("Entered block function");
       console.log(`Inner Target:`, target);
       let vis_ = target.getAttribute("visibility");
       console.log(vis_);
       if (Number(vis_) === 0) {
-        // Expand Tree
-        console.log("Entered function ");
+        console.log("Entered inner block function ");
+        // Expand Block Tree
         // console.log(target)
         const exc_nodes = target.querySelectorAll(".exc_nodes");
         console.log(exc_nodes);
@@ -35,6 +61,7 @@ team_node.forEach((t) =>
         exc_nodes.forEach((t) => t.classList.add(["hidden"]));
         target.setAttribute("visibility", 0);
       }
+      // }
     }
     // TEAM/ATHLETE Name is clicked
     else {
@@ -54,14 +81,16 @@ team_node.forEach((t) =>
         console.log(e.target);
         const block_nodes = target.querySelectorAll(".block-nodes");
         console.log(block_nodes);
-        block_nodes.forEach((t) => {
+        block_nodes.forEach((b) => {
           //   console.log("EXEC NODES TO BE PRINTED");
           //   t.classList.add(["hidden"]);
           //console.log(t.querySelectorAll(".exc_nodes"));
-          t.querySelectorAll(".exc_nodes").forEach((x) =>
-            x.classList.add(["hidden"])
-          );
-          block_nodes.forEach((t) => t.classList.add(["hidden"]));
+          b.querySelectorAll(".exc_nodes").forEach((e) => {
+            console.log(e);
+            e.querySelector(".ex").classList.add(["hidden"]);
+            e.classList.add(["hidden"]);
+          });
+          block_nodes.forEach((b) => b.classList.add(["hidden"]));
           target.setAttribute("visibility", 0);
         });
       }

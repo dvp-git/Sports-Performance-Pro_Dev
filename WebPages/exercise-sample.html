@@ -1,0 +1,260 @@
+<!DOCTYPE >
+<html>
+  <head> 
+  <link rel="stylesheet" href="athlete-landing-styles.css">
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+/>
+  </head>
+  <body>
+    <style>
+        .container {
+          width: 100%;
+          /* max-width: 1400px; */
+          /* max-width: 800px; */
+          margin: 0 auto;
+          padding-bottom: 20px;
+          padding-left: 20px;
+          padding-right: 20px;
+          background-color: #fff;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+          border-radius: 5px;
+          display: flex;
+          flex-direction: column;
+          /* min-height: calc(100vh - 60px);  */
+          margin-bottom: 60px;
+        }
+      </style>
+<div class="container">
+        <h2>Welcome Athlete, we're rooting for you</h2>
+        <!-- Container for login forms -->
+        <div class="login-forms">
+    <div class="login-container-2">
+        <p>Training Sessions</p>
+        <div class="search-bar">
+          <input type="text" id="team-search" placeholder="Search for a session">
+      </div>
+      </head>
+      <body>
+    <div class="container mt-5">
+      <h1 class="text-center">Add New Exercise</h1>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Exercise Details</h2>
+          <form id="addExerciseForm">
+            <!-- Category Field -->
+            <div class="mb-3">
+              <label for="category" class="form-label">Category</label>
+              <select
+                class="form-select"
+                id="category"
+                name="category"
+                required
+              >
+                <option value="Cardio">Cardio</option>
+                <option value="Strength training">Strength training</option>
+                <option value="Core">Core</option>
+                <option value="Yoga">Yoga</option>
+              </select>
+            </div>
+
+            <!-- Exercise Type Field -->
+            <div class="mb-3">
+              <label for="exerciseType" class="form-label">Exercise Type</label>
+              <select
+                class="form-select"
+                id="exerciseType"
+                name="exerciseType"
+                required
+              >
+                <!-- Options will be dynamically generated using JavaScript -->
+              </select>
+            </div>
+
+            <!-- Exercise Name Field -->
+            <div class="mb-3">
+              <label for="exerciseName" class="form-label">Exercise Name</label>
+              <select
+                class="form-select"
+                id="exerciseName"
+                name="exerciseName"
+                required
+              >
+                <!-- Options will be dynamically generated using JavaScript -->
+              </select>
+            </div>
+
+            <!-- Loads Field -->
+            <div class="mb-3">
+              <label for="loads" class="form-label">Loads</label>
+              <input
+                type="number"
+                class="form-control"
+                id="loads"
+                name="loads"
+              />
+            </div>
+
+            <!-- Sets Field -->
+            <div class="mb-3">
+              <label for="sets" class="form-label">Sets</label>
+              <input type="number" class="form-control" id="sets" name="sets" />
+            </div>
+
+            <!-- Reps Field -->
+            <div class="mb-3">
+              <label for="reps" class="form-label">Reps</label>
+              <input type="number" class="form-control" id="reps" name="reps" />
+            </div>
+          </form>
+        </div>
+
+        <!-- Save Exercise Button -->
+        <div class="mb-3 text-center">
+          <button type="button" id="addExerciseButton" class="btn btn-primary">
+            Add Exercise
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+    <script>
+      // JavaScript to populate Exercise Type and Exercise Name based on selected Category and Exercise Type
+      const categorySelect = document.getElementById("category");
+      const exerciseTypeSelect = document.getElementById("exerciseType");
+      const exerciseNameSelect = document.getElementById("exerciseName");
+
+
+      const exerciseData = {
+        Cardio: {
+          Treadmill: ["Running"],
+          Elliptical: ["Elliptical training"],
+          "Stationary bike": ["Cycling"],
+          "Rowing machine": ["Rowing"],
+          "Stair climber": ["Stair climbing"],
+        },
+        "Strength training": {
+          Push: [
+            "Bench press",
+            "Overhead press",
+            "Push-ups",
+            "Machine chest press",
+          ],
+          Pull: [
+            "Pull-ups",
+            "Lat pulldown",
+            "Barbell row",
+            "Dumbbell row",
+            "Cable row",
+          ],
+          "Hip hinge": [
+            "Deadlift",
+            "Good morning",
+            "Romanian deadlift",
+            "Clean",
+            "Kettlebell swing",
+          ],
+          Squat: [
+            "Squat",
+            "Front squat",
+            "Bulgarian split squat",
+            "Goblet squat",
+            "Leg press",
+          ],
+        },
+        Core: {
+          Plank: [
+            "Plank",
+            "Side plank",
+            "Knee raise plank",
+            "Hollow body hold",
+          ],
+          Crunches: ["Crunches", "Leg raises", "Sit-ups"],
+          "Russian twists": ["Russian twists"],
+        },
+        Yoga: {
+          "Downward-facing dog": ["Downward-facing dog"],
+          "Warrior I pose": ["Warrior I pose"],
+          "Triangle pose": ["Triangle pose"],
+          "Tree pose": ["Tree pose"],
+          "Bridge pose": ["Bridge pose"],
+        },
+      };
+
+      categorySelect.addEventListener("change", updateExerciseTypes);
+      exerciseTypeSelect.addEventListener("change", updateExerciseNames);
+
+      function updateExerciseTypes() {
+        const selectedCategory = categorySelect.value;
+        exerciseTypeSelect.innerHTML = "";
+        exerciseNameSelect.innerHTML = "";
+
+        if (exerciseData[selectedCategory]) {
+          const exerciseTypes = Object.keys(exerciseData[selectedCategory]);
+          exerciseTypes.forEach((type) => {
+            const option = document.createElement("option");
+            option.value = type;
+            option.textContent = type;
+            exerciseTypeSelect.appendChild(option);
+          });
+        }
+
+        updateExerciseNames();
+      }
+
+      function updateExerciseNames() {
+        const selectedCategory = categorySelect.value;
+        const selectedExerciseType = exerciseTypeSelect.value;
+        exerciseNameSelect.innerHTML = "";
+
+        if (
+          exerciseData[selectedCategory] &&
+          exerciseData[selectedCategory][selectedExerciseType]
+        ) {
+          exerciseData[selectedCategory][selectedExerciseType].forEach(
+            (name) => {
+              const option = document.createElement("option");
+              option.value = name;
+              option.textContent = name;
+              exerciseNameSelect.appendChild(option);
+            }
+          );
+        }
+      }
+
+      // Initial population of Exercise Types
+      updateExerciseTypes();
+
+      // Save Exercise Button Click Event
+      const addExerciseButton = document.getElementById("addExerciseButton");
+      addExerciseButton.addEventListener("click", function (event) {
+        const loadsValue = document.getElementById("loads").value;
+        const repsValue = document.getElementById("reps").value;
+        const setsValue = document.getElementById("sets").value;
+        const category = document.getElementById("category").value;
+        const exerciseName = document.getElementById("exerciseName").value;
+        const exerciseType = document.getElementById("exerciseType").value;
+
+
+
+
+        if (!loadsValue || !repsValue || !setsValue) {
+          event.preventDefault(); // Prevent form submission
+          alert(
+            "Please fill in all the required fields (Loads, Reps, and Sets)."
+          );
+        } else {
+
+        console.log(repsValue)
+        console.log(category)
+        console.log(setsValue)
+        console.log(exerciseType)
+        console.log(loadsValue)
+        console.log(exerciseName)
+          // Continue with form submission or data handling
+        }
+      });
+    </script>
+</html>
+

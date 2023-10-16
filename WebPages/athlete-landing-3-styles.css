@@ -43,6 +43,7 @@ nav a {
 nav a:hover {
   color: #005599;
 }
+/* 
 .container {
   margin: 0 auto;
   padding: 20px;
@@ -50,44 +51,46 @@ nav a:hover {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   text-align: center;
+} */
+
+#addExercise {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
-targetExercise {
-  /* width: 75%;
-  margin: 0 auto;
-  padding-bottom: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
-  background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+#addExerciseForm {
   display: flex;
   flex-direction: column;
-  /* min-height: calc(100vh - 60px);  
-  margin-bottom: 60px;
-  */
-  display: none;
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* align-items: center; */
+  /* margin-bottom: 10px; */
 }
 
-.overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(5px); /* Apply background blur */
+/* Apply styles to labels */
+label {
+  flex: 1;
+  width: 50%; /* Set a fixed width for the labels */
+}
+
+/* Apply styles to input fields and select elements */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+  flex: 2;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #fff;
+  width: 50%; /* Expand the input/select to fill available space */
 }
 
 /* Style for the close button */
@@ -282,4 +285,37 @@ addExercise-btn {
 .athlete-train-sessions::-webkit-scrollbar-thumb {
   background-color: #888;
   border-radius: 3px;
+}
+
+.jsonDisplay {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  font-family: Arial, sans-serif;
+}
+
+/* Apply styles to JSON keys */
+.json-key {
+  font-weight: bold;
+  color: #0077b5;
+  width: 100px;
+  /* Fixed width for keys */
+  display: inline-block;
+  /* To make keys inline */
+}
+
+/* Apply styles to JSON values */
+.json-value {
+  margin-left: 50px;
+  display: inline-block;
+  /* To make values inline */
+}
+
+/* Apply styles to JSON items for spacing */
+.json-item {
+  margin: 10px 0;
 }
