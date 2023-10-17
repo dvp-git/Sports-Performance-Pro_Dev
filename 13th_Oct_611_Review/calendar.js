@@ -50,7 +50,10 @@ function highlightCurrentDate() {
   const cells = document.querySelectorAll("td");
 
   cells.forEach((cell) => {
-    if (cell.innerHTML === currentDay.toString() && cell.classList.contains("bg-info")) {
+    if (
+      cell.innerHTML === currentDay.toString() &&
+      cell.classList.contains("bg-info")
+    ) {
       // Highlight the current date
       cell.classList.add("today-date");
     }
@@ -110,7 +113,9 @@ function showCalendar(month, year) {
     // Add a click event listener to the date cell
     cell.addEventListener("click", function () {
       // Remove the "clicked-date" class from all cells
-      tbl.querySelectorAll("td.clicked-date").forEach((c) => c.classList.remove("clicked-date"));
+      tbl
+        .querySelectorAll("td.clicked-date")
+        .forEach((c) => c.classList.remove("clicked-date"));
       // Apply the "clicked-date" class to the clicked cell
       cell.classList.add("clicked-date");
     });

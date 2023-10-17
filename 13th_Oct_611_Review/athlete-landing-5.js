@@ -8,20 +8,13 @@ const teamTrainTree = document.querySelector(".team-train-sessions");
 let trainCount = document.querySelectorAll(".team-nodes").length;
 const addExerciseSkeleton = document.getElementById("addExercise");
 
-// console.log(addExerciseSkeleton);
-/*
-const createBlockButton = document.getElementById("createBlock-btn"); // Change to class --> By ID does'nt work since everywhere a block is required
-const addExerciseButton = document.getElementById("addExercise-btn"); // Change to class --> By ID does'nt work since everywhere a block is required
-//console.log(block_nodes);
-*/
-
-//=============================================
 const categorySelect = document.getElementById("category");
 const exerciseTypeSelect = document.getElementById("exerciseType");
 const exerciseNameSelect = document.getElementById("exerciseName");
 const addExerciseButton = document.getElementById("add-exercise-button");
 const closeExerciseButton = document.getElementById("closeFormButton");
 let jsonData = "";
+
 const exerciseData = {
   Cardio: {
     Treadmill: ["Running"],
@@ -209,7 +202,7 @@ block_nodes.forEach((b) => {
 // Add click event listeners to tree nodes
 // TODO: Refactor to use Event delegation on the main training container
 
-// When Closing the Team click , Refactor as above to have single event handler. Used class to change functionaloty. Might need refactoring further for DRY principle.
+// TODO: When Closing the Team click , Refactor as above to have single event handler. Used class to change functionaloty. Might need refactoring further for DRY principle.
 
 // TODO:
 // BUG: Shrking team/athlete list does not work
@@ -403,14 +396,14 @@ team_nodes.forEach((t) =>
 // FIXED: Moved the ExerciseEvent hanlder outside the previous event handler. Created global variables for exerciseTarget, newExercise and exerciseAdd. Re-assigned them inside the specific loops
 
 addExerciseButton.addEventListener("click", (event) => {
-  console.log("Clicked 'ADD EXERCISE'");
+  //console.log("Clicked 'ADD EXERCISE'");
   const countNodes = document.querySelectorAll(".exc_nodes");
-  console.log("CountNodes of ExDisplay", countNodes);
+  //console.log("CountNodes of ExDisplay", countNodes);
   event.preventDefault(); // Prevent form submission
 
   //============================
 
-  console.log("I am getting the value now");
+  //console.log("I am getting the value now");
 
   const loadsValue = document.getElementById("loads").value;
   const repsValue = document.getElementById("reps").value;
@@ -418,16 +411,16 @@ addExerciseButton.addEventListener("click", (event) => {
   const category = document.getElementById("category").value;
   const exerciseName = document.getElementById("exerciseName").value;
   const exerciseType = document.getElementById("exerciseType").value;
-  console.log(`LOADs ${loadsValue}`);
-  console.log(`REPS ${repsValue}`);
-  console.log(`SETS ${setsValue}`);
+  //console.log(`LOADs ${loadsValue}`);
+  //console.log(`REPS ${repsValue}`);
+  // console.log(`SETS ${setsValue}`);
 
   if (!loadsValue || !repsValue || !setsValue) {
-    console.log(`I'm here the bug`);
+    //console.log(`I'm here the bug`);
     alert("Please fill in all the required fields (Loads, Reps, and Sets).");
     return;
   } else {
-    console.log("THIS IS THE FORM DATA JSON");
+    //console.log("THIS IS THE FORM DATA JSON");
     // Form submission:
     // Create a JSON object
 
@@ -445,19 +438,19 @@ addExerciseButton.addEventListener("click", (event) => {
     resetExercises();
     if (formData) {
       // Call the function
-      console.log("CONVERTING TO JSON FUNCTION");
+      //console.log("CONVERTING TO JSON FUNCTION");
       // console.log(jsonData);
       // console.log(exerciseAdd);
       createJsonEl(exerciseAdd, formData);
-      console.log("The New EXERCISE element", newExercise);
-      console.log("The New Exercise div element", exerciseAdd);
+      //console.log("The New EXERCISE element", newExercise);
+      //console.log("The New Exercise div element", exerciseAdd);
       //console.log(exerciseAdd);
       // newExercise.parentElement.insertBefore(exerciseAdd, newExercise);
-      console.log("CHECK THESE PARAMETERS AGAINS!!!!!!!!!!!|");
-      console.log(execTarget);
-      console.log(execTarget.parentElement);
-      console.log(exerciseAdd);
-      console.log(newExercise);
+      //console.log("CHECK THESE PARAMETERS AGAINS!!!!!!!!!!!|");
+      // console.log(execTarget);
+      // console.log(execTarget.parentElement);
+      // console.log(exerciseAdd);
+      // console.log(newExercise);
 
       // Entries are added now and are in the exerciseAdd element. Append this to the target
       addExerciseSkeleton.style.display = "none";
