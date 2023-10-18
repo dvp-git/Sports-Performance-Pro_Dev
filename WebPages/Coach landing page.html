@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sports Performance Pro</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f2ef;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      header {
+        background-color: #0077b5;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+      }
+
+      nav {
+        background-color: #0077b5;
+        color: #fff;
+        padding: 10px 0;
+      }
+
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      nav li {
+        margin: 0 20px;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+        font-size: 16px;
+        transition: color 0.3s ease-in-out;
+      }
+
+      nav a:hover {
+        color: #005599;
+      }
+
+      .container {
+        width: 100%; /* Use 100% width to span the whole window screen */
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        min-height: calc(
+          100vh - 60px
+        ); /* Subtract the height of the header and nav bar */
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 50%; /* Align the footer to the horizontal center of the viewport */
+        transform: translateX(-50%); /* Center the footer horizontally */
+        width: 100%;
+        background-color: #fff;
+        color: #333;
+        text-align: center;
+        padding: 10px 0;
+        z-index: 999;
+      }
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* Adjust the min-height value if you have a different header and nav bar height */
+
+      /* .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 999; /* Optional: Use a z-index to control stacking order if needed 
+        } */
+
+      /* .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            text-align: center;
+
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the container takes up at least the full viewport height 
+        } */
+
+      /* .footer {
+            margin-top: auto; /* Push the footer to the bottom 
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+        } */
+
+      /* .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 999; /* Optional: Use a z-index to control stacking order if needed 
+        } */
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #fff;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      p {
+        font-size: 16px;
+        margin-bottom: 30px;
+        color: #666;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        color: #333;
+      }
+
+      button {
+        background-color: #0077b5;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #005599;
+      }
+
+      .create-account-link {
+        font-size: 16px;
+        color: #0077b5;
+        text-decoration: none;
+        margin-top: 30px;
+        display: block;
+      }
+
+      .create-account-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Add this CSS below your existing styles */
+
+      .team-table,
+      .athlete-table {
+        overflow: hidden;
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        background-color: #f3f2ef;
+        padding: 10px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      .table-content {
+        max-height: 300px; /* Adjust the maximum height as needed */
+        overflow-y: auto;
+      }
+
+      .column {
+        flex-basis: 50%; /* Equal width columns */
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+      }
+
+      li:last-child {
+        border-bottom: none;
+      }
+
+      .search-bar {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #team-search,
+      #athlete-search {
+        width: 100%;
+        padding: 12px 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .team-section,
+      .athlete-section {
+        background-color: #fff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        margin: 20px;
+      }
+
+      .team-section h2,
+      .athlete-section h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .team-section ul,
+      .athlete-section ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .team-section li,
+      .athlete-section li {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      /* Add this CSS below your existing styles */
+
+      .scrollable {
+        max-height: 150px; /* Adjust the maximum height to display 3 items at a time */
+        overflow-y: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      thead {
+        background-color: #f2f2f2;
+      }
+
+      .team-section h2,
+      .athlete-section h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .team-section th,
+      .athlete-section th {
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .team-section td,
+      .athlete-section td {
+        font-size: 16px;
+        color: #666;
+      }
+
+      /* Add specific styling for status columns */
+      .team-section td:nth-child(2),
+      .athlete-section td:nth-child(2) {
+        color: #0077b5; /* Status color, you can adjust this color as needed */
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Welcome Coach TJ!</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Create Workouts</a></li>
+        <li><a href="#">Create Tests</a></li>
+        <li><a href="#">Notes</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="#">My Profile</a></li>
+      </ul>
+    </nav>
+
+    <!-- <div class="container">
+        <div class="team-section">
+            <h2>Teams</h2>
+            <div class="search-bar">
+                <input type="text" id="team-search" placeholder="Search for a team">
+            </div>
+            <div class="scrollable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Team 1</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Team 2</td>
+                            <td>Inactive</td>
+                        </tr>
+                        <tr>
+                            <td>Team 3</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Team 4</td>
+                            <td>Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+        <div class="athlete-section">
+            <h2>Athletes</h2>
+            <div class="search-bar">
+                <input type="text" id="athlete-search" placeholder="Search for an athlete">
+            </div>
+            <div class="scrollable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Athlete Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Athlete 1</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 2</td>
+                            <td>Inactive</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 3</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 4</td>
+                            <td>Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="container">
+      <div class="team-section">
+        <h2>Teams</h2>
+        <div class="search-bar">
+          <input type="text" id="team-search" placeholder="Search for a team" />
+        </div>
+        <!-- <div class="scrollable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Team 1</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Team 2</td>
+                            <td>Inactive</td>
+                        </tr>
+                        <tr>
+                            <td>Team 3</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Team 4</td>
+                            <td>Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+        <div class="team-table">
+          <div class="table-header">
+            <div class="column">Team Name</div>
+            <div class="column">Status</div>
+          </div>
+          <div class="table-content">
+            <ul>
+              <li>
+                <span class="column">Team 1</span>
+                <span class="column">Active</span>
+              </li>
+              <li>
+                <span class="column">Team 2</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Team 3</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Team 4</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Team 5</span>
+                <span class="column">Inactive</span>
+              </li>
+              <!-- Add more teams here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="athlete-section">
+        <h2>Athletes</h2>
+        <div class="search-bar">
+          <input
+            type="text"
+            id="athlete-search"
+            placeholder="Search for an athlete"
+          />
+        </div>
+        <!-- <div class="scrollable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Athlete Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Athlete 1</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 2</td>
+                            <td>Inactive</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 3</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>Athlete 4</td>
+                            <td>Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+        <div class="athlete-table">
+          <div class="table-header">
+            <div class="column">Athlete Name</div>
+            <div class="column">Status</div>
+          </div>
+          <div class="table-content">
+            <ul>
+              <li>
+                <span class="column">Athlete 1</span>
+                <span class="column">Active</span>
+              </li>
+              <li>
+                <span class="column">Athlete 2</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Athlete 3</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Athlete 4</span>
+                <span class="column">Inactive</span>
+              </li>
+              <li>
+                <span class="column">Athlete 5</span>
+                <span class="column">Inactive</span>
+              </li>
+              <!-- Add more athletes here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- javscript code starts -->
+
+    <!-- <script>
+        // JavaScript for team search
+        document.getElementById("team-search").addEventListener("keyup", function() {
+            const searchText = this.value.toLowerCase();
+            const teamList = document.querySelectorAll(".team-section tbody tr");
+    
+            teamList.forEach(function(team) {
+                const teamName = team.querySelector("td:first-child").textContent.toLowerCase();
+                if (teamName.includes(searchText)) {
+                    team.style.display = "";
+                } else {
+                    team.style.display = "none";
+                }
+            });
+        });
+    
+        // JavaScript for athlete search
+        document.getElementById("athlete-search").addEventListener("keyup", function() {
+            const searchText = this.value.toLowerCase();
+            const athleteList = document.querySelectorAll(".athlete-section tbody tr");
+    
+            athleteList.forEach(function(athlete) {
+                const athleteName = athlete.querySelector("td:first-child").textContent.toLowerCase();
+                if (athleteName.includes(searchText)) {
+                    athlete.style.display = "";
+                } else {
+                    athlete.style.display = "none";
+                }
+            });
+        });
+
+        // JavaScript for message button and popup
+        function openMessagePopup(target) {
+            // Create a popup or modal with target (athlete or team) and a message input field
+            // You can use a library like Bootstrap or create a custom modal.
+
+            // For example, using a simple alert:
+            alert(`You selected ${target}. Enter your message here.`);
+        }
+
+        // Attach a click event to each team row to open the popup
+        const teamRows = document.querySelectorAll(".team-section tbody tr");
+
+        teamRows.forEach(function(team) {
+            team.addEventListener("click", function() {
+                const teamName = this.querySelector("td:first-child").textContent;
+                openMessagePopup(`Team: ${teamName}`);
+            });
+        });
+
+        // Attach a click event to each athlete row to open the popup
+        const athleteRows = document.querySelectorAll(".athlete-section tbody tr");
+
+        athleteRows.forEach(function(athlete) {
+            athlete.addEventListener("click", function() {
+                const athleteName = this.querySelector("td:first-child").textContent;
+                openMessagePopup(`Athlete: ${athleteName}`);
+            });
+        });
+
+    </script> -->
+
+    <script>
+      // JavaScript for team search
+      document
+        .getElementById("team-search")
+        .addEventListener("keyup", function () {
+          const searchText = this.value.toLowerCase();
+          const teamList = document.querySelectorAll(".team-section ul li");
+
+          teamList.forEach(function (team) {
+            const teamName = team
+              .querySelector(".column:nth-child(1)")
+              .textContent.toLowerCase();
+            if (teamName.includes(searchText)) {
+              team.style.display = "";
+            } else {
+              team.style.display = "none";
+            }
+          });
+        });
+
+      // JavaScript for athlete search
+      document
+        .getElementById("athlete-search")
+        .addEventListener("keyup", function () {
+          const searchText = this.value.toLowerCase();
+          const athleteList = document.querySelectorAll(
+            ".athlete-section ul li"
+          );
+
+          athleteList.forEach(function (athlete) {
+            const athleteName = athlete
+              .querySelector(".column:nth-child(1)")
+              .textContent.toLowerCase();
+            if (athleteName.includes(searchText)) {
+              athlete.style.display = "";
+            } else {
+              athlete.style.display = "none";
+            }
+          });
+        });
+
+      // JavaScript for message button and popup
+      function openMessagePopup(target) {
+        // Create a popup or modal with target (athlete or team) and a message input field
+        // You can use a library like Bootstrap or create a custom modal.
+
+        // For example, using a simple alert:
+        alert(`You selected ${target}. Enter your message here.`);
+      }
+
+      // Attach a click event to each team row to open the popup
+      const teamRows = document.querySelectorAll(".team-section ul li");
+
+      teamRows.forEach(function (team) {
+        team.addEventListener("click", function () {
+          const teamName = this.querySelector(
+            ".column:nth-child(1)"
+          ).textContent;
+          openMessagePopup(`Team: ${teamName}`);
+        });
+      });
+
+      // Attach a click event to each athlete row to open the popup
+      const athleteRows = document.querySelectorAll(".athlete-section ul li");
+
+      athleteRows.forEach(function (athlete) {
+        athlete.addEventListener("click", function () {
+          const athleteName = this.querySelector(
+            ".column:nth-child(1)"
+          ).textContent;
+          openMessagePopup(`Athlete: ${athleteName}`);
+        });
+      });
+    </script>
+  </body>
+</html>

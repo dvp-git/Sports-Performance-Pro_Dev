@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Coach Profile</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f2ef;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        } */
+
+        header {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav a:hover {
+            color: #005599;
+        }
+
+        .container {
+            width: 100%; 
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 60px); 
+            margin-bottom: 60px;
+        }
+
+        .dataTables_wrapper {
+            margin: 20px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%; /* Align the footer to the horizontal center of the viewport */
+            transform: translateX(-50%); /* Center the footer horizontally */
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 999;
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #0077B5;
+        }
+
+        .title {
+            font-size: 30px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #fff; /* White color */
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #0077B5;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title">Sports Performance Pro</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="coach-landing-page.html">Home</a></li>
+            <li><a href="workout-selection.html">Create Workouts</a></li>
+            <li><a href="test-selection.html">Create Tests</a></li>
+            <li><a href="#">Notes</a></li>
+            <li><a href="#">Notifications</a></li>
+            <li><a href="coach-profile.html">My Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Edit Coach Profile</h1>
+        <!-- Edit Profile Section -->
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Edit Profile</h2>
+                <form id="editProfileForm">
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <!-- Address Field -->
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" required>
+                    </div>
+
+                    <!-- Date of Birth Field (Using Bootstrap Datepicker) -->
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth:</label>
+                        <input type="date" class="form-control" id="dob" name="dob">
+                    </div>
+
+                    <!-- Phone Number Field -->
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                    </div>
+
+                    <!-- Gender Field -->
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Institute Field (Dropdown) -->
+                    <div class="mb-3">
+                        <label for="institute" class="form-label">Institute</label>
+                        <select class="form-select" id="institute" name="institute" required>
+                            <option value="institute1">Select Institute</option>
+                            <option value="institute1">Institute 1</option>
+                            <option value="institute2">Institute 2</option>
+                            <option value="institute3">Institute 3</option>
+                        </select>
+                    </div>
+
+                    <!-- Sports Field (Dropdown) -->
+                    <div class="mb-3">
+                        <label for="sports" class="form-label">Sports</label>
+                        <select class="form-select" id="sports" name="sports" required>
+                            <option value="sport1">Select Sport</option>
+                            <option value="sport1">Sport 1</option>
+                            <option value="sport2">Sport 2</option>
+                            <option value="sport3">Sport 3</option>
+                        </select>
+                    </div>
+
+                    <!-- Save Changes Button -->
+                    <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Section -->
+            <div class="col-md-6">
+                <h2>Change Password</h2>
+                <form id="changePasswordForm">
+                    <!-- Old Password Field -->
+                    <div class="mb-3">
+                        <label for="oldPassword" class="form-label">Old Password</label>
+                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
+                    </div>
+
+                    <!-- New Password Field -->
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+
+                    <!-- Retype New Password Field -->
+                    <div class="mb-3">
+                        <label for="confirmNewPassword" class="form-label">Retype New Password</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+
+                    <!-- Save Password Changes Button -->
+                    <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary">Save Password Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class = footer>
+            2023 Sports Performance Pro
+        </div>
+    </footer>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+        // Add your JavaScript code for handling form submissions here
+        $(document).ready(function () {
+            // Handle form submissions for editing profile
+            $('#editProfileForm').submit(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                // Add your code to handle the form data and update the coach's profile here
+                // You can use jQuery AJAX to send the data to a server-side script for processing
+            });
+
+            // Handle form submissions for changing password
+            $('#changePasswordForm').submit(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                // Add your code to handle changing the coach's password here
+                // You can use jQuery AJAX to send the data to a server-side script for processing
+            });
+        });
+    </script>
+</body>
+</html>
+    
