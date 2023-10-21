@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Profile</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        /* Add the modified CSS styles here */
+
+        header {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease-in-out;
+            padding: 15px 25px;
+            border-radius: 15px; /* Add rounded corners to the tab */
+        }
+
+        nav a.current {
+            color: #fff;
+            background-color: #005599;
+            font-weight: bold;
+            border-radius: 15px; /* Apply rounded corners to the selected tab */
+        }
+
+        nav a:hover, nav a:focus {
+            color: #005599;
+            background-color: #fff;
+            border-radius: 15px; /* Apply the same rounded corners on hover/focus */
+        }
+
+        .container {
+            width: 100%; 
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 60px); 
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%; /* Align the footer to the horizontal center of the viewport */
+            transform: translateX(-50%); /* Center the footer horizontally */
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 999;
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #0077B5;
+        }
+
+        .title {
+            font-size: 30px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #fff; /* White color */
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #0077B5;
+        }
+
+        table {
+            text-align: left;
+        }
+
+        table th, table td {
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title">Sports Performance Pro</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="coach-landing-page.html">Home</a></li>
+            <li><a href="workout-selection.html">Create Workouts</a></li>
+            <li><a href="test-selection.html">Create Tests</a></li>
+            <li><a href="#">Notes</a></li>
+            <li><a href="#">Notifications</a></li>
+            <li><a href="coach-profile.html" class="current">My Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Coach Profile</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-4">Profile Information</h2>
+                <dl class="row">
+                    <dt class="col-sm-4">Name:</dt>
+                    <dd class="col-sm-8">Dummy Coach Name</dd>
+
+                    <dt class="col-sm-4">Address:</dt>
+                    <dd class="col-sm-8">Capen Hall, University at Buffalo, 14226</dd>
+
+                    <dt class="col-sm-4">Date of Birth:</dt>
+                    <dd class="col-sm-8">01-01-1990</dd>
+
+                    <dt class="col-sm-4">Gender:</dt>
+                    <dd class="col-sm-8">Male</dd>
+
+                    <dt class="col-sm-4">Institute:</dt>
+                    <dd class="col-sm-8">Institute 2</dd>
+
+                    <dt class="col-sm-4">Sports:</dt>
+                    <dd class="col-sm-8">Sport 2</dd>
+
+                    <dt class="col-sm-4">Phone Number:</dt>
+                    <dd class="col-sm-8">123-456-7890</dd>
+                </dl>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="mb-4">Password Information</h2>
+                <!-- Display password information with first 3 letters visible and the rest as ** -->
+                <p class="mb-0">Password: Dummy Password</p>
+            </div>
+        </div>
+
+        <!-- "Edit Profile" button below the two div sections, centered with a margin of 30px -->
+        
+        <div class="text-center mt-3">
+            <a href="edit-coach-profile.html?name=John%20Doe&address=123%20Main%20St&dob=1990-01-01&phoneNumber=123456789&gender=male&institute=institute1&sports=sport1" class="btn btn-primary">Edit Profile</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer">
+            2023 Sports Performance Pro
+        </div>
+    </footer>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to get URL parameters by name
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+    
+            // Read URL parameters and update page content
+            var name = getParameterByName("name");
+            var address = getParameterByName("address");
+            var dob = getParameterByName("dob");
+            var phoneNumber = getParameterByName("phone");
+            var gender = getParameterByName("gender");
+            var institute = getParameterByName("institute");
+            var sports = getParameterByName("sports");
+    
+            if (name) {
+                $(".col-sm-8:eq(0)").text(name);
+            }
+            if (address) {
+                $(".col-sm-8:eq(1)").text(address);
+            }
+            if (dob) {
+                $(".col-sm-8:eq(2)").text(dob);
+            }
+            if (phoneNumber) {
+                $(".col-sm-8:eq(6)").text(phoneNumber);
+            }
+            if (gender) {
+                $(".col-sm-8:eq(3)").text(gender);
+            }
+            if (institute) {
+                $(".col-sm-8:eq(4)").text(institute);
+            }
+            if (sports) {
+                $(".col-sm-8:eq(5)").text(sports);
+    
+                // Update the link in the button to include the phone number
+                updateEditProfileLink();
+            }
+    
+            function updateEditProfileLink() {
+                // Retrieve the values from the Coach Profile page
+                var name = encodeURIComponent($("#name").text());
+                var address = encodeURIComponent($("#address").text());
+                var dob = encodeURIComponent($("#dob").text());
+                var phone = encodeURIComponent($("#phone").text());
+                var gender = encodeURIComponent($("#gender").text());
+                var institute = encodeURIComponent($("#institute").text());
+                var sports = encodeURIComponent($("#sports").text());
+                
+    
+                // Generate the updated URL for the Edit Profile button
+                var editProfileUrl = "edit-coach-profile.html" +
+                    "?name=" + name +
+                    "&address=" + address +
+                    "&dob=" + dob +
+                    "&phone=" + phone +
+                    "&gender=" + gender +
+                    "&institute=" + institute +
+                    "&sports=" + sports;
+    
+                // Update the link in the button
+                $("#editProfileButton").attr("href", editProfileUrl);
+            }
+    
+            // Call the function to initialize the Edit Profile link
+            updateEditProfileLink();
+        });
+    </script>
+           
+    
+</body>
+</html>
