@@ -1,0 +1,24 @@
+Functionalities now:
+-------------------------
+Dynamic Search for Team
+Team blocks display
+Add Block 
+Block Exercise buttons
+Add Exercise
+Adding LOADS REPS SETS
+
+// TODO: Create a Assign Exercise button if the number of rows greater than 1.
+// TODO: View Exercise on clicking a particular exercise button.
+// TODO:
+// - The Add an Exercise Button should have Exercise Name , Exercise Category which we can set from the database. The SETS should be input, which will generate the dynamic table rows for number of sets.
+
+// TODO: Clicking a particular Exercise should show the details of the assigned exercise
+
+// TODO: Modify an exercise should pre-popiulate with the entries of that exercise and then have user input to modify those entries. Modify button is required.
+
+// TODO: Delete button, should pre-populate with entries of the exercise and request for confirmation.
+// TODO: Change name of Block
+// TODO: Change name of Exercise
+
+// TODO: Need to discuss about Notes part
+// TODO: Storing of data in the objects
