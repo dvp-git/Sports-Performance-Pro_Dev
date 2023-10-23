@@ -3,9 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../templates/css/demo.css" />
+        <link rel="stylesheet" href="athlete-styles.css" />
         <!-- Include Bootstrap CSS -->
-        <link hre="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/main.min.css" rel="stylesheet"/> 
         <style>
             header {
@@ -287,21 +287,6 @@
                 color: #fff;
                 font-weight: bold;
             } */
-            .hide-athlete {
-                display:none;
-            }
-
-            .select-athletes-hide {
-                display : none;
-            }
-
-            .exercise-tabs-hide {
-                display: none;
-            }
-
-            .block-tabs-hide {
-                display: none;
-            }
 
         </style>
     </head>
@@ -434,19 +419,16 @@
                 <input type="text" id="athlete-search" placeholder="Search for an athlete">
                 <!-- <button id="search-button">Search</button> -->
             </div>
-            <div class="select-athletes-hide">
-                <button>Select Athletes</button>
-            </div>
             <!-- List of athletes -->
             <ul id="athlete-list"></ul>
             <!-- Tabs for blocks and exercises -->
             <div class="tab-container">
-                <div class="block-tabs-hide" id="block-tabs">
+                <div class="block-tabs" id="block-tabs">
+                    <!-- <button id="add-block-button" visibility="0">Add a Block</button> -->
                 </div>
-                <button id="add-block-button"  class="block-tabs-hide" visibility="0">Add a Block</button> 
-                <div class="exercise-tabs-hide" id="exercise-tabs">
+                <div class="exercise-tabs" id="exercise-tabs">
+                    <!-- <button id="add-exercise-button">Add an Exercise</button> -->
                 </div>
-                <button id="add-exercise-button" class="exercise-tabs-hide">Add an Exercise</button> 
                 <!-- Display exercise details -->
                 <div id="exercise-details">
                     Select an exercise to view details.
@@ -548,24 +530,21 @@
             const addBlockButton = document.getElementById("add-block-button");
             const addExerciseButton = document.getElementById("add-exercise-button");
             const athleteList = document.getElementById("athlete-list");
-            const selectAthleteBtn = document.querySelector(".select-athletes-hide");
+    
             let selectedAthlete = null;
             let currentBlock = null;
             let currentExercise = null;
-            console.log(selectAthleteBtn)
 
             // Event listener for the athlete search input
             athleteSearchInput.addEventListener('input', searchAthlete);
     
             // Function to display blocks for the selected athlete
             function displayBlocks(athlete) {
-                console.log("Displaying blocks for athlete")
-                console.log(athlete)
-                blockTabs.classList.remove('block-tabs-hide')
                 blockTabs.innerHTML = '';
                 exerciseTabs.innerHTML = '';
                 exerciseDetails.innerHTML = 'Select an exercise to view details.';
                 currentBlock = athlete.block;
+    
                 athlete.blocks.forEach((block, index) => {
                     const blockButton = document.createElement('button');
                     blockButton.innerText = `Block ${block.id}`;
@@ -574,7 +553,7 @@
                 });
     
                 // Show "Add a Block" button
-                addBlockButton.classList.remove('block-tabs-hide')
+                addBlockButton.style.display = 'block';
             }
     
             // Function to display exercises for the selected block
@@ -582,7 +561,7 @@
                 exerciseTabs.innerHTML = '';
                 exerciseDetails.innerHTML = 'Select an exercise to view details';
                 currentBlock = block;
-                exerciseTabs.classList.remove('exercise-tabs-hide')
+
                 block.exercises.forEach((exercise, index) => {
                     const exerciseButton = document.createElement('button');
                     exerciseButton.innerText = exercise;
@@ -591,7 +570,7 @@
                 });
 
                 // Show "Add an Exercise" button
-                addExerciseButton.classList.remove('exercise-tabs-hide')
+                addExerciseButton.style.display = 'block';
             }
     
             // Function to display exercise details
@@ -601,37 +580,33 @@
 
            //  Function to display athletes in the list
             function displayAthletes() {
-
-                console.log("Displaying the athletes now")
                 // Clear the existing list
                 athleteList.innerHTML = "";
+
                 athleteData.forEach((athlete, index) => {
                     console.log("For Each athlete: ")
-                    console.log(athlete)   // Is an object
+                    console.log(athlete)
                     const athleteNode = document.createElement("li");
                     athleteNode.className = "athlete-list-node"; 
-                    athleteNode.classList.remove('hide-athlete')
                     athleteNode.textContent = athlete.name;
-                    console.log("Each athleteNode is listening for events")
-                    // athleteNode.addEventListener("click", function() {
-                    //     displayAthleteTraining(athlete);
-                    // })
+                    athleteNode.addEventListener("click", () => displayAthleteTraining(athlete));
                     athleteList.appendChild(athleteNode);
                 });
             }
 
-
+      
             // Call the function to display athletes when the page loads
             displayAthletes();
-            // clickedAthlete();
+    
             // Function to display an athlete's training sessions
             function displayAthleteTraining(athlete) {
-                console.log("Viewing the athlete training now")
+                console.log("Display athlete training: ")
                 console.log(athlete)
                 // Clear existing content
                 blockTabs.innerHTML = '';
                 exerciseTabs.innerHTML = '';
                 exerciseDetails.innerHTML = '';
+    
                 // Display the athlete's data
                 displayBlocks(athlete);
             }
@@ -640,10 +615,10 @@
             function searchAthlete() {
             const searchText = athleteSearchInput.value.trim().toLowerCase();
             const athleteNodes = document.querySelectorAll('.athlete-list-node');
-            
+
             athleteNodes.forEach(function (athleteNode) {
-                athleteNode.classList.remove('hide-athlete')
                 const athleteName = athleteNode.textContent.toLowerCase();
+
                 if (athleteName.includes(searchText)) {
                     athleteNode.style.display = '';
                 } else {
@@ -651,43 +626,6 @@
                     }
                 });
         }
-
-        // Function to display only clicked Athlete block
-        athleteList.addEventListener("click", function (e) {
-            const athleteClicked = e.target;
-            console.log("Text content of clicke athlete")
-            console.log(athleteClicked.textContent)
-            const athlete = athleteData.find(athlete => athlete.name === athleteClicked.textContent);
-            console.log(athlete)
-            // Coverting to object from database
-            console.log(e.currentTarget);
-            athleteSearchInput.style.display = "none";
-            selectAthleteBtn.classList.remove("select-athletes-hide");
-            displayAthleteTraining(athlete);
-
-            e.currentTarget.querySelectorAll("*").forEach(childNode => {
-            childNode.classList.add('hide-athlete');
-            })
-
-            if (e.currentTarget.contains(athleteClicked)){
-                athleteClicked.classList.remove('hide-athlete');
-            }
-
-        // Go back to athlete list view 
-        selectAthleteBtn.addEventListener("click" , function() {
-            displayAthletes();
-            searchAthlete();
-            blockTabs.classList.add('block-tabs-hide')
-            exerciseTabs.classList.add('exercise-tabs-hide')
-            selectAthleteBtn.classList.add("select-athletes-hide");
-            addBlockButton.classList.add('block-tabs-hide');
-            addExerciseButton.classList.add('exercise-tabs-hide');
-        })
-            console.log(athleteClicked);
-        })
-
-
-
     
             // Function to add a block for the selected athlete
             function addBlock(athlete) {
@@ -704,8 +642,8 @@
             }
     
             // Add event listener for the "Search" button
-            // const searchButton = document.getElementById("search-button");
-            // searchButton.addEventListener('click',searchAthlete);
+            const searchButton = document.getElementById("search-button");
+            searchButton.addEventListener('click', searchAthlete);
     
             // Add event listeners for the "Add a Block" and "Add an Exercise" buttons
             addBlockButton.addEventListener('click', () => addBlock(selectedAthlete));
@@ -802,7 +740,6 @@
 
     });
     </script>
-    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
 </body>
 </html>

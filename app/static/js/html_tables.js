@@ -169,3 +169,42 @@ function createExerciseTable() {
   exerciseTableContainer.appendChild(exerciseTable);
 }
 */
+
+/*
+// OLD CREATE TABLE
+/*
+function createTable() {
+  const setNumber = parseInt(document.getElementById("set-number").value, 10);
+  const tableContainer = document.getElementById("table-container");
+
+  if (isNaN(setNumber) || setNumber <= 0) {
+    alert("Please enter a valid positive number for the set.");
+    return;
+  }
+  const table = document.createElement("table");
+
+  for (let i = 1; i <= setNumber; i++) {
+    const row = document.createElement("tr");
+    const setCell = document.createElement("td");
+    setCell.textContent = `SET ${i}`;
+    const loadsCell = document.createElement("td");
+    loadsCell.textContent = "LOADS";
+    const repsCell = document.createElement("td");
+    repsCell.textContent = "REPS";
+
+    row.appendChild(setCell);
+    row.appendChild(loadsCell);
+    row.appendChild(repsCell);
+
+    table.appendChild(row);
+  }
+
+  // Clear any previous tables
+  while (tableContainer.firstChild) {
+    tableContainer.removeChild(tableContainer.firstChild);
+  }
+
+  // Append the new table to the container
+  tableContainer.appendChild(table);
+}
+*/

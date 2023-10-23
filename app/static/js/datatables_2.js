@@ -203,7 +203,22 @@ function addExercise(athlete, block) {
   );
   // athlete.blocks[block_index - 1].exercises.push(object);
   // displayExercises(athlete, block); //
-  loadTable();
+  // loadTable();
+
+  // $(document).ready(function () {
+  //   var table = $("#table-container").DataTable({
+  //     paging: false, // Disable pagination if needed
+  //     searching: false, // Disable search if needed
+  //     // Add other DataTables options as required
+  //   });
+  // });
+
+  // var newRowData = [
+  //   '<input type="text" value="John">',
+  //   '<input type="text" value="Tennis">',
+  //   '<input type="text" value="University of Texas">',
+  // ];
+  // table.row.add(newRowData).draw();
 }
 
 function addExerciseDetails() {
@@ -272,6 +287,14 @@ function addSingleSet() {
   }
 }
 
+$(document).ready(function () {
+  var table = $("#create-exercise").DataTable({
+    paging: false, // Disable pagination if needed
+    searching: false, // Disable search if needed
+    // Add other DataTables options as required
+  });
+});
+
 function loadTable() {
   // View the SETS
   console.log(`INSDIDE ADD SET BUTTONS ${addSetButtons}`);
@@ -289,6 +312,22 @@ function loadTable() {
 }
 
 // CREATE TABLE FUNCTION
+
+function addRowToDataTable(table, setNumber) {
+  for (let i = 1; i <= setNumber; i++) {
+    table.row
+      .add([
+        i, // SET
+        '<input type="number" name="loads-' + i + '">', // LOAD
+        '<input type="number" name="reps-' + i + '">', // REPS
+        "<button>📝</button>", // Edit button
+        "<button>❌</button>", // Delete button
+      ])
+      .draw();
+  }
+}
+
+/*
 function createExerciseTable() {
   console.log("Im inside createExercise table");
   const setNumber = parseInt(document.getElementById("set-number").value, 10);
@@ -355,6 +394,7 @@ function createExerciseTable() {
     initialSetsContainer.style.display = "none";
   }
 }
+*/
 
 // FIXME:
 function addAssignExerciseBtn(exerciseTableContainer) {

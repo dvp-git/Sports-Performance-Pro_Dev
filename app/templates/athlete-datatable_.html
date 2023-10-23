@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Athlete</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+    <link rel="stylesheet" href="../static/css/athlete-datatable.css" />
+  </head>
+  <body>
+    <header>
+      <h1 class="title">Sports Performance Pro</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="coach-landing-page.html">Home</a></li>
+        <li><a href="workout-selection.html">Create Workouts</a></li>
+        <li><a href="test-selection.html">Create Tests</a></li>
+        <li><a href="#">Create Workouts</a></li>
+        <li><a href="#">Notes</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="coach-profile.html" class="current">My Profile</a></li>
+      </ul>
+    </nav>
+
+    <div class="container mt-5">
+      <h1 class="text-center">Select Athlete</h1>
+      <table id="athleteTable" class="display">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Sports</th>
+            <th>Institute</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic data will be inserted here -->
+        </tbody>
+      </table>
+
+      <div id="buttonContainer">
+        <button id="continueButton" class="btn btn-primary" disabled>
+          Continue
+        </button>
+        <button id="returnButton" class="btn btn-secondary">Return</button>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer">2023 Sports Performance Pro</div>
+    </footer>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://code.jquery.com/jquery-3.5.1.js"
+    ></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"
+    ></script>
+    <script src="../static/js/athlete-datatable.js"></script>
+  </body>
+</html>

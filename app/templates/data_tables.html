@@ -201,10 +201,37 @@
             <!-- Display exercise details -->
             <div id="exercise-details">
               Select an exercise to view details.
+
+              <!-- USING DATA TABLES APPROACH -->
+
               <div id="table-container" class="create-exercise-table-hide">
-                <!-- MOVED FROM HERE -->
-                <div id="initial-sets" class="add-Set--btns">
-                  <!-- Table will be generated 1here -->
+                <button id="addSet-btn" class="add-Set--btns">Add SET</button>
+                <form action="demo.html" method="get" id="create-exercise-form">
+                  <table id="create-exercise" class="display">
+                    <thead>
+                      <tr>
+                        <th>SET</th>
+                        <th>LOAD</th>
+                        <th>REPS</th>
+                        <th>Actions</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody class="create-exercise-rows"></tbody>
+                  </table>
+                  <button id="assign-btn" style="display: none" type="submit">
+                    Assign Exercise
+                  </button>
+                </form>
+              </div>
+
+              <!-- USING TRAIDITIONAL METHO -->
+              <!-- 
+              <div id="table-container" class="create-exercise-table-hide">
+                 MOVED FROM HERE 
+                
+                 <div id="initial-sets" class="add-Set--btns">
+                  Table will be generated 1here 
                   <label for="set-number"
                     ><strong>Number of SETS</strong>:
                     <input type="number" id="set-number" />
@@ -229,8 +256,8 @@
                     Assign Exercise
                   </button>
                 </form>
-                <!-- Table will be generated here -->
               </div>
+             -->
             </div>
           </div>
         </div>
@@ -242,10 +269,9 @@
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
-
-    <script src="../static/js/demo.js" defer></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script src="../static/js/datatables_2.js" defer></script>
 
     <!-- Your custom JavaScript code -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.9/index.min.js"></script> -->

@@ -432,13 +432,20 @@ footer {
 }
 
 #block-tabs {
-  display: flex-wrap;
+  display: flex;
   justify-content: space-between;
   background-color: offwhite;
   padding: 10px;
   border-collapse: collapse;
 }
 
+#exercise-tabs {
+  display: flex;
+  justify-content: space-between;
+  background-color: offwhite;
+  padding: 10px;
+  border-collapse: collapse;
+}
 .create-exercise-table-hide {
   display: none;
 }
@@ -479,4 +486,17 @@ footer {
   ); /* Almost white background with a subtle light shadow */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   border-collapse: collapse;
+}
+
+.disabled-button {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+
+#addSet-btn {
+  position: relative;
+}
+
+.add-Set--btns {
+  display: none;
 }
