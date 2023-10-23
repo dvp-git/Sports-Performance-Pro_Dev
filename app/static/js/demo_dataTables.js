@@ -19,6 +19,12 @@
 
 "use strict";
 
+const dropdownData = [
+  { id: 1, text: "Option 1" },
+  { id: 2, text: "Option 2" },
+  { id: 3, text: "Option 3" },
+];
+
 const athleteData = [
   {
     name: "John Doe",
@@ -52,6 +58,27 @@ const athleteData = [
   },
 
   // Add more athlete data as needed
+];
+
+const definedExercise = [
+  {
+    Exercise: "Running",
+    Category: "Cardio",
+    Type: "Endurance",
+    Note: "Slow pace for beginners",
+  },
+  {
+    Exercise: "Bench Press",
+    Category: "Strength Training",
+    Type: "Weightlifting",
+    Note: "3 sets of 10 reps",
+  },
+  {
+    Exercise: "Swimming",
+    Category: "Cardio",
+    Type: "Endurance",
+    Note: "Freestyle and butterfly",
+  },
 ];
 
 const blockTabs = document.getElementById("block-tabs");
@@ -184,6 +211,12 @@ function getBlockNumber(block) {
   return Number(numbersString);
 }
 
+// FUNCTION ADDS EXERCISE : Opens a display for SETS , LOADS , REPS,
+
+// TODO: Add an Exercise Name button
+// TODO: Add an Exercise Category button
+// TODO: Add an Exercise Type
+
 function addExercise(athlete, block) {
   // Selected block
   console.log(exerciseDetails);
@@ -230,7 +263,10 @@ const addSetButtons = document.querySelectorAll(".add-Set--btns");
 let dataTableExercise;
 
 $(document).ready(function () {
-  dataTableExercise = $("#create-exercise").DataTable();
+  dataTableExercise = $("#create-exercise").DataTable({
+    pageLength: 5,
+    lengthMenu: [0, 5, 10, 20, 50, 100, 200, 500],
+  });
 
   dataTableExercise.on("mouseenter", "td", function () {
     let colIdx = dataTableExercise.cell(this).index().column;
@@ -247,17 +283,25 @@ $(document).ready(function () {
   });
 });
 
-// FIX:
+//FIXME:
+// FIX:ONT NEED TO RE_INITIALIZE EVERY TIME . Store variable to track and condition it
+
+let addSingleSetInitialized = 0;
 function addSingleSet() {
   // Re-initializing , due to multiple paging issues
-  if (dataTableExercise) {
+  if (dataTableExercise && !addSingleSetInitialized) {
+    console.log("Destroying the Tables");
     dataTableExercise.destroy();
+    dataTableExercise = $("#create-exercise").DataTable({
+      // Your DataTable initialization options here
+      pageLength: 5,
+      lengthMenu: [0, 5, 10, 20, 50, 100, 200, 500],
+    });
   }
 
   // Create a new DataTable
-  dataTableExercise = $("#create-exercise").DataTable({
-    // Your DataTable initialization options here
-  });
+
+  addSingleSetInitialized = 1;
   var setNumber_ = dataTableExercise.rows().count() + 1;
 
   if (tbodyExercise.childElementCount >= 1) {
@@ -297,7 +341,54 @@ function addSingleSet() {
 }
 
 function loadTable() {
-  // View the SETS
+  // FETCH THE EXERCISE NAMES FROM THE DATABASE/JSON
+  $(document).ready(function () {
+    // REPLACE WITH ACTUAL DATA
+    const exCat = [];
+    const exType = [];
+    const exName = [];
+
+    definedExercise.forEach((item) => {
+      exType.push(item["Type"]);
+      exName.push(item["Exercise"]);
+      exCat.push(item["Category"]);
+    });
+
+    const exTypeArray = exType.map((text, index) => ({
+      id: index + 1,
+      text: text,
+    }));
+
+    const exNameArray = exName.map((text, index) => ({
+      id: index + 1,
+      text: text,
+    }));
+    const exCatArray = exCat.map((text, index) => ({
+      id: index + 1,
+      text: text,
+    }));
+
+    // Function to create a searchable dropdown
+    function createDropdown(id, labelText, data) {
+      const label = $(`<label>${labelText}:</label>`);
+      const select = $("<select></select>");
+
+      $("#dropdown-container").append(label);
+      $("#dropdown-container").append(select);
+
+      select.select2({
+        data: data,
+        placeholder: `Select a ${labelText.toLowerCase()}`,
+        allowClear: true,
+      });
+    }
+    console.log(dropdownData);
+
+    createDropdown("exerciseName", "Exercise Name", exNameArray);
+    createDropdown("exerciseCategory", "Exercise Category", exCatArray);
+    createDropdown("exerciseType", "Exercise Type", exTypeArray);
+  });
+
   console.log(`INSDIDE ADD SET BUTTONS ${addSetButtons}`);
   console.log(addSetButtons);
   addSetButtons.forEach((item) => {
@@ -316,8 +407,7 @@ function loadTable() {
   });
 }
 
-// CREATE TABLE FUNCTION : #FIXME:
-
+// CREATE TABLE FUNCTION : #
 function createExerciseTable() {
   if ($.fn.DataTable.isDataTable("#create-exercise")) {
     // The table with ID 'myTable' is a DataTable
@@ -342,7 +432,7 @@ function createExerciseTable() {
   console.log(dataTableExercise.childElementCount);
   //   if dataTableExercise.childElementCount === 1
   var rowDataArray = [];
-  for (let i = 0; i <= setNumber; i++) {
+  for (let i = 0; i < setNumber; i++) {
     console.log(setNumber);
     var newRowData = [
       `<div>${i + 1}</div>`,

@@ -14,7 +14,15 @@
       rel="stylesheet"
       href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../static/css/demo.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/js/select2.min.js"
+      defer
+    ></script>
   </head>
 
   <body>
@@ -214,6 +222,9 @@
 
                 <button id="addSet-btn" class="add-Set--btns">Add SET</button>
                 <form action="demo.html" method="get" id="create-exercise-form">
+                  <div id="dropdown-container">
+                    <!-- Dropdowns will be created here -->
+                  </div>
                   <table id="create-exercise">
                     <thead id="create-exercise-heads">
                       <th>SET</th>
@@ -243,9 +254,9 @@
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../static/js/demo_dataTables.js" defer></script>
-
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+
+    <script src="../static/js/demo_dataTables.js" defer></script>
 
     <!-- Your custom JavaScript code -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.9/index.min.js"></script> -->
