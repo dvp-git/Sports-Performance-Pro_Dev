@@ -433,7 +433,7 @@ footer {
 
 #block-tabs {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   background-color: offwhite;
   padding: 10px;
   border-collapse: collapse;
@@ -441,7 +441,7 @@ footer {
 
 #exercise-tabs {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   background-color: offwhite;
   padding: 10px;
   border-collapse: collapse;
@@ -449,6 +449,10 @@ footer {
 .create-exercise-table-hide {
   display: none;
 }
+
+/* .show-exercise-category {
+  display: block;
+} */
 
 #create-exercise-heads th {
   background: #f3f3f3; /* Slightly darker off-white background for header */
@@ -504,7 +508,7 @@ footer {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap to the next line */
   gap: 15px; /* Adjust the gap as needed between select elements */
-  justify-content: flex-start;
+  justify-content: space-evenly;
   padding: 10px;
   margin-bottom: 10px;
 }
