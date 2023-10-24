@@ -1,4 +1,4 @@
-// TODO: Create a Assign Exercise button if the number of rows greater than 1.
+// TODO: Create a Assign Exercise button if the number of rows greater than 1. ❌
 
 // TODO:
 // - The Add an Exercise Button should have Exercise Name , Exercise Category which we can set from the database. The SETS should be input, which will generate the dynamic table rows for number of sets.✅
@@ -151,7 +151,11 @@ function displayBlocks(athlete) {
     console.log(`Running this display block`);
     const blockButton = document.createElement("button");
     blockButton.innerText = `Block ${block.id}`;
-    blockButton.addEventListener("click", (e) => displayExercises(e, block));
+    blockButton.addEventListener("click", (e) => {
+      // display of the exerciseView should go back to 0
+      //exerciseVisited = 0;
+      displayExercises(e, block);
+    });
     blockTabs.appendChild(blockButton);
   });
   // Show "Add a Block" button
@@ -244,6 +248,14 @@ function addBlock(athlete) {
   displayBlocks(athlete);
 }
 
+// Function to add a Exercise for the selected athlete
+function addExerciseTab(block, athlete) {
+  const block_index = getBlockNumber(block);
+  const newExerciseId = athlete.blocks.exercises.length + 1;
+  athlete.blocks[block_index - 1].exercises.push("New Exercise");
+  displayBlocks(athlete);
+}
+
 function getBlockNumber(block) {
   const number = block.textContent.match(/\d+/g);
   // Check if numbers were found and join them into a string
@@ -256,45 +268,48 @@ function getBlockNumber(block) {
 // TODO: Add an Exercise Name button
 // TODO: Add an Exercise Category button
 // TODO: Add an Exercise Type
-let exerciseVisited = 0;
+// let exerciseVisited = 0;
+// FIXME: exerciseVisited
 function addExercise(athlete, block) {
-  if (!exerciseVisited) {
-    // if (exerciseDropDown.classList.contains("exercise-category-indicator")) {
-    //   console.log("Already displayed ");
-    //   return;
-    // } else {
-    // exerciseViewed = 1;
-    console.log(`Inside exercise add`);
-    //exerciseDropDown.classList.add("exercise-category-indicator"); // When switching
-    // Selected block
-    console.log(exerciseDetails);
-    console.log(athlete);
-    console.log(block);
-    // Extracting block number for reference into object
-    const block_index = getBlockNumber(block);
-    console.log(`block_index : ${block_index}`);
-    console.log(athlete.blocks);
-    // [block_index].exercises.length + 1;
-    // console.log(athlete.blocks[1].exercises.length);
-    console.log(athlete.blocks[block_index - 1]);
-    // newExerciseId = newExerciseId + 1;
-    // console.log(`NewExerciseID: ${newExerciseId}`);
+  // if (!exerciseVisited) {
+  // if (exerciseDropDown.classList.contains("exercise-category-indicator")) {
+  //   console.log("Already displayed ");
+  //   return;
+  // } else {
+  // exerciseViewed = 1;
+  console.log(`Inside exercise add`);
+  //exerciseDropDown.classList.add("exercise-category-indicator"); // When switching
+  // Selected block
+  console.log(exerciseDetails);
+  console.log(athlete);
+  console.log(block);
+  // Extracting block number for reference into object
+  const block_index = getBlockNumber(block);
+  console.log(`block_index : ${block_index}`);
+  console.log(athlete.blocks);
+  // [block_index].exercises.length + 1;
+  // console.log(athlete.blocks[1].exercises.length);
+  console.log(athlete.blocks[block_index - 1]);
+  // newExerciseId = newExerciseId + 1;
+  // console.log(`NewExerciseID: ${newExerciseId}`);
 
-    loadTable();
-    // athlete.blocks[block_index - 1].exercises.push(object);
+  loadTable();
+  athlete.blocks[block_index - 1].exercises.push("New Exercise");
 
-    // Open the Exercise DataTable
-    // athlete.blocks[block_index - 1].exercises.push(
-    //   "Exercise Name : Exercise name should appear here"
-    // );
-    // displayExercises(athlete, block); //
-  }
+  // TODO: Push the Exercise Name here
+  // athlete.blocks[block_index - 1].exercises.push("Exercise Name");
+  // displayExercises(athlete, block); //
+  // }
 }
+
+// Add an Exercise : Select Exercise Name, Exercise Category, Exercise Type
+// Creates a button
 
 // View assigned exercise
 function viewAssignedExercise(athlete, block, e) {
   // Get the exercise button clicked
   // Reset the exercise details
+  // exerciseVisited = 0;
   const clickedExerciseButton = e.target;
   console.log(`Exercise Button `, e.target);
   const exerciseDetails = document.getElementById("exercise-details");
@@ -590,21 +605,32 @@ searchButton.addEventListener("click", searchAthlete);
 
 // Add event listeners for the "Add a Block" and "Add an Exercise" buttons
 addBlockButton.addEventListener("click", () => addBlock(selectedAthlete));
+
+#FIXME: Adds Exercise buttons on clicking New Exercise butt
+addExerciseButton.addEventListener("click", () =>
+  addExerciseTab(selectedAthlete, selectedBlock)
+);
 // addExerciseButton.addEventListener("click", () =>
 //   addExercise(selectedAthlete, selectedBlock)
 // );
 
 let viewed = 0;
 exerciseTabs.addEventListener("click", (e) => {
-  if (!viewed) {
-    viewAssignedExercise(selectedAthlete, selectedBlock, e);
-    console.log(`Viewing the exercise`);
-  } else {
+  console.log(`Clicked button`, e.target);
+  if (e.target.classList.contains("visited")) {
+    e.target.classList.add("visited");
+    // viewed = !viewed;
     // Toggle the state
     // hideAssignedExercise(selectedAthlete, selectedBlock, e);
     console.log(`Hiding the exercise`);
+  } else {
+    e.target.classList.remove("visited");
+    // console.log(`Viewed : ${viewed}`);
+    // if (!viewed) {
+    //   viewed = !viewed;
+    viewAssignedExercise(selectedAthlete, selectedBlock, e);
+    console.log(`Viewing the exercise`);
   }
-  viewed = !viewed;
 });
 
 //  function to view clicked Exercise Tab. If nothing to display -> Add an Exercise
