@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -173,6 +174,9 @@
           />
           <button id="signin_coach" type="button">Sign In</button>
           <div id="coachEmailError" class="error-message"></div>
+          <a class="create-account-link" href="/registerCoach"
+            >Don't have an account yet? Create one</a
+          >
         </div>
 
         <div class="login-container">
@@ -192,14 +196,13 @@
           />
           <button id="signin_athlete" type="button">Sign In</button>
           <div id="athleteEmailError" class="error-message"></div>
+          <a class="create-account-link" href="/registerAthlete"
+            >Don't have an account yet? Create one</a
+          >
         </div>
       </div>
 
       <div style="margin-top: 100px"></div>
-
-      <a class="create-account-link" href="registration.html"
-        >Don't have an account yet? Create one</a
-      >
     </div>
 
     <footer>2023 Sports Performance Pro</footer>
@@ -208,10 +211,15 @@
       const signInCoach = document.getElementById("signin_coach");
       const signInAthlete = document.getElementById("signin_athlete");
 
-      function validateCoachEmail() {
+      function validateCoachEmailPassword() {
         const coachEmailInput = document.getElementsByName("coach_username")[0];
+        const coachPasswordInput =
+          document.getElementsByName("coach_password")[0];
         const coachEmailError = document.getElementById("coachEmailError");
-
+        var coachLoginData = {
+          username: coachEmailInput.value,
+          password: coachPasswordInput.value,
+        };
         // Regular expression for email validation
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -219,17 +227,32 @@
           coachEmailError.textContent = "Invalid email format";
         } else {
           coachEmailError.textContent = "";
+          $.post(
+            "/coachLogin",
+            JSON.stringify(coachLoginData),
+            function (response) {
+              if (response === "Successful") {
+                window.location.href = "/coachLanding";
+              } else {
+                coachEmailError.textContent = response;
+              }
+            }
+          );
           // Add your sign-in logic for coaches here
           // Back-end checking database, validating credentials
-          window.location.href = "coach-landing-page.html";
         }
       }
 
-      function validateAthleteEmail() {
+      function validateAthleteEmailPassword() {
         const athleteEmailInput =
           document.getElementsByName("athlete_username")[0];
         const athleteEmailError = document.getElementById("athleteEmailError");
-
+        const athletePasswordInput =
+          document.getElementsByName("athlete_password")[0];
+        var athleteLoginData = {
+          username: athleteEmailInput.value,
+          password: athletePasswordInput.value,
+        };
         // Regular expression for email validation
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -237,60 +260,30 @@
           athleteEmailError.textContent = "Invalid email format";
         } else {
           athleteEmailError.textContent = "";
+          $.post(
+            "/athleteLogin",
+            JSON.stringify(athleteLoginData),
+            function (response) {
+              if (response === "Successful") {
+                window.location.href = "/athleteLanding";
+              } else {
+                document.getElementById("athleteEmailError").textContent =
+                  response;
+              }
+            }
+          );
           // Add your sign-in logic for athletes here
           // Back-end checking database, validating credentials
-          window.location.href = "athlete-landing-4.html";
         }
       }
 
       signInAthlete.addEventListener("click", function (e) {
-        validateAthleteEmail();
+        validateAthleteEmailPassword();
       });
 
       signInCoach.addEventListener("click", function (e) {
-        validateCoachEmail();
+        validateCoachEmailPassword();
       });
-
-      //   function validateCoachEmail() {
-      //     const coachEmailInput = document.getElementsByName("coach_username")[0];
-      //     const coachEmailError = document.getElementById("coachEmailError");
-
-      //     // Regular expression for email validation
-      //     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      //     if (!emailPattern.test(coachEmailInput.value)) {
-      //       coachEmailError.textContent = "Invalid email format";
-      //     } else {
-      //       coachEmailError.textContent = "";
-      //       // Add your sign-in logic for coaches here
-      //       // Back-end checking database, validating credentials
-      //       signInCoach.addEventListener("click", function (e) {
-      //         e.preventDefault();
-      //         window.location.href = "coach-landing-page.html";
-      //       });
-      //     }
-      //   }
-
-      //   function validateAthleteEmail() {
-      //     const athleteEmailInput =
-      //       document.getElementsByName("athlete_username")[0];
-      //     const athleteEmailError = document.getElementById("athleteEmailError");
-
-      //     // Regular expression for email validation
-      //     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      //     if (!emailPattern.test(athleteEmailInput.value)) {
-      //       athleteEmailError.textContent = "Invalid email format";
-      //     } else {
-      //       athleteEmailError.textContent = "";
-      //       // Add your sign-in logic for athletes here
-      //       // Back-end checking database, validating credentials
-      //       signInAthlete.addEventListener("click", function (e) {
-      //         e.preventDefault();
-      //         window.location.href = "athlete-landing.html";
-      //       });
-      //     }
-      //   }
 
       console.log(signInAthlete);
       console.log(signInCoach);

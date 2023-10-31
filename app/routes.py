@@ -1,77 +1,11 @@
 # app/routes.py
 from app import app,db
-from app.models import Coaches, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises
-from flask import jsonify, request, render_template, redirect, url_for
-
-
-
-@app.route('/login')
-def login_page():
-      return render_template('login.html')
-
-@app.route('/signup-coach', methods=['GET', 'POST'])
-def signup():
-    if not (request.method == 'GET'):
-        try : 
-            user_data = request.get_json()
-            print(user_data)
-            sports_str = ','.join(user_data['sports'])
-            #   if not user_data:
-            #     return jsonify({'error': 'Coach not found'}), 404
-            # print("below is printing")
-            # print(','.join(user_data['sports']))
-            new_User = Coaches(
-                    name=user_data['name'],
-                    email = user_data['email'],
-                    password= user_data['password'],
-                    phone =user_data['phone'],
-                    sports = sports_str,
-                    institute = user_data['institute']
-                )
-            db.session.add(new_User)
-            db.session.commit()
-            # print(Coaches.query.all())
-            return jsonify({'message': 'Team added successfully'}), 201
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
-    return render_template('registration-coach.html')
-
-
-@app.route('/signup-athlete', methods=['GET', 'POST'])
-def athlete_signup():
-    if not (request.method == 'GET'):
-        try : 
-            user_data = request.get_json()
-            print(user_data)
-            user_age = int(user_data['age'])
-            sports_str = ','.join(user_data['sports'])
-            #   if not user_data:
-            #     return jsonify({'error': 'Coach not found'}), 404
-            print("below is printing")
-            print(','.join(user_data['sports']))
-            new_User = Athletes(
-                    name = user_data['name'],
-                    email = user_data['email'],
-                    password= user_data['password'],
-                    phone =user_data['phone'],
-                    sports = sports_str,
-                    institute = user_data['institute'],
-                    gender =  user_data['gender'],
-                    age = user_age,
-                )
-            db.session.add(new_User)
-            db.session.commit()
-            # print(Athletes.query.all())
-            return jsonify({'message': 'Athlete added successfully'}), 201
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
-    return render_template('registration-athlete.html')
-
-
-
-
-
-
+from app.models import Coaches, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises, Notes
+from flask import jsonify,request, Flask, render_template, request, redirect, url_for, session
+from app import methods
+from flask_bcrypt import Bcrypt
+bcrypt = Bcrypt(app)
+#Get all coaches or get coaches by id
 @app.route('/getAllCoaches', methods=['GET'])
 def get_all_coaches():
     coach_id = request.args.get('coachId')
@@ -211,16 +145,15 @@ def get_coach_with_teams_and_athletes():
             if not coach:
                 return jsonify({'error': 'Coach not found'}), 404
 
-            teams = Teams.query.filter_by(coach_id=coach_id).all() # list returned of all teams under coach
-            
-            # Creating empty response json with coach_id
+            teams = Teams.query.filter_by(coach_id=coach_id).all()
+
             response_data = {
                 'coach_id': coach.coach_id,
                 'coach_name': coach.name,
                 'teams': []
             }
 
-            # Each teams JSON response
+           
             for team in teams:
                 team_data = {
                     'team_id': team.team_id,
@@ -246,31 +179,6 @@ def get_coach_with_teams_and_athletes():
         return jsonify({'error: coachId not found in request'}), 400
 
 
-
-@app.route('/getAllTeams', methods=['GET'])
-def get_all_teams():
-    # Query the database to get all teams
-    teams = Teams.query.all()
-    
-    # Create a list to store the team data
-    team_list = []
-
-    # Iterate through the teams and convert them to dictionaries
-    for team in teams:
-        team_data = {
-            'team_id': team.team_id,
-            'name': team.name,
-            'sport': team.sport,
-            'coach_id': team.coach_id
-            # Add more fields as needed
-        }
-        team_list.append(team_data)
-
-    # Return the team data as JSON
-    return jsonify(teams=team_list)
-
-
-
 # Add a workout
 @app.route('/addNewWorkout', methods=['POST'])
 def add_workout():
@@ -289,7 +197,6 @@ def add_workout():
         return jsonify({'message': 'Workout added successfully', 'workout_id': new_workout.workout_id}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-
 
 # Add a new block
 @app.route('/addNewBlock', methods=['POST'])
@@ -319,7 +226,7 @@ def add_exercise():
         data = request.get_json()
 
         # Ensure that the required fields are present in the request
-        if 'block_id' not in data or 'name' not in data:
+        if 'block_id' not in data or 'name' not in data or 'loads_reps' not in data:
             return jsonify({'error': 'Missing required fields'}), 400
 
         # Check if the specified block_id exists
@@ -331,8 +238,7 @@ def add_exercise():
         new_exercise = Exercises(
             block_id=data['block_id'],
             name=data['name'],
-            loads=data.get('loads'),
-            reps=data.get('reps'),
+            loads_reps=data['loads_reps'],  # Use loads_reps for combined data
             sets=data.get('sets')
         )
         db.session.add(new_exercise)
@@ -356,7 +262,8 @@ def get_workout():
         coach_name = workout.coach.name
         workout_data = {
             'workout_name': workout.name,
-            'coach_name': coach_name, 
+            'date_added': workout.date_added.strftime('%Y-%m-%d'),
+            'coach_name': coach_name,
             'blocks': []
         }
 
@@ -373,8 +280,7 @@ def get_workout():
             for exercise in exercises:
                 exercise_data = {
                     'exercise_name': exercise.name,
-                    'loads': exercise.loads,
-                    'reps': exercise.reps,
+                    'loads_reps': exercise.loads_reps,
                     'sets': exercise.sets
                 }
                 block_data['exercises'].append(exercise_data)
@@ -386,6 +292,174 @@ def get_workout():
         return jsonify({'error': str(e)}), 400
 
 
+#To add a new note
+@app.route('/addNote', methods=['POST'])
+def add_note():
+    data = request.json
+    new_note = Notes(
+        coach_id=data['coach_id'],
+        athlete_id=data['athlete_id'],
+        date_created=data['date_created'],
+        content=data['content']
+    )
+    db.session.add(new_note)
+    db.session.commit()
+    return jsonify({"message": "Note added successfully"})
 
 
+# Define a route to retrieve notes for a specific coach and athlete with only date_created and content
+@app.route('/getNotes', methods=['GET'])
+def get_notes():
+    coach_id = request.args.get('coachId')
+    athlete_id = request.args.get('athleteId')
 
+    if not coach_id or not athlete_id:
+        return jsonify({"error": "Both coachId and athleteId are required"}), 400
+
+    notes = Notes.query.filter_by(coach_id=coach_id, athlete_id=athlete_id).all()
+
+    if not notes:
+        return jsonify({"message": "No notes found for the given coach and athlete"})
+
+    note_list = []
+    for note in notes:
+        note_list.append({
+            'date_created': note.date_created.strftime('%Y-%m-%d'),
+            'content': note.content
+        })
+
+    return jsonify({"notes": note_list})
+
+
+#Route for coach home
+@app.route('/coachAthleteHome')
+def coach_signup():
+    return render_template("login.html")
+
+#Route for coach login
+@app.route('/coachLogin', methods=['POST'])
+def coach_login():
+    if request.method == 'POST':
+        data = request.get_json(force=True)
+        if methods.coaches_username_is_valid(data.get('username'), data.get('password')):
+            session['username'] = data.get('username')
+            return "Successful"
+        else:
+            message="Wrong coach username password!"
+            return message
+
+
+#Route for coach landing
+@app.route('/coachLanding')
+def coach_landing():
+    return render_template("coach-landing-page.html")
+    
+
+#Route for athlete login
+@app.route('/athleteLogin', methods=['POST'])
+def athlete_login():
+    if request.method == 'POST':
+        data = request.get_json(force=True)
+        if methods.athlete_username_is_valid(data.get('username'), data.get('password')):
+            session['username'] = data.get('username')
+            return "Successful"
+        else:
+            message="Wrong athlete username password!"
+            return message
+
+
+#Route for succesful athlete login and landing page
+@app.route('/athleteLanding')
+def athlete_landing():
+    return render_template("athlete-landing-4.html")
+
+
+#Route for coach registration page
+@app.route('/registerCoach')
+def register_coach():
+    return render_template("registration-coach.html")
+
+
+#Route for athlete registration page
+@app.route('/registerAthlete')
+def register_athlete():
+    return render_template("registration-athlete.html")
+
+
+#Route for athlete registration post to DB
+@app.route('/postAthlete', methods=['POST'])
+def post_athlete():
+    data = request.get_json(force=True)
+    email = data.get('email')
+    phone=data.get('phone')
+    existing_athlete = Athletes.query.filter_by(email=email).first() or Athletes.query.filter_by(phone=phone).first()
+    if existing_athlete:
+        return "User exists, try logging in!"
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    if 'sports' in data and isinstance(data['sports'], list):
+        sports_string = ', '.join(data['sports'])
+    # If email does not exist, create a new athlete
+    new_athlete = Athletes(
+        name=data['name'],
+        phone=data['phone'],
+        gender=data['gender'],
+        password=hashed_password,
+        email=data['email'],
+        age=data.get('age'),
+        sports=sports_string,
+        institute=data.get('institute')
+    )
+    
+    db.session.add(new_athlete)
+    db.session.commit()
+    return "Registration successful, go to login!"
+
+
+#Route for coach registration post to DB
+@app.route('/postCoach', methods=['POST'])
+def post_coach():
+    data = request.get_json(force=True)
+    email = data.get('email')
+    phone=data.get('phone')
+    existing_coach = Coaches.query.filter_by(email=email).first() or Coaches.query.filter_by(phone=phone).first()
+    if existing_coach:
+        return "User exists, try logging in!"
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    if 'sports' in data and isinstance(data['sports'], list):
+        sports_string = ', '.join(data['sports'])
+    # If email does not exist, create a new athlete
+    new_coach = Coaches(
+        name=data['name'],
+        phone=data['phone'],
+        sports=sports_string,
+        institute=data.get('institute'),
+        password=hashed_password,
+        email=data['email']
+    )
+    db.session.add(new_coach)
+    db.session.commit()
+    return "Registration successful, go to login!"
+
+
+@app.route('/adminLogin')
+def admin_login():
+    return render_template("admin_login.html")
+
+
+#Route for athlete login
+@app.route('/adminPost', methods=['POST'])
+def admin_post():
+    if request.method == 'POST':
+        data = request.get_json(force=True)
+        if methods.admin_username_is_valid(data.get('username'), data.get('password')):
+            session['username'] = data.get('username')
+            return "Successful"
+        else:
+            message="Wrong admin username password!"
+            return message
+
+
+#Route for succesful athlete login and landing page
+@app.route('/adminLanding')
+def admin_landing():
+    return render_template("Admin_landing.html")

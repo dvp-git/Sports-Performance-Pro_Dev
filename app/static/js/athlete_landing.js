@@ -17,8 +17,9 @@
 // TODO: Scrollable blocks and exercises
 // TODO: Listing of athletes ( 1 page )  listing of Teams( 2 page )
 
-"use strict";
+// Get the user_id from the database
 
+"use strict";
 const blockTabs = document.getElementById("block-tabs");
 const exerciseTabs = document.getElementById("exercise-tabs");
 const exerciseDetails = document.getElementById("exercise-details");
@@ -498,79 +499,6 @@ function addSingleSet() {
   //   exerciseTableContainer.appendChild(dataTableExercise);
 }
 
-// DataTables : ADD MUTIPLE ROWS # NOT USING THIS
-/*
-function createExerciseTable() {
-  if ($.fn.DataTable.isDataTable("#create-exercise")) {
-    // The table with ID 'myTable' is a DataTable
-    console.log("This table is a DataTable.");
-  } else {
-    // The table is not a DataTable
-    console.log("This table is not a DataTable.");
-  }
-
-  console.log("Im inside createExercise table");
-  const setNumber = parseInt(document.getElementById("set-number").value, 10);
-
-  console.log(document.querySelector(".create-exercise-rows"));
-
-  tbodyExercise = document.querySelector(".create-exercise-rows");
-  console.log(tbodyExercise.childNodes);
-  tbodyCount = tbodyExercise.childElementCount;
-  console.log(`Logging details of the DataTable : `);
-  console.log(tbodyCount);
-  console.log(document.querySelector("#create-exercise"));
-  //   dataTableExercise = $("#create-exercise").DataTable({ pageLength: 10 });
-  console.log(dataTableExercise.childElementCount);
-  //   if dataTableExercise.childElementCount === 1
-  var rowDataArray = [];
-  for (let i = 0; i < setNumber; i++) {
-    console.log(setNumber);
-    var newRowData = [
-      `<div>${i + 1}</div>`,
-      `<input type="number" name="loads-${i + 1}">`,
-      `<input type="number" name="reps-${i + 1}">`,
-      `<button class="modify-row-button">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
-    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/></svg></button>`,
-      `<button class="modify-row-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
-    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg></button>`,
-    ];
-    // rowDataArray.push(newRowData);
-    console.log(rowDataArray);
-    dataTableExercise.row.add(newRowData);
-    // tbodyExercise.appendChild(newRowData);
-  }
-  dataTableExercise.draw();
-
-  // // Append the new table to the container
-  exerciseTableContainer.appendChild(
-    document.querySelector("#create-exercise")
-  );
-  //console.log(tbodyCount);
-
-  // Append the table to form
-  console.log(exerciseTableContainer);
-  formExercise.appendChild(document.querySelector("#create-exercise"));
-
-  // Append the form to table container
-  exerciseTableContainer.appendChild(formExercise);
-
-  // exerciseTableContainer;
-  const assignExercises =
-    tbodyCount > 2 ? addAssignExerciseBtn(exerciseTableContainer) : null;
-  enterDetails(formExercise);
-  assignExercisebtn.style.display = "block";
-
-  if (tbodyExercise.childElementCount >= 1) {
-    console.log(`Tbody count : ${tbodyExercise.childElementCount}`);
-    const initialSetsContainer = document.getElementById("initial-sets");
-    initialSetsContainer.style.display = "none";
-  }
-}
-*/
-
 // FIXME:
 function addAssignExerciseBtn(exerciseTableContainer) {
   console.log("Inside assign Exercise Button");
@@ -603,13 +531,13 @@ addSetBtn.addEventListener("click", addSingleSet); // REMEMEBER TO CHANGE THIS a
 const searchButton = document.getElementById("search-button");
 searchButton.addEventListener("click", searchAthlete);
 
-// Add event listeners for the "Add a Block" and "Add an Exercise" buttons
-addBlockButton.addEventListener("click", () => addBlock(selectedAthlete));
+// // Add event listeners for the "Add a Block" and "Add an Exercise" buttons
+// addBlockButton.addEventListener("click", () => addBlock(selectedAthlete));
 
 //#FIXME: Adds Exercise buttons on clicking New Exercise butt
-addExerciseButton.addEventListener("click", () =>
-  addExerciseTab(selectedAthlete, selectedBlock)
-);
+// addExerciseButton.addEventListener("click", () =>
+//   addExerciseTab(selectedAthlete, selectedBlock)
+// );
 // addExerciseButton.addEventListener("click", () =>
 //   addExercise(selectedAthlete, selectedBlock)
 // );
@@ -620,6 +548,7 @@ exerciseTabs.addEventListener("click", (e) => {
   if (e.target.classList.contains("visited")) {
     e.target.classList.add("visited");
     // viewed = !viewed;
+    // console.log(viewed)
     // Toggle the state
     // hideAssignedExercise(selectedAthlete, selectedBlock, e);
     console.log(`Hiding the exercise`);
@@ -627,7 +556,7 @@ exerciseTabs.addEventListener("click", (e) => {
     e.target.classList.remove("visited");
     // console.log(`Viewed : ${viewed}`);
     // if (!viewed) {
-    //   viewed = !viewed;
+    viewed = !viewed;
     viewAssignedExercise(selectedAthlete, selectedBlock, e);
     console.log(`Viewing the exercise`);
   }
