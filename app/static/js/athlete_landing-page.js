@@ -86,6 +86,16 @@ const load_reps_sets = {
   loads_reps: [
     { loads: 90, reps: 3 },
     { loads: 50, reps: 2 },
+    { loads: 60, reps: 1 },
+    { loads: 100, reps: 3 },
+    { loads: 110, reps: 4 },
+    { loads: 130, reps: 7 },
+    { loads: 147, reps: 5 },
+    { loads: 456, reps: 4 },
+    { loads: 234, reps: 1 },
+    { loads: 123, reps: 2 },
+    { loads: 234, reps: 4 },
+    { loads: 113, reps: 3 },
   ],
   sets: 2,
 };
@@ -268,10 +278,17 @@ function displayBlocks(athlete) {
   console.log(exerciseTabs);
   // Efficiency :
   athlete.blocks.forEach((block, index) => {
+    exerciseTabs.innerHTML = "";
     console.log(`Running this display block`);
     const blockButton = document.createElement("button");
     blockButton.innerText = `Block ${block.id}`; // FIXME: Change to block name
+    // Event listener added here:
     blockButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      exerciseTabs.innerHTML = "";
+      console.log(exerciseTabs);
+      exerciseDetails.innerHTML = "Select a Block to view details.";
       e.stopPropagation();
       // display of the exerciseView should go back to 0
       //exerciseVisited = 0;
@@ -287,15 +304,16 @@ function displayBlocks(athlete) {
   //   blockTabs.appendChild(addBlockButton);
 }
 
-// Function to display exercises for the selected block
+// BLOCK TAB CLICKED: Display exercises for the CLICKED block
 function displayExercises(e, block) {
   console.log("Block Tab clicked ; displaying exercises", block);
   selectedBlock = e.target;
-  console.log(selectedBlock);
+  console.log(selectedBlock); // Block button
   exerciseTabs.innerHTML = "";
   exerciseDropDown.innerHTML = "";
   exerciseDetails.innerHTML = "Select an exercise to view details.";
   block.exercises.forEach((exercise, index) => {
+    exerciseDetails.innerHTML = "Select a Block to view details.";
     console.log("Creating the exercise buttons");
     console.log(exerciseTabs);
     const exerciseButton = document.createElement("button");
@@ -309,64 +327,57 @@ function displayExercises(e, block) {
     //   displayExerciseDetails(e.target);
     // });
   });
+}
 
-  exerciseTabs.addEventListener("click", (e) => {
-    e.stopPropagation();
-    exerciseDetails.innerHTML = "Select an exercise to view details.";
-
-    console.log(`Clicked button`, e.target);
-    if (e.target.classList.contains("visited")) {
-      e.target.classList.add("visited");
-      // viewed = !viewed;
-      // Toggle the state
-      // hideAssignedExercise(selectedAthlete, selectedBlock, e);
-      console.log(`Hiding the exercise`);
-    } else {
-      e.target.classList.remove("visited");
-      // console.log(`Viewed : ${viewed}`);
-      // if (!viewed) {
-      //   viewed = !viewed;
-      viewAssignedExercise(selectedAthlete, selectedBlock, e);
-      console.log(`Viewing the exercise`);
-    }
-  });
-
-  // View assigned exercise
-  function viewAssignedExercise(athlete, block, e) {
-    const clickedExerciseButton = e.target;
-    console.log(`Exercise Button `, e.target);
-    const exerciseDetails = document.getElementById("exercise-details");
-
-    addExercise(athlete, block);
+exerciseTabs.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  exerciseDetails.innerHTML = "Select an exercise to view details.";
+  console.log(`Clicked button`, e.target);
+  if (e.target && e.target.tagName === "BUTTON") {
+    // if (e.target.contains.contains("visited")) {
+    //   e.target.classList.add("visited");
+    //   // viewed = !viewed;
+    //   // Toggle the state
+    //   // hideAssignedExercise(selectedAthlete, selectedBlock, e);
+    //   console.log(`Hiding the exercise`);
+    // } else {
+    //   e.target.classList.remove("visited");
+    // console.log(`Viewed : ${viewed}`);
+    // if (!viewed) {
+    //   viewed = !viewed;
+    viewAssignedExercise(selectedAthlete, selectedBlock, e);
+    console.log(`Viewing the exercise`);
   }
+});
 
-  function addExercise(athlete, block) {
-    // exerciseTabs.innerHTML = "";
-    const exerciseDetails = document.getElementById("exercise-details");
+// View assigned exercise
+function viewAssignedExercise(athlete, block, e) {
+  const clickedExerciseButton = e.target;
+  console.log(`Exercise Button `, e.target);
+  const exerciseDetails = document.getElementById("exercise-details");
 
-    exerciseDetails.innerHTML = "Select an exercise to view details.";
-    console.log(`Inside Viewing exercise`);
-    console.log(exerciseDetails);
-    // console.log(athlete); // Pass in the athlete object
-    console.log(block);
+  viewExercise(athlete, block);
+}
 
-    const block_index = getBlockNumber(block);
-    console.log(`block_index : ${block_index}`);
-    // console.log(athlete);
+function viewExercise(athlete, block) {
+  // exerciseTabs.innerHTML = "";
+  const exerciseDetails = document.getElementById("exercise-details");
 
-    // console.log(athlete.blocks[block_index - 1]);
+  exerciseDetails.innerHTML = "Select an exercise to view details.";
+  console.log(`Inside Viewing exercise`);
+  console.log(exerciseDetails);
+  // console.log(athlete); // Pass in the athlete object
+  console.log(block);
 
-    loadTable();
-    // athlete.blocks[block_index - 1].exercises.push("New Exercise");
-  }
+  const block_index = getBlockNumber(block);
+  console.log(`block_index : ${block_index}`);
+  // console.log(athlete);
 
-  //   console.log(addExerciseButton);
-  // Show "Add an Exercise" button
-  //   addExerciseButton.classList.remove(["add-exercise-btn-hide"]);
-  //   exerciseDropDown.classList.remove(["exercise-category-indicator"]);
-  // console.log(addExerciseButton);
-  // console.log(exerciseTabs);
-  //   exerciseTabs.appendChild(addExerciseButton);
+  // console.log(athlete.blocks[block_index - 1]);
+
+  loadTable();
+  // athlete.blocks[block_index - 1].exercises.push("New Exercise");
 }
 
 // Function to display exercise details
@@ -422,74 +433,9 @@ function getBlockNumber(block) {
   return Number(numbersString);
 }
 
-// FUNCTION ADDS EXERCISE : Opens a display for SETS , LOADS , REPS,
-
-// FIXME: exerciseVisited
-
-function addExercise(athlete, block) {
-  // if (!exerciseVisited) {
-  // if (exerciseDropDown.classList.contains("exercise-category-indicator")) {
-  //   console.log("Already displayed ");
-  //   return;
-  // } else {
-  // exerciseViewed = 1;
-  console.log(`Inside exercise add`);
-  //exerciseDropDown.classList.add("exercise-category-indicator"); // When switching
-  // Selected block
-  console.log(exerciseDetails);
-  console.log(athlete);
-  console.log(block);
-  // Extracting block number for reference into object
-  const block_index = getBlockNumber(block);
-  console.log(`block_index : ${block_index}`);
-  console.log(athlete.blocks);
-  // [block_index].exercises.length + 1;
-  // console.log(athlete.blocks[1].exercises.length);
-  console.log(athlete.blocks[block_index - 1]);
-  // newExerciseId = newExerciseId + 1;
-  // console.log(`NewExerciseID: ${newExerciseId}`);
-
-  loadTable();
-  athlete.blocks[block_index - 1].exercises.push("New Exercise");
-
-  // TODO: Push the Exercise Name here
-  // athlete.blocks[block_index - 1].exercises.push("Exercise Name");
-  // displayExercises(athlete, block); //
-  // }
-}
-
-// Add an Exercise : Select Exercise Name, Exercise Category, Exercise Type
-// Creates a button
-
-// EXERCISE DROP DOWN CREATION
-function createDropdown(id, labelText, data) {
-  const label = $(`<label>${labelText}:</label>`);
-  const select = $("<select></select>");
-
-  $("#dropdown-container").append(label);
-  $("#dropdown-container").append(select);
-
-  select.select2({
-    data: data,
-    placeholder: `Select a ${labelText.toLowerCase()}`,
-    allowClear: true,
-  });
-}
-
 // FIXME:
 function addAssignExerciseBtn(exerciseTableContainer) {
   console.log("Inside assign Exercise Button");
   console.log(exerciseTableContainer);
   enterDetails(formExercise);
 }
-
-// Enterting the details
-// const enterDetails = function (formElement) {
-const formElement = document.querySelector("div");
-const inputContainer = formElement.querySelector(".create-exercise-rows");
-
-inputContainer.addEventListener("input", (e) => {
-  if ((e.target.readOnly = true)) e.target.readOnly = false;
-  else e.target.readOnly = true;
-  e.target.style.backgroundColor = "lightblue";
-});
