@@ -4,8 +4,11 @@ from flask_bcrypt import check_password_hash
 
 def athlete_username_is_valid(email, password):
     athlete = Athletes.query.filter_by(email=email).first()
+    # print("Athlete user details:",athlete.name)
+    # print("what is returned is :", type(athlete))
     try:
         if athlete and check_password_hash(athlete.password, password):
+            print("Success : ", athlete)
             return athlete  
         else:
             return None 

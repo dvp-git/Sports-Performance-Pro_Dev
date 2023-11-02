@@ -4,6 +4,9 @@ currentYear = today.getFullYear();
 selectYear = document.getElementById("year");
 selectMonth = document.getElementById("month");
 
+// Add a global variable to store the selected date
+let selectedDate = null;
+
 months = [
   "Jan",
   "Feb",
@@ -129,3 +132,35 @@ function showCalendar(month, year) {
 function daysInMonth(iMonth, iYear) {
   return 32 - new Date(iYear, iMonth, 32).getDate();
 }
+
+// Retrieving calendar date : BUG FOR PAST MONTH DATES
+tbl.querySelectorAll("td").forEach((cell) => {
+  if (
+    cell.innerHTML === today.getDate().toString() &&
+    year === today.getFullYear() &&
+    month === today.getMonth()
+  ) {
+    cell.classList.add("today-date");
+  }
+
+  // Add a click event listener to the date cell
+  cell.addEventListener("click", function () {
+    // Remove the "clicked-date" class from all cells
+    tbl
+      .querySelectorAll("td.clicked-date")
+      .forEach((c) => c.classList.remove("clicked-date"));
+    // Apply the "clicked-date" class to the clicked cell
+    cell.classList.add("clicked-date");
+
+    // Get the selected date
+    const selectedDay = parseInt(cell.innerText);
+    const selectedMonth = parseInt(selectMonth.value); // Use selectMonth.value
+    const selectedYear = parseInt(selectYear.value); // Use selectYear.value
+
+    // Format the date as "dd-m-yyyy"
+    selectedDate = `${selectedDay}-${selectedMonth}-${selectedYear}`;
+
+    // Log the selected date for testing
+    console.log("Selected Date:", selectedDate);
+  });
+});

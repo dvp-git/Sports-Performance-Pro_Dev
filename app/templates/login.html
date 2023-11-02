@@ -208,6 +208,7 @@
     <footer>2023 Sports Performance Pro</footer>
 
     <script>
+      let resp_;
       const signInCoach = document.getElementById("signin_coach");
       const signInAthlete = document.getElementById("signin_athlete");
 
@@ -232,14 +233,31 @@
             JSON.stringify(coachLoginData),
             function (response) {
               if (response === "Successful") {
-                window.location.href = "/coachLanding";
-              } else {
+                $.get("/getCoachUsername", function (username) {
+                  // e.preventDefault();
+                  console.log(JSON.stringify(username));
+                  console.log("Inside getCoachuser details endpoint");
+                  if (username === "Not logged in") {
+                    // Handle the case where the user is not logged in
+                  } else {
+                    // Use the username in your JavaScript code
+                    console.log("I am here");
+                    console.log(
+                      `User session details`,
+                      JSON.stringify(username)
+                    );
+                  }
+                });
+                // window.location.href = "/coachLanding";
+              }
+              // if (username) {
+              //   $.get(`/getAthletes?username=${username}`)
+              // }
+              else {
                 coachEmailError.textContent = response;
               }
             }
           );
-          // Add your sign-in logic for coaches here
-          // Back-end checking database, validating credentials
         }
       }
 
@@ -264,8 +282,14 @@
             "/athleteLogin",
             JSON.stringify(athleteLoginData),
             function (response) {
-              if (response === "Successful") {
-                window.location.href = "/athleteLanding";
+              // if (response === "Successful") {
+
+              //   window.location.href = "/athleteLanding";
+              // }
+              if (response) {
+                athlete_details = response;
+                // console.log("I am executing");
+                console.log(resp_);
               } else {
                 document.getElementById("athleteEmailError").textContent =
                   response;

@@ -29,8 +29,8 @@ class Athletes(db.Model):
     gender = db.Column(db.String(30), db.CheckConstraint("gender IN ('Male', 'Female', 'Non-binary','Transgender','Genderqueer','Other')"),nullable=False) 
     institute = db.Column(db.String(255))
     password = db.Column(db.String(60), nullable=False)
-    # coach_id = db.Column(db.Integer, db.ForeignKey('coaches.coach_id'), nullable=False)
-    # coach = db.relationship('Coaches', backref='athletes')
+    coach_id = db.Column(db.Integer, db.ForeignKey('coaches.coach_id'), nullable=False)
+    coach = db.relationship('Coaches', backref='athletes')
 
 
 class Teams(db.Model):
@@ -64,7 +64,6 @@ class Blocks(db.Model):
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.workout_id'), nullable=False)
     workout = db.relationship('Workouts', backref=db.backref('blocks', lazy=True))
 
-
 class Exercises(db.Model):
     exercise_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
@@ -90,6 +89,7 @@ class AthleteBlocks(db.Model):
     #Foreign
     athlete_workout_id = db.Column(db.Integer, db.ForeignKey('athlete_workouts.athlete_workout_id'), nullable=False)
     block_id = db.Column(db.Integer, db.ForeignKey('blocks.block_id'), nullable=False)
+    #Relationships
     athlete_workout = db.relationship('AthleteWorkouts', backref=db.backref('assigned_blocks'))
     block = db.relationship('Blocks', backref=db.backref('athletes_assigned', lazy=True))
 
@@ -98,9 +98,18 @@ class AthleteExercises(db.Model):
     athlete_exercise_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     athlete_block_id = db.Column(db.Integer, db.ForeignKey('athlete_blocks.athlete_block_id'), nullable=False)
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.exercise_id'), nullable=False)
-    load_entry = db.Column(db.Integer, nullable=False)
+    load_entry = db.Column(JSON) 
+
+    # Relationships
     athlete_block = db.relationship('AthleteBlocks', backref=db.backref('assigned_exercises',lazy=True))
     exercise = db.relationship('Exercises', backref=db.backref('athletes_assigned', lazy=True))
+
+
+class TeamWorkoutsAssignments(db.Model):
+    __tablename__ = 'team_workouts_assignments'
+    assignment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.team_id'), nullable=False)
+    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.workout_id'), nullable=False)
 
 
 class Notes(db.Model):
@@ -109,3 +118,6 @@ class Notes(db.Model):
     athlete_id = db.Column(db.Integer, db.ForeignKey('athletes.athlete_id'), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     content = db.Column(db.Text, nullable=False)
+    subject = db.Column(db.String, nullable=False)
+    athlete_reply = db.Column(db.String, nullable=True)
+    coach_reply = db.Column(db.String, nullable=True)
