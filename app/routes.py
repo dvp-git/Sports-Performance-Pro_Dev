@@ -499,31 +499,48 @@ def get_workout():
         date = request.args.get('date', type=str)  # You can adjust the data type as needed
 
         workouts_query = Workouts.query
-
+        workouts_query_1 = []
+        workouts_query_2 = []
         if athlete_id is not None:
-            print("athlete id given")
-            workouts_query = workouts_query.filter(
+            #print("athlete id given")
+            workouts_query_1 = workouts_query.filter(
                 Workouts.workout_id.in_(
                     db.session.query(AthleteWorkouts.workout_id).filter_by(athlete_id=athlete_id)
                 )
             )
-        elif team_id is not None:
-            print("teamId id given")
-            workouts_query = workouts_query.filter(
+            print(workouts_query_1)
+
+        if team_id is not None:
+            #print("teamId id given")
+            workouts_query_2 = workouts_query.filter(
                 Workouts.workout_id.in_(
                     db.session.query(TeamWorkoutsAssignments.workout_id).filter_by(team_id=team_id)
                 )
             )
-        else:
+            print(workouts_query_2)
+
+        if not athlete_id and not team_id :
             return jsonify({"error": "Provide either athleteId or teamId"}), 400
-
-        if coach_id is not None:
-            workouts_query = workouts_query.filter_by(coach_id=coach_id)
         
-        if date:
-            workouts_query = workouts_query.filter(Workouts.date_added == date)
+        if workouts_query_1:
+            if coach_id is not None:
+                workouts_query_1 = workouts_query_1.filter_by(coach_id=coach_id)
+            
+            if date:
+                workouts_query_1 = workouts_query_1.filter(Workouts.date_added == date)
+            workouts_query_1 = workouts_query_1.all() 
+            
 
-        workouts = workouts_query.all()
+        if workouts_query_2:
+            if coach_id is not None:
+                workouts_query_2 = workouts_query_2.filter_by(coach_id=coach_id)
+            
+            if date:
+                workouts_query_2 = workouts_query_2.filter(Workouts.date_added == date)
+            workouts_query_2 = workouts_query_2.all()
+        workouts = workouts_query_1 + workouts_query_2 
+
+        # workouts = workouts_query.all()
         print(workouts)
         if not workouts:
             return jsonify({'message': 'No workouts found with the provided constraints'})

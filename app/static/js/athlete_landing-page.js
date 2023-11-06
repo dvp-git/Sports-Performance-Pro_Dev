@@ -34,10 +34,11 @@ let coachId;
 let teams;
 let myTrainingData;
 let myTeamsTrainingData;
-
+let athleteTeams;
 let clickedTeam;
 let teamIds = [];
-let myCoachIds = [];
+let coachIds = [];
+let myWorkouts;
 const blockTabs = document.getElementById("block-tabs");
 const exerciseTabs = document.getElementById("exercise-tabs");
 const exerciseDetails = document.getElementById("exercise-details");
@@ -79,63 +80,204 @@ async function fetchAthleteTeams(athleteId) {
   // Make an asynchronous call to fetch the athlete's teams using the athleteID
   const response = await fetch(`/getTeamsForAthlete?athleteId=${athleteId}`);
   const data = await response.json();
-  console.log("This is teams data : ", data);
+  //console.log("This is teams data : ", data);
   return data.teams;
 }
 
 async function fetchCoaches(athleteId) {
   const response = await fetch(`/getMyCoaches?athleteId=${athleteId}`);
   const data = await response.json();
-  console.log("This is the coach IDs : ", data);
-  return data.coach_ids;
+  //console.log("These are my Coaches IDs : ", data);
+  return data;
 }
 
-async function fetchAllWorkoutsByTeam(teamId, selectedDate, coachId) {
+async function fetchWorkoutsByTeam(teamId, selectedDate, coachId) {
   const response = await fetch(
     `getWorkoutsByTeam?teamId=${teamId}}&date=${selectedDate}&coachId=${coachId}`
   );
   const data = await response.json();
-  console.log("These are the workouts : ", data);
+  //console.log("These are the workouts : ", data);
   return data;
 }
 
-// Usage
-(async () => {
+async function fetchWorkoutsByAthleteDirect(athlete_id, coachId, selectedDate) {
+  const response = await fetch(
+    `getWorkoutsByAthleteDirect?athleteId=${athlete_id}}&date=${selectedDate}&coachId=${coachId}`
+  );
+  const data = await response.json();
+  //console.log("These are the workouts assigned for athlete by his teamId: ",data);
+  return data;
+}
+
+async function fetchWorkouts(
+  athlete_id = null,
+  team_id = null,
+  coach_id = null,
+  date = ""
+) {
+  const response = await fetch(
+    `getWorkout?athleteId=${athlete_id}&teamId=${team_id}&date=${date}&coachId=${coach_id}`
+  );
+  const data = await response.json();
+  // console.log("These are the workouts assigned for athlete by his athleteId and for his team by teamId: ",data);
+  return data;
+}
+
+async function fetchWorkoutsForAthleteAndTeams(athleteId, teamIds) {
   try {
-    const athleteId = await fetchAthleteID(userEmail);
-    const athleteTeams = await fetchAthleteTeams(athleteId);
-    const coachIds = await fetchCoaches(athleteId);
-    console.log(coachIds);
+    // Once you have athleteIds and teamIds, fetch workouts
+    const workoutsForAthlete = await fetchWorkouts(athleteId);
+    console.log("Workouts By Athlete:", workoutsForAthlete);
+
+    const workoutsForTeams = [];
+    for (const teamId of teamIds) {
+      //console.log("Team ID ", teamId);
+      const teamWorkouts = await fetchWorkouts(null, teamId);
+      workoutsForTeams.push(teamWorkouts);
+    }
+    console.log("Workouts By Teams:", workoutsForTeams);
+    const workout = workoutsForTeams.concat(workoutsForAthlete);
+    //console.log("Together : ", workout);
+    return workout;
+    // Now you have the workouts based on athleteIds and teamIds
+  } catch (error) {
+    console.log("Error fetching data: " + error);
+  }
+}
+
+// Get All Blocks
+function getAllBlockNames(workoutData) {
+  // workoutData is workout_name arrays
+  // Each workout_name array has blocks which are again arrays
+  const blockNames = [];
+  workoutData.forEach((workout) => {
+    if (Array.isArray(workout)) {
+      workout.forEach((w) => {
+        w.blocks.forEach((block) => {
+          blockNames.push(block.block_name);
+        });
+      });
+    }
+    if (Array.isArray(workout.blocks)) {
+      workout.blocks.forEach((block) => {
+        blockNames.push(block.block_name);
+      });
+    }
+  });
+  return blockNames;
+}
+
+// Get All Exercises by block
+function getExercisesByBlockName(workoutData, targetBlockName) {
+  const exercises = [];
+  workoutData.forEach((workout) => {
+    if (Array.isArray(workout)) {
+      workout.forEach((w) => {
+        w.blocks.forEach((block) => {
+          if (block.block_name === targetBlockName) {
+            exercises.push(...block.exercises);
+          }
+        });
+      });
+    }
+
+    if (Array.isArray(workout.blocks)) {
+      workout.blocks.forEach((block) => {
+        if (block.block_name === targetBlockName) {
+          exercises.push(...block.exercises);
+        }
+      });
+    }
+  });
+  return exercises;
+}
+
+// On LOADING : INITIAL DATA PRESENTED OR STORED:
+
+async function initialData() {
+  try {
+    athleteId = await fetchAthleteID(userEmail); // Fetch athlete UserEmail
+    athleteTeams = await fetchAthleteTeams(athleteId); // Fetch Athlete Teams
+
+    console.log("This is the athletes Team names :", athleteTeams);
+    coachIds = await fetchCoaches(athleteId);
+    teamIds = athleteTeams.map((team) => team.team_id);
+    console.log("My coach Ids :", coachIds); // is an array of coach_ids json
+
+    myWorkouts = await fetchWorkoutsForAthleteAndTeams(athleteId, teamIds);
+    console.log("These are my Workouts: initial Data ", myWorkouts);
+
+    // TODO: Use only if required
+    const allBlockNames = getAllBlockNames(myWorkouts);
+    console.log("All Block Names:", allBlockNames);
+
+    const targetBlockName = "Zumba-dance2";
+    const exercisesForBlock = getExercisesByBlockName(
+      myWorkouts,
+      targetBlockName
+    );
+    console.log(`Exercises for "${targetBlockName}":`, exercisesForBlock);
+
     const dataCreation = (function () {
       // You can now work with athleteID and athleteTeams here
       console.log("Athlete ID:", athleteId);
-      console.log("Athlete Teams:", athleteTeams);
-      teamIds = athleteTeams.map((team) => team.team_id);
-      // console.log(teamIds);
-      console.log(athleteTeams); // {teams: Array(teams)}
-      teams = athleteTeams.map((team) => team.name);
-      // console.log(teams);
+      console.log("Athlete Teams:", athleteTeams); // [ {} {}]
 
+      // console.log(teamIds);
+      // console.log(athleteTeams);
+      teams = athleteTeams.map((team) => team.name);
+
+      // Create the teams list Training Table
       const trainingTable = $("#trainingTable").DataTable();
       // console.log("Data.teams 0", teams[0]);
       trainingTable.clear().rows.add(athleteTeams).draw(); // Passing an array to rows.add()
       trainingTable.row
-        .add(
-          {
-            coach_id: 1,
-            name: "My individual training",
-            sport: "sport",
-            team_id: null,
-            noSort: true,
-          },
-          "last"
-        )
+        .add({
+          coach_id: null,
+          name: "My individual trainings",
+          sport: "sport",
+          team_id: null,
+        })
         .draw(false);
+      // .orderFixed({ pre: [0, "asc"] })
+      // .columnDefs([
+      //   { orderData: [0, "data-sort"] },
+      //   { targets: "noSort", orderable: false },
+      // ])
     })();
+    return athleteId, athleteTeams, coachIds, teams;
   } catch (error) {
     console.log("Could not fetch the details " + error);
   }
-})();
+}
+
+// Main Function which has all details:
+async function main() {
+  try {
+    const data = await initialData(); // Gets all the initial Data
+
+    console.log("ATHELTESDASDASD ASD:", athleteId);
+    console.log("Athlete Teams :", teams);
+    console.log("My CoachIDs", coachIds);
+  } catch (error) {
+    console.error("An error occured", error);
+  }
+}
+
+main();
+// fetchWorkouts((athlete_id = athleteId));
+
+// myWorkouts = async function (athleteId, teamIds) {
+//   const workout_athlete = await fetchWorkouts((athlete_id = athleteId));
+//   console.log("Workout_Athlete:", workout_athlete);
+//   const workout_team = [];
+//   teamIds.forEach((teamId) => {
+//     workout_team.push(fetchWorkouts(teamId));
+//   });
+//   console.log("Workout_Teams:", workout_team);
+// };
+
+// console.log(myWorkouts);
 
 // Getting athlete ID
 
@@ -239,18 +381,18 @@ async function fetchAllWorkoutsByTeam(teamId, selectedDate, coachId) {
 //   });
 // });
 
-const button = document.createElement("button");
-button.textContent = "Click me";
-athleteUserElement.appendChild(button);
+// const button = document.createElement("button");
+// button.textContent = "Click me";
+// athleteUserElement.appendChild(button);
 
-button.addEventListener("click", function (e) {
-  console.log("I am executing team click");
-  window.location.href = "/athleteLanding?BuffaloPirates.html";
-});
+// button.addEventListener("click", function (e) {
+//   console.log("I am executing team click");
+//   window.location.href = "/athleteLanding?BuffaloPirates.html";
+// });
 
 const athleteData = [
   {
-    name: "John Doe",
+    // name: "John Doe",
     blocks: [
       {
         id: 1,
