@@ -1,31 +1,48 @@
-// TODO: Create a Assign Exercise button if the number of rows greater than 1. ❌
-
-// TODO:
-// - The Add an Exercise Button should have Exercise Name , Exercise Category which we can set from the database. The SETS should be input, which will generate the dynamic table rows for number of sets.✅
-
-// TODO: Clicking a particular Exercise should show the details of the assigned exercise
-
-// TODO: Modify an exercise should pre-popiulate with the entries of that exercise and then have user input to modify those entries. Modify button is required.
-
-// TODO: Delete button, should pre-populate with entries of the exercise and request for confirmation.
-// TODO: Change name of Block
-// TODO: Change name of Exercise
-
-// TODO: Need to discuss about Notes part
-// TODO: Storing of data in the objects
-
-// TODO: Scrollable blocks and exercises
-// TODO: Listing of athletes ( 1 page )  listing of Teams( 2 page )
-
 "use strict";
-let myAthleteId = 2; // Should be ideally fetched from the sessionStorage
+// let myAthleteId = 2; // Should be ideally fetched from the sessionStorage
 let currentTeamId;
 
+// Get the athlete Username
+var athleteUsernameElement = document.getElementById("athlete-username");
+var athleteUsername = athleteUsernameElement.getAttribute("data-username");
+
+// console.log(" Athlete Username ", athleteUsername);
+
+// const testingElement = document.getElementById("testValue");
+// const testVal = testingElement.getAttribute("data-testing");
+// console.log("The test val :", testVal);
+
+const athleteUserElement = document.getElementById("user_id");
+const userEmail = athleteUserElement.dataset.userEmail;
+
+// Remove the trailing.com
+athleteUserElement.textContent = `Welcome :  ${userEmail.replace(
+  /@[^ ]+/g,
+  ""
+)}, We're rooting for you !`;
+console.log(`UserEmail : ${userEmail}`);
+
+// fetch("/getMyCoach?athleteId=").then((response) =>
+// response = response.json()).then((data) =>
+// {
+
+// })
+// }
+// Fetch the user_id from the route using an API
+let athleteId;
+let coachId;
+let teams;
+let myTrainingData;
+let myTeamsTrainingData;
+
+let clickedTeam;
+let teamIds = [];
+let myCoachIds = [];
 const blockTabs = document.getElementById("block-tabs");
 const exerciseTabs = document.getElementById("exercise-tabs");
 const exerciseDetails = document.getElementById("exercise-details");
 
-const athleteList = document.getElementById("athlete-list");
+// const athleteList = document.getElementById("athlete-list");
 let tbodyExercise = document.querySelector(".create-exercise-rows");
 let tbodyCount = tbodyExercise.childElementCount;
 const exerciseDropDown = document.getElementById("dropdown-container");
@@ -37,15 +54,199 @@ const exerciseTableContainer = document.getElementById("table-container");
 const formExercise = document.getElementById("create-exercise-form");
 
 let dataTableExercise;
+// let delRowButton;
+// let modRowButton;
 
-let delRowButton;
-let modRowButton;
+$(document).ready(function () {
+  const trainingTable = $("#trainingTable").DataTable({
+    columns: [{ data: "name" }],
+    dom: "Blfrtip",
+    searching: true, // Enable the search bar
+    paging: true, //
+  });
+});
 
-const dropdownData = [
-  { id: 1, text: "Option 1" },
-  { id: 2, text: "Option 2" },
-  { id: 3, text: "Option 3" },
-];
+// Get the athleteID
+async function fetchAthleteID(userEmail) {
+  // Make an asynchronous call to fetch the athlete's ID
+  const response = await fetch(`/getAthleteId?athleteUsername=${userEmail}`);
+  const data = await response.json();
+  return data.athlete_id;
+}
+
+// Get the Teams for the athlete
+async function fetchAthleteTeams(athleteId) {
+  // Make an asynchronous call to fetch the athlete's teams using the athleteID
+  const response = await fetch(`/getTeamsForAthlete?athleteId=${athleteId}`);
+  const data = await response.json();
+  console.log("This is teams data : ", data);
+  return data.teams;
+}
+
+async function fetchCoaches(athleteId) {
+  const response = await fetch(`/getMyCoaches?athleteId=${athleteId}`);
+  const data = await response.json();
+  console.log("This is the coach IDs : ", data);
+  return data.coach_ids;
+}
+
+async function fetchAllWorkoutsByTeam(teamId, selectedDate, coachId) {
+  const response = await fetch(
+    `getWorkoutsByTeam?teamId=${teamId}}&date=${selectedDate}&coachId=${coachId}`
+  );
+  const data = await response.json();
+  console.log("These are the workouts : ", data);
+  return data;
+}
+
+// Usage
+(async () => {
+  try {
+    const athleteId = await fetchAthleteID(userEmail);
+    const athleteTeams = await fetchAthleteTeams(athleteId);
+    const coachIds = await fetchCoaches(athleteId);
+    console.log(coachIds);
+    const dataCreation = (function () {
+      // You can now work with athleteID and athleteTeams here
+      console.log("Athlete ID:", athleteId);
+      console.log("Athlete Teams:", athleteTeams);
+      teamIds = athleteTeams.map((team) => team.team_id);
+      // console.log(teamIds);
+      console.log(athleteTeams); // {teams: Array(teams)}
+      teams = athleteTeams.map((team) => team.name);
+      // console.log(teams);
+
+      const trainingTable = $("#trainingTable").DataTable();
+      // console.log("Data.teams 0", teams[0]);
+      trainingTable.clear().rows.add(athleteTeams).draw(); // Passing an array to rows.add()
+      trainingTable.row
+        .add(
+          {
+            coach_id: 1,
+            name: "My individual training",
+            sport: "sport",
+            team_id: null,
+            noSort: true,
+          },
+          "last"
+        )
+        .draw(false);
+    })();
+  } catch (error) {
+    console.log("Could not fetch the details " + error);
+  }
+})();
+
+// Getting athlete ID
+
+// $(document).ready(function () {
+//   $.ajax({
+//     type: "GET",
+//     url: "/getAthleteId?athleteUsername=" + athleteUsername,
+//     dataType: "json",
+//     success: function (data) {
+//       console.log(data);
+//       athleteId = data.athlete_id;
+//       console.log(`Athlete ID`, athleteId);
+
+// // Getting coach ID
+// $.ajax({
+//   type: "GET",
+//   url: `/getMyCoach?athleteId=${athleteId}`,
+//   dataType: "json",
+//   success: function (data) {
+//     coachId = data;
+//     console.log("Coach ID: ", coachId);
+//   },
+//   error: function (error) {
+//     console.log("Did not receive a response", error);
+//   },
+// });
+
+// Get the TEAM NAMES FROM database based on ATHLETE ID
+//       $.ajax({
+//         url: `getTeamsForAthlete?athleteId=${athleteId}`,
+//         type: "GET",
+//         dataType: "json",
+//         success: function (data) {
+//           teamIds = data.teams.map((team) => team.team_id);
+//           console.log(teamIds);
+//           console.log(data); // {teams: Array(teams)}
+//           teams = data.teams.map((team) => team.name);
+//           console.log(teams);
+//           const trainingTable = $("#trainingTable").DataTable();
+//           console.log("Data.teams", data.teams[0]);
+//           trainingTable.clear().rows.add(data.teams).draw(); // Passing an array to rows.add()
+//           trainingTable.row
+//             .add(
+//               {
+//                 coach_id: 1,
+//                 name: "My individual training",
+//                 sport: "sport",
+//                 team_id: null,
+//                 noSort: true,
+//               },
+//               "last"
+//             )
+//             .draw(false);
+//         },
+//         error: function (error) {
+//           console.log("Error Fetching the data: " + error);
+//         },
+//       });
+
+//       $.ajax({
+//         type: "GET",
+//         url: `/getWorkout?athleteId=${athleteId}&coachId=${coachId}&date=2022-10-30`,
+//         dataType: "json",
+//         success: function (data) {
+//           myTrainingData = data;
+//           console.log("Fetched my individual training Data");
+//           console.log(myTrainingData);
+//           console.log(teamIds);
+//         },
+//         error: function (error) {
+//           console.log("Did not receive my training data", error);
+//         },
+//       });
+
+//       if (teamIds.length > 1) {
+//         console.log("Team IDs", teamIds);
+//         for (let i = 0; i < teamIds.length; i++) {
+//           console.log("These are the team IDs", teamIds[i]);
+//           $.ajax({
+//             type: "GET",
+//             url: `/getWorkout?teamId=${teamIds[i]}&coachId=${coachId}&date=2022-10-30`,
+//             dataType: "json",
+//             success: function (data) {
+//               // Handle the data for each item here
+//               const TrainingData = data;
+//               myTeamsTrainingData.append(TrainingData);
+//               console.log("Fetched my team training Data");
+//               console.log(myTeamsTrainingData);
+//             },
+//             error: function (error) {
+//               console.log("Did not receive my training data", error);
+//             },
+//           });
+//         }
+//       }
+//     },
+
+//     error: function (error) {
+//       console.log("Error getting athlete ID", error);
+//     },
+//   });
+// });
+
+const button = document.createElement("button");
+button.textContent = "Click me";
+athleteUserElement.appendChild(button);
+
+button.addEventListener("click", function (e) {
+  console.log("I am executing team click");
+  window.location.href = "/athleteLanding?BuffaloPirates.html";
+});
 
 const athleteData = [
   {
@@ -124,6 +325,8 @@ const definedExercise = [
 
 // DATA TABLE INITIALIZATION
 $(document).ready(function () {
+  // Viewing the details:
+
   dataTableExercise = $("#create-exercise").DataTable({
     pageLength: 5,
     lengthMenu: [0, 5, 10, 20, 50, 100, 200, 500],
@@ -145,43 +348,10 @@ $(document).ready(function () {
 });
 
 // DATA TABLE INITIALIZATION FOR THE TEAM display initially
-$(document).ready(function () {
-  const trainingTable = $("#trainingTable").DataTable({
-    columns: [{ data: "name" }],
-    dom: "Blfrtip",
-    searching: true, // Enable the search bar
-    paging: true, //
-  });
-});
 
-// Get the TEAM NAMES FROM database based on ATHLETE ID
-$.ajax({
-  url: `getTeamsForAthlete?athlete_id=${myAthleteId}`,
-  type: "GET",
-  dataType: "json",
-  success: function (data) {
-    console.log(data); // {teams: Array(teams)}
-    const trainingTable = $("#trainingTable").DataTable();
-    console.log("Data.teams", data.teams[0]);
-    trainingTable.clear().rows.add(data.teams).draw(); // Passing an array to rows.add()
+const my_workouts = {};
 
-    trainingTable.row
-      .add(
-        {
-          coach_id: 1,
-          name: "My individual training",
-          sport: "sport",
-          team_id: null,
-          noSort: true,
-        },
-        "last"
-      )
-      .draw(false);
-  },
-  error: function (error) {
-    console.log("Error Fetching the data: " + error);
-  },
-});
+// $.get(`/getWorkoutsByTeam?coach_id=`)
 
 // ANY TEAM CLICKED SHOULD SHOW THE TEAM SESSION DETAILS
 $("#trainingTable tbody").on("click", "tr", function () {
@@ -194,9 +364,12 @@ $("#trainingTable tbody").on("click", "tr", function () {
   // Set the teamID if there is one:
   currentTeamId = data["team_id"];
   console.log("The current team_id is ", currentTeamId);
+  // Append the my-training to the first td cell of the row that is clicked
+  $(this).find("td").eq(0).append($("#my-training"));
+  // Get the details of the workouts for this clicked team for this user
 
   // Appends the my-training details for the row - Blocks , Exercises, Exercise details
-  $(this).find("td").eq(0).append($("#my-training"));
+
   displayBlocks({
     name: "Darryl",
     blocks: [
@@ -214,17 +387,17 @@ $("#trainingTable tbody").on("click", "tr", function () {
       },
     ],
   });
-
-  // For Database retrival
-
-  //   $.ajax({
-  //     url: `getAthleteWorkout/`,
-  //     type: "GET",
-  //     data: { athlete_id: `${myAthleteId}`, team_id: `${currentTeamId}` },
-  //     success: function (data) {},
-  //     error: function (error) {},
-  //   });
 });
+
+// For Database retrival
+
+//   $.ajax({
+//     url: `getAthleteWorkout/`,
+//     type: "GET",
+//     data: { athlete_id: `${myAthleteId}`, team_id: `${currentTeamId}` },
+//     success: function (data) {},
+//     error: function (error) {},
+//   });
 
 // display the blocks for the team_id selected:
 
@@ -277,6 +450,7 @@ function displayBlocks(athlete) {
   exerciseDropDown.innerHTML = "";
   console.log(exerciseTabs);
   // Efficiency :
+
   athlete.blocks.forEach((block, index) => {
     exerciseTabs.innerHTML = "";
     console.log(`Running this display block`);
@@ -286,23 +460,46 @@ function displayBlocks(athlete) {
     blockButton.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
+      // if (currentTeamId !== null) {
+      //   // Get the team id of the team clicked
+      //   $.get(
+      //     `/getWorkoutsByTeam?team_id=${currentTeamId}&coach_id=1`,
+      //     function (data) {
+      // Remove the blocks
       exerciseTabs.innerHTML = "";
       console.log(exerciseTabs);
-      exerciseDetails.innerHTML = "Select a Block to view details.";
+      exerciseDetails.innerHTML = "Select an Exercise to view details.";
       e.stopPropagation();
       // display of the exerciseView should go back to 0
       //exerciseVisited = 0;
       displayExercises(e, block);
+      // }
+      // );
+      // }
+      // else {
+      //   $.get(
+      //     `/getWorkoutsByAthlete?athlete_id=${myAthleteId}&coach_id=1`,
+      //     function (data) {
+      //       exerciseTabs.innerHTML = "";
+      //       console.log(exerciseTabs);
+      //       exerciseDetails.innerHTML = "Select a Block to view details.";
+      //       e.stopPropagation();
+      //       // display of the exerciseView should go back to 0
+      //       //exerciseVisited = 0;
+      //       displayExercises(e, block);
+      //     }
+      //   );
+      // }
+      // Adding BlockButtons to be displayed
     });
-    // Adding BlockButtons to be displayed
     blockTabs.appendChild(blockButton);
   });
-  // Show "Add a Block" button
-  // NOT Required for display
-  //   addBlockButton.classList.remove(["add-block-btn-hide"]);
-  //   // console.log(addBlockButton);
-  //   blockTabs.appendChild(addBlockButton);
 }
+// Show "Add a Block" button
+// NOT Required for display
+//   addBlockButton.classList.remove(["add-block-btn-hide"]);
+//   // console.log(addBlockButton);
+//   blockTabs.appendChild(addBlockButton);
 
 // BLOCK TAB CLICKED: Display exercises for the CLICKED block
 function displayExercises(e, block) {
@@ -313,7 +510,7 @@ function displayExercises(e, block) {
   exerciseDropDown.innerHTML = "";
   exerciseDetails.innerHTML = "Select an exercise to view details.";
   block.exercises.forEach((exercise, index) => {
-    exerciseDetails.innerHTML = "Select a Block to view details.";
+    exerciseDetails.innerHTML = "Select a Exercise to view details.";
     console.log("Creating the exercise buttons");
     console.log(exerciseTabs);
     const exerciseButton = document.createElement("button");
@@ -421,7 +618,7 @@ function loadTable() {
     // Add the row data to the DataTable
     dataTable.row.add(rowData);
   }
-
+  $("#create-exercise tbody td:first-child input").addClass("my-input");
   // Draw the table to display the added rows
   dataTable.draw();
 }
@@ -433,9 +630,50 @@ function getBlockNumber(block) {
   return Number(numbersString);
 }
 
-// FIXME:
-function addAssignExerciseBtn(exerciseTableContainer) {
-  console.log("Inside assign Exercise Button");
-  console.log(exerciseTableContainer);
-  enterDetails(formExercise);
-}
+$(document).ready(function () {
+  // Function to collect and submit form data
+  $("#create-exercise-form").on("submit", function (event) {
+    console.log("INside the exercise form input");
+    event.preventDefault(); // Prevent the default form submission
+    event.stopPropagation();
+    // Collect the values from the dynamically generated rows
+    var exerciseData = [];
+
+    $(".create-exercise-rows .exercise-row").each(function () {
+      var set = $(this).find(".set-input").val();
+      var load = $(this).find(".load-input").val();
+      var reps = $(this).find(".reps-input").val();
+      var inputLoad = $(this).find(".input-load-input").val();
+
+      // Create an object with the collected data and push it to the array
+      exerciseData.push({
+        set: set,
+        load: load,
+        reps: reps,
+        inputLoad: inputLoad,
+      });
+    });
+
+    // You can now do something with the exerciseData array, like sending it to the server
+    console.log(exerciseData);
+
+    // Clear the form or perform any other actions as needed
+    // For example, you can reset the form:
+    // $("#create-exercise-form")[0].reset();
+  });
+
+  // Add a new row to the table when the "Modify" button is clicked
+  $("#modifyButton").on("click", function () {
+    // Create a new row with input elements and add it to the table
+    var newRow = $("<tr class='exercise-row'>").append(
+      $("<td><input class='set-input' type='text'></td>"),
+      $("<td><input class='load-input' type='text'></td>"),
+      $("<td><input class='reps-input' type='text'></td>"),
+      $("<td><input class='input-load-input' type='text'></td>")
+    );
+
+    $(".create-exercise-rows").append(newRow);
+  });
+
+  // You can add more functionality, like removing rows or validating inputs, as needed.
+});

@@ -45,6 +45,7 @@
 
     <div class="container">
       <h1>Athlete training sessions!</h1>
+      <p id="user_id" data-user-email="{{athlete_username}}"></p>
       <!-- Container for login forms -->
       <div class="login-forms">
         <div class="login-container-1" style="margin-right: 20px">
@@ -239,7 +240,7 @@
                   <button id="addSet-btn" class="add-Set--btns">Add SET</button>
                   <form
                     action="demo.html"
-                    method="get"
+                    method="GET"
                     id="create-exercise-form"
                   >
                     <div id="dropdown-container">
@@ -252,12 +253,24 @@
                         <th>REPS</th>
                         <th>input_load</th>
                       </thead>
-                      <tbody class="create-exercise-rows"></tbody>
+                      <tbody class="create-exercise-rows">
+                        <div id="buttonContainer">
+                          <button
+                            type="submit"
+                            id="submitExercise"
+                            class="btn btn-primary"
+                          >
+                            Submit
+                          </button>
+                          <button id="modifyButton" class="btn btn-secondary">
+                            Modify
+                          </button>
+                          <button id="returnButton" class="btn btn-secondary">
+                            Return
+                          </button>
+                        </div>
+                      </tbody>
                     </table>
-
-                    <button id="assign-btn" style="display: none" type="submit">
-                      Assign Exercise
-                    </button>
                   </form>
                   <!-- Table will be generated here -->
                 </div>
@@ -269,6 +282,11 @@
     </div>
 
     <div style="margin-top: 100px"></div>
+    <div
+      id="athlete-username"
+      data-username="{{ username }}"
+      style="display: none"
+    ></div>
 
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>

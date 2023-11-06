@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here' 
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 
