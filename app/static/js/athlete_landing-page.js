@@ -8,6 +8,9 @@ let currentExercises;
 let currentDate;
 let personalCoaches;
 let peronalCoachIds;
+let currentExerciseId;
+const successMessage = document.getElementById("success-message");
+const errorMessage = document.getElementById("error-message");
 
 const getDate = function () {
   const today = new Date();
@@ -285,6 +288,8 @@ blockTabs.addEventListener("click", (e) => {
     e.stopPropagation();
     exerciseTabs.innerHTML = "";
     exerciseDetails.innerHTML = "Select an Exercise to view details.";
+    successMessage.innerText = "";
+    errorMessage.innerText = "";
     console.log(`Clicked Block button`, e.target);
     if (e.target && e.target.tagName == "BUTTON") {
       console.log("I Clicked", e.target);
@@ -327,7 +332,10 @@ exerciseTabs.addEventListener("click", (e) => {
   if (e.target.tagName == "BUTTON") {
     e.preventDefault();
     e.stopPropagation();
+    currentExerciseId = Number(e.target.id); // Setting id for retrival
     exerciseDetails.innerHTML = "Select an Exercise to view details.";
+    successMessage.innerText = "";
+    errorMessage.innerText = "";
     console.log(`Clicked Exercise button`, e.target);
     if (e.target && e.target.tagName == "BUTTON") {
       console.log("I Clicked", e.target);
@@ -491,19 +499,19 @@ $(document).ready(function () {
     lengthMenu: [0, 5, 10, 20, 50, 100, 200, 500],
   });
 
-  dataTableExercise.on("mouseenter", "td", function () {
-    let colIdx = dataTableExercise.cell(this).index().column;
+  // dataTableExercise.on("mouseenter", "td", function () {
+  //   let colIdx = dataTableExercise.cell(this).index().column;
 
-    dataTableExercise
-      .cells()
-      .nodes()
-      .each((el) => el.classList.remove("highlight"));
+  //   dataTableExercise
+  //     .cells()
+  //     .nodes()
+  //     .each((el) => el.classList.remove("highlight"));
 
-    dataTableExercise
-      .column(colIdx)
-      .nodes()
-      .each((el) => el.classList.add("highlight"));
-  });
+  //   dataTableExercise
+  //     .column(colIdx)
+  //     .nodes()
+  //     .each((el) => el.classList.add("highlight"));
+  // });
 });
 
 // RESPONSIVE ANY TEAM CLICKED SHOULD SHOW THE TEAM SESSION DETAILS
@@ -590,72 +598,21 @@ $("#trainingTable tbody").on("click", "tr", function () {
           });
 });
 
-// DISPLAY BLOCKS:
-function displayBlocks(athlete) {
-  selectedBlock = blockTabs.innerHTML = "";
-  exerciseTabs.innerHTML = "";
-  exerciseDetails.innerHTML = "Select a Block to view details.";
-  exerciseDropDown.innerHTML = "";
-  console.log(exerciseTabs);
-  // Efficiency :
-
-  athlete.blocks.forEach((block, index) => {
-    exerciseTabs.innerHTML = "";
-    console.log(`Running this display block`);
-    const blockButton = document.createElement("button");
-    blockButton.innerText = `Block ${block.id}`; // FIXME: Change to block name
-    // Event listener added here:
-    blockButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      // if (currentTeamId !== null) {
-      //   // Get the team id of the team clicked
-      //   $.get(
-      //     `/getWorkoutsByTeam?team_id=${currentTeamId}&coach_id=1`,
-      //     function (data) {
-      // Remove the blocks
-      exerciseTabs.innerHTML = "";
-      console.log(exerciseTabs);
-      exerciseDetails.innerHTML = "Select an Exercise to view details.";
-      e.stopPropagation();
-      // display of the exerciseView should go back to 0
-      //exerciseVisited = 0;
-      displayExercises(e, block);
-    });
-    blockTabs.appendChild(blockButton);
-  });
-}
-
-// BLOCK TAB CLICKED: Display exercises for the CLICKED block
-function displayExercises(e, block) {
-  console.log("Block Tab clicked ; displaying exercises", block);
-  selectedBlock = e.target;
-  console.log(selectedBlock); // Block button
-  exerciseTabs.innerHTML = "";
-  exerciseDropDown.innerHTML = "";
-  exerciseDetails.innerHTML = "Select an exercise to view details.";
-  block.exercises.forEach((exercise, index) => {
-    exerciseDetails.innerHTML = "Select a Exercise to view details.";
-    console.log("Creating the exercise buttons");
-    console.log(exerciseTabs);
-    const exerciseButton = document.createElement("button");
-    exerciseButton.innerText = exercise;
-    console.log(`Exercise button`);
-    console.log(exerciseButton);
-    exerciseTabs.appendChild(exerciseButton);
-  });
-}
-
+// FIXME: Make the submit button to hit the database with values✅
+// TODO: Once the database is hit, make the modify button visible
+// TODO: Modify button submit enabled only once all entries of load are filled
+// TODO: Mobile workout
 $(document).ready(function () {
   // Function to collect and submit form data
+  var table = $("#create-exercise").DataTable();
   $("#create-exercise-form").on("submit", function (event) {
     event.preventDefault();
     event.stopPropagation();
-
+    successMessage.innerText = "";
+    errorMessage.innerText = "";
     console.log("INside the exercise form input");
     // event.preventDefault(); // Prevent the default form submission
     // Collect the values from the dynamically generated rows
-    var exerciseData = [];
 
     // $(".create-exercise-rows tr").each(function () {
     //   var set = $(this).find(".set-input").val();
@@ -663,36 +620,133 @@ $(document).ready(function () {
     //   var reps = $(this).find(".reps-input").val();
     //   var inputLoad = $(this).find(".input-load-input").val();
 
-    var allData = table.columns().data();
-    // Create an object with the collected data and push it to the array
-    exerciseData.push({
-      set: set,
-      load: load,
-      reps: reps,
-      inputLoad: inputLoad,
-    });
+    const athleteInputLoads = [];
+    const sets = table.columns(0).data()[0].length;
+    const loads = [...table.columns(1).data()[0]];
+    const reps = [...table.columns(2).data()[0]];
+    const inputLoads = table.$("input");
+    let check = false;
+    for (let i = 0; i < loads.length; i++) {
+      check = validateInputField(inputLoads[i], loads[i]);
+      if (check) {
+        athleteInputLoads.push(Number(inputLoads[i].value));
+      } else {
+        console.log("Give the right input");
+        console.log("Display a modal here ");
+        break; // the loop, invalid entry
+      }
+    }
+
+    if (loads.length === athleteInputLoads.length) {
+      // Format input for database : {athlete: ["loads" : ...]}
+      const athleteExerciseInput = formatAthleteEntries(athleteInputLoads);
+
+      // Send the entries to database
+      fetch("/postAthleteInputs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: athleteExerciseInput,
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            const successMessage = document.getElementById("success-message");
+            successMessage.innerText = `${data.success}`;
+          } else {
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.innerText = `${data.error}`;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log({ error: "Failed to store data on server" });
+        });
+    }
+
+    // dataTable.on("draw", function () {
+    //   $("#submitExercise").prop("disabled", !areAllFieldsFilled());
     // });
-    console.log(exerciseData);
-    console.log(allData);
-
-    // You can now do something with the exerciseData array, like sending it to the server
-
-    // Clear the form or perform any other actions as needed
-    // For example, you can reset the form:
-    // $("#create-exercise-form")[0].reset();
   });
+  // Create an object with the collected data and push it to the array
+  // exerciseData.push({
+  //   set: set,
+  //   load: load,
+  //   reps: reps,
+  //   inputLoad: inputLoad,
+  // });
+  // });
+  // console.log(exerciseData);
 
-  // Add a new row to the table when the "Modify" button is clicked
-  $("#modifyButton").on("click", function () {
-    // Create a new row with input elements and add it to the table
-    // var newRow = $("<tr class='exercise-row'>").append(
-    //   $("<td><input class='set-input' type='text'></td>"),
-    //   $("<td><input class='load-input' type='text'></td>"),
-    //   $("<td><input class='reps-input' type='text'></td>"),
-    //   $("<td><input class='input-load-input' type='text'></td>")
-    // );
-    // $(".create-exercise-rows").append(newRow);
-  });
+  // You can now do something with the exerciseData array, like sending it to the server
 
-  // You can add more functionality, like removing rows or validating inputs, as needed.
+  // Clear the form or perform any other actions as needed
+  // For example, you can reset the form:
+  // $("#create-exercise-form")[0].reset();
 });
+
+// For formatting to send to db AthleteExerciseInputLoads
+function formatAthleteEntries(inputLoads) {
+  let transformedLoads = inputLoads.map((load) => ({ load: load }));
+  transformedLoads = JSON.stringify({
+    athlete_id: athleteId,
+    input_load: transformedLoads,
+    exercise_id: currentExerciseId,
+  });
+  console.log(transformedLoads);
+  return transformedLoads;
+}
+
+function validateInputField(loadInput, maxLoad) {
+  const value = loadInput.value;
+  console.log("Value of input", value, typeof value);
+  console.log("Inside Validate Inpout");
+  const errorMessage = document.getElementById("error-message");
+  if (isNaN(value) || value === "") {
+    errorMessage.innerText = "Load must be a number.";
+    loadInput.focus();
+  } else if (value < 0) {
+    errorMessage.innerText = "Load cannot be negative.";
+    loadInput.focus();
+  } else if (value > maxLoad) {
+    errorMessage.innerText = "Load cannot exceed the maximum value.";
+    loadInput.focus();
+  } else if (value === 0) {
+    errorMessage.innerText = "Load cannot be blank.";
+    loadInput.focus();
+  } else {
+    errorMessage.innerText = "";
+    return true;
+  }
+}
+
+// Function to check if all input fields are filled
+// function areAllFieldsFilled() {
+//   let allFilled = true;
+//   dataTable.cells("td input").every(function () {
+//     if (!$(this.data()).val()) {
+//       allFilled = false;
+//       console.log("All Filled ", allFilled);
+//       return false; // Exit the loop early
+//     }
+//   });
+//   return allFilled;
+// }
+
+// Enable the submit button when all fields are filled
+
+// Add a new row to the table when the "Modify" button is clicked
+$("#modifyButton").on("click", function () {
+  // Create a new row with input elements and add it to the table
+  // var newRow = $("<tr class='exercise-row'>").append(
+  //   $("<td><input class='set-input' type='text'></td>"),
+  //   $("<td><input class='load-input' type='text'></td>"),
+  //   $("<td><input class='reps-input' type='text'></td>"),
+  //   $("<td><input class='input-load-input' type='text'></td>")
+  // );
+  // $(".create-exercise-rows").append(newRow);
+});
+
+// You can add more functionality, like removing rows or validating inputs, as needed.

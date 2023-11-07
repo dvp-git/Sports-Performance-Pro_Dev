@@ -1,7 +1,7 @@
 # app/routes.py
 from mysqlx import IntegrityError
 from app import app,db
-from app.models import Coaches, CoachAthleteMembership, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises, Notes, AthleteWorkouts, TeamWorkoutsAssignments
+from app.models import Coaches, CoachAthleteMembership, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises, Notes, AthleteWorkouts, TeamWorkoutsAssignments,AthleteExerciseInputLoads
 
 # AthleteExercises, AthleteBlocks, 
 from flask import jsonify,request, Flask, render_template, request, redirect, url_for, session
@@ -1523,3 +1523,40 @@ def get_exercises_details():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+# Athlete User input processing
+@app.route('/postAthleteInputs', methods=["POST"])
+def save_athlete_inputs():
+    # Check if its a team workout or its an athlete Workout
+    athlete_exercise_input = request.json
+
+    # If its a team workout assignment, create the record for 
+    athlete_id = athlete_exercise_input.get('athlete_id')
+    exercise_id = athlete_exercise_input.get('exercise_id')
+    input_load = athlete_exercise_input.get('input_load')
+
+    if athlete_id is None :
+        return jsonify({'error': 'athleteId is required '}), 400
+        
+    if exercise_id is None :
+         return jsonify({'error': 'exerciseId  is required '}), 400
+
+    exercise = Exercises.query.filter_by(exercise_id=exercise_id).first()
+    athlete = Athletes.query.filter_by(athlete_id=athlete_id).first()
+
+    if exercise and athlete:
+        # Check athleteinput for exericse is  existing ? UPDATE : INSERT
+        exercise_input_present = AthleteExerciseInputLoads.query.filter_by(exercise_id=exercise_id).first()
+
+        if exercise_input_present :
+            return jsonify({'error': 'Exercise input is already present, Only Update possible'}), 400
+
+        # Create the exercise in the AthleteExerciseInputLoads table
+        athlete_exercise = AthleteExerciseInputLoads(athlete_id=athlete_id,exercise_id=exercise_id,input_load=input_load)
+
+        db.session.add(athlete_exercise)
+
+        db.session.commit()
+
+        return jsonify({"success":"Input Load Saved successfully"}),200
+    return jsonify({'Error':"This Exercise is non existent"}) , 400
