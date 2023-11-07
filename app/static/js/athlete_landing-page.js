@@ -6,6 +6,8 @@ let currentWorkout;
 let currentBlocks;
 let currentExercises;
 let currentDate;
+let personalCoaches;
+let peronalCoachIds;
 
 const getDate = function () {
   const today = new Date();
@@ -116,7 +118,14 @@ async function fetchAthleteTeams(athleteId) {
 async function fetchCoaches(athleteId) {
   const response = await fetch(`/getMyCoaches?athleteId=${athleteId}`);
   const data = await response.json();
-  //console.log("These are my Coaches IDs : ", data);
+  //console.log("These are my personal and team Coaches IDs : ", data);
+  return data;
+}
+
+async function fetchPersonalCoaches(athleteId) {
+  const response = await fetch(`/getMyPersonalCoaches?athleteId=${athleteId}`);
+  const data = await response.json();
+  console.log("These are my Personal Coaches IDs : ", data);
   return data;
 }
 
@@ -371,7 +380,7 @@ function viewAssignedExercise(e) {
           rowData.push(loadsReps["coach"][i].reps);
 
           // Input_load column
-          const inputCell = `<input type="text" data-input=${
+          const inputCell = `<input type="number" data-input=${
             i + 1
           } name="load_entry-${i + 1}">`;
           rowData.push(inputCell);
@@ -397,8 +406,16 @@ async function initialData() {
 
     console.log("This is the athletes Team names :", athleteTeams);
     coachIds = await fetchCoaches(athleteId);
+
     teamIds = athleteTeams.map((team) => team.team_id);
     console.log("My coach Ids :", coachIds); // is an array of coach_ids json
+
+    personalCoaches = await fetchPersonalCoaches(athleteId);
+    peronalCoachIds = personalCoaches.map(
+      (personcalCoach) => personcalCoach.coach_id
+    );
+
+    console.log("My personal coach Ids :", peronalCoachIds);
 
     myWorkouts = await fetchWorkoutsForAthleteAndTeams(athleteId, teamIds);
     console.log("These are my Workouts: initial Data ", myWorkouts);
@@ -427,14 +444,17 @@ async function initialData() {
       const trainingTable = $("#trainingTable").DataTable();
       // console.log("Data.teams 0", teams[0]);
       trainingTable.clear().rows.add(athleteTeams).draw(); // Passing an array to rows.add()
-      trainingTable.row
-        .add({
-          coach_id: null,
-          name: "My individual trainings",
-          sport: "sport",
-          team_id: null,
-        })
-        .draw(false);
+      personalCoaches.forEach((coach) => {
+        trainingTable.row
+          .add({
+            coach_id: coach.coach_id,
+            name: `My individual trainings-${coach.name}`,
+            sport: "sport",
+            team_id: null,
+          })
+          .draw(false);
+      });
+
       // .orderFixed({ pre: [0, "asc"] })
       // .columnDefs([
       //   { orderData: [0, "data-sort"] },
@@ -452,9 +472,9 @@ async function main() {
   try {
     const data = await initialData(); // Gets all the initial Data
 
-    console.log("ATHELTESDASDASD ASD:", athleteId);
+    console.log("Athlete ID is :", athleteId);
     console.log("Athlete Teams :", teams);
-    console.log("My CoachIDs", coachIds);
+    console.log("My Personal CoachIDs", peronalCoachIds);
   } catch (error) {
     console.error("An error occured", error);
   }
@@ -507,10 +527,15 @@ $("#trainingTable tbody").on("click", "tr", function () {
   // Apply the highlight using inline CSS
   row.find("td").css("background-color", "green"); // Customize the color as needed
   // Set the teamID if there is one:
-  currentTeamId = data["team_id"];
-  console.log("The current team_id is ", currentTeamId);
-  currentCoachId = data["coach_id"];
-  console.log("The current coach_id is ", currentCoachId);
+  if (data["team_id"] !== null) {
+    currentTeamId = data["team_id"];
+    console.log("The current team_id is ", currentTeamId);
+    currentCoachId = data["coach_id"];
+    console.log("The current coach_id is ", currentCoachId);
+  } else if (data["team_id"] === null) {
+    currentTeamId = null;
+    currentCoachId = data["coach_id"];
+  }
   // var redirectUrl = `/athleteSelectedTeamTraining?teamId=${currentTeamId}&athleteId=${athleteId}`;
 
   // window.location.href = redirectUrl;
@@ -526,23 +551,43 @@ $("#trainingTable tbody").on("click", "tr", function () {
 
   // Get current Workout
   // Everytime I clikc on a Team, a fetch request is sent to get workout and display the blocks of the team
-  currentWorkout = fetch(
-    `getWorkoutsByTeam?teamId=${currentTeamId}&coachId=${currentCoachId}&date=${currentDate}`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("This is my data:", data);
-      return data;
-    })
-    .then((workout_data) => {
-      console.log(workout_data);
-      currentBlocks = getMyBlockNames(workout_data);
-      console.log("Current Blocks:", currentBlocks);
-      displayBlocks2(currentBlocks);
-    })
-    .catch((error) => {
-      console.error("There was an error fetching", error);
-    });
+  currentWorkout =
+    currentTeamId === null
+      ? // FIXME: Change the date to currentDate later
+        fetch(
+          `getWorkoutsByAthleteDirect?athleteId=${athleteId}&coachId=${currentCoachId}&date=2022-11-06`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("This is my data:", data);
+            return data;
+          })
+          .then((workout_data) => {
+            console.log(workout_data);
+            currentBlocks = getMyBlockNames(workout_data);
+            console.log("Current Blocks:", currentBlocks);
+            displayBlocks2(currentBlocks);
+          })
+          .catch((error) => {
+            console.error("There was an error fetching", error);
+          })
+      : fetch(
+          `getWorkoutsByTeam?teamId=${currentTeamId}&coachId=${currentCoachId}&date=${currentDate}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("This is my data:", data);
+            return data;
+          })
+          .then((workout_data) => {
+            console.log(workout_data);
+            currentBlocks = getMyBlockNames(workout_data);
+            console.log("Current Blocks:", currentBlocks);
+            displayBlocks2(currentBlocks);
+          })
+          .catch((error) => {
+            console.error("There was an error fetching", error);
+          });
 });
 
 // DISPLAY BLOCKS:
