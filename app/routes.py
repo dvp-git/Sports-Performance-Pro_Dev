@@ -339,8 +339,39 @@ def get_my_coaches():
         return jsonify(coach_ids), 200
     
 
+# Getting my personal coaches
+@app.route('/getMyPersonalCoaches',methods=['GET'])
+def get_my_personal_coaches():
+    athlete_id = request.args.get('athleteId')
 
+    coaches = []
+    # Get coach_ids from the coach membership table
+    individual_coach_ids = CoachAthleteMembership.query.filter_by(athlete_id=athlete_id).with_entities(CoachAthleteMembership.coach_id).distinct().all()
+    # print(individual_coach_ids) 
 
+    if individual_coach_ids : 
+        # Coach ids from the teams
+        individual_coach_ids = list(map(lambda x: {"coach_id" : x[0]} , individual_coach_ids))
+        # print("My individual coach_ids", individual_coach_ids)
+
+    if not individual_coach_ids:
+        # Handle the case when both lists are empty
+        return jsonify({"error": "No coaches found for the athlete"}), 404
+    
+
+    for coach_id in individual_coach_ids:
+        coach = Coaches.query.filter(Coaches.coach_id == coach_id["coach_id"]).first()
+        if coach:
+            coach_data = {
+                        'coach_id': coach.coach_id,
+                        'name': coach.name,
+                        'email': coach.email,
+                        'phone': coach.phone,
+                        'sports': coach.sports,
+                        'institute': coach.institute
+                    }
+            coaches.append(coach_data)
+    return jsonify(coaches), 200
 
 
 
@@ -462,28 +493,61 @@ def get_workouts_by_athlete_membership():
     workouts = workouts.all()
     print(workouts)
     
-
-    workout_data = []
+    results = []
+    #workout_data = []
     for workout in workouts:
+        #blocks = Blocks.query.filter_by(workout_id=workout.workout_id).all()
+        # exercises = []
+
+        # for block in blocks:
+        #     block_exercises = Exercises.query.filter_by(block_id=block.block_id).all()
+        #     exercises.extend([{
+        #         'name': exercise.name,
+        #         'loads_reps': exercise.loads_reps,
+        #         'sets': exercise.sets
+        #     } for exercise in block_exercises])
+
+        # workout_data.append({
+        #     'workout_name': workout.name,
+        #     'date_added': workout.date_added.strftime('%Y-%m-%d'),
+        #     'blocks': [block.name for block in blocks],
+        #     'exercises': exercises
+        # })
+
+        workout_data = {
+                    'workout_id': workout.workout_id,
+                    'name': workout.name,
+                    'date_added': workout.date_added,
+                    'coach_id': workout.coach_id,
+                    'blocks': []
+                    }
+
+                # print(workout_data)
         blocks = Blocks.query.filter_by(workout_id=workout.workout_id).all()
-        exercises = []
 
         for block in blocks:
-            block_exercises = Exercises.query.filter_by(block_id=block.block_id).all()
-            exercises.extend([{
-                'name': exercise.name,
-                'loads_reps': exercise.loads_reps,
-                'sets': exercise.sets
-            } for exercise in block_exercises])
+            block_data = {
+                'block_id': block.block_id,
+                'name': block.name,
+                'exercises': []
+            }
+            # print(workout_data)
+            exercises = Exercises.query.filter_by(block_id=block.block_id).all()
 
-        workout_data.append({
-            'workout_name': workout.name,
-            'date_added': workout.date_added.strftime('%Y-%m-%d'),
-            'blocks': [block.name for block in blocks],
-            'exercises': exercises
-        })
+            for exercise in exercises:
+                exercise_data = {
+                    'exercise_id': exercise.exercise_id,
+                    'name': exercise.name,
+                    'loads_reps': exercise.loads_reps,
+                    'sets': exercise.sets
+                }
 
-    return jsonify({'workout_data': workout_data})
+                block_data['exercises'].append(exercise_data)
+
+            workout_data['blocks'].append(block_data)
+        # print(workout_data)
+        results.append(workout_data)
+    return jsonify(results)
 
 
 
@@ -527,7 +591,9 @@ def get_workout():
                 workouts_query_1 = workouts_query_1.filter_by(coach_id=coach_id)
             
             if date:
+                print("Inside this date", type(date))
                 workouts_query_1 = workouts_query_1.filter(Workouts.date_added == date)
+
             workouts_query_1 = workouts_query_1.all() 
             
 
@@ -535,8 +601,10 @@ def get_workout():
             if coach_id is not None:
                 workouts_query_2 = workouts_query_2.filter_by(coach_id=coach_id)
             
-            if date:
+            if date :
+                print("Inside this date",type(date))
                 workouts_query_2 = workouts_query_2.filter(Workouts.date_added == date)
+
             workouts_query_2 = workouts_query_2.all()
         workouts = workouts_query_1 + workouts_query_2 
 
@@ -871,6 +939,12 @@ def admin_landing():
 #         except Exception as e:
 #             return jsonify({'error': str(e)}), 400
 #     return render_template('registration-athlete.html')
+
+@app.route('/athleteSelectedTeamTraining')
+def athlete_view_selected_training():
+    team_id = request.args.get('teamId')
+    athlete_id = request.args.get('athleteId')
+    return render_template('athlete-view-training.html',teamId=team_id, athleteId=athlete_id)
 
 
 
@@ -1327,6 +1401,55 @@ def add_coach_athlete_membership():
         db.session.commit()
 
         return jsonify({'message': 'Coach-Athlete membership added successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    
+@app.route('/getExercisesByBlock', methods=['GET'])
+def get_exercises_by_block():
+    try:
+        block_id = request.args.get('blockId', type=int)
+
+        if block_id is not None:
+            exercises = Exercises.query.filter_by(block_id=block_id).all()
+
+            exercise_list = []
+            for exercise in exercises:
+                exercise_data = {
+                    'exercise_id': exercise.exercise_id,
+                    'name': exercise.name,
+                    'loads_reps': exercise.loads_reps,
+                    'sets': exercise.sets
+                }
+                exercise_list.append(exercise_data)
+
+            return jsonify(exercises=exercise_list), 200
+
+        return jsonify({'error': 'blockId is required in the query parameters'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+# Get Exercise Details by exercise ID
+@app.route('/getExerciseDetails', methods=['GET'])
+def get_exercises_details():
+    try:
+        exercise_id = request.args.get('exerciseId', type=int)
+
+        if exercise_id is not None:
+            exercise = Exercises.query.filter_by(exercise_id=exercise_id).first()
+
+        if exercise:
+            exercise_detail = {
+                    'exercise_id': exercise.exercise_id,
+                    'name': exercise.name,
+                    'loads_reps': exercise.loads_reps,
+                    'sets': exercise.sets
+                }
+            print(exercise_detail)
+            return jsonify([exercise_detail]), 200
+
+        return jsonify({'error': 'exerciseId is required in the query parameters'}), 400
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400

@@ -6,7 +6,9 @@ let currentWorkout;
 let currentBlocks;
 let currentExercises;
 let currentDate;
+let personalCoaches;
 let peronalCoachIds;
+
 const getDate = function () {
   const today = new Date();
   const day = today.getDate(); // 1-31
@@ -404,10 +406,15 @@ async function initialData() {
 
     console.log("This is the athletes Team names :", athleteTeams);
     coachIds = await fetchCoaches(athleteId);
+
     teamIds = athleteTeams.map((team) => team.team_id);
     console.log("My coach Ids :", coachIds); // is an array of coach_ids json
 
-    peronalCoachIds = await fetchPersonalCoaches(athleteId);
+    personalCoaches = await fetchPersonalCoaches(athleteId);
+    peronalCoachIds = personalCoaches.map(
+      (personcalCoach) => personcalCoach.coach_id
+    );
+
     console.log("My personal coach Ids :", peronalCoachIds);
 
     myWorkouts = await fetchWorkoutsForAthleteAndTeams(athleteId, teamIds);
@@ -437,11 +444,11 @@ async function initialData() {
       const trainingTable = $("#trainingTable").DataTable();
       // console.log("Data.teams 0", teams[0]);
       trainingTable.clear().rows.add(athleteTeams).draw(); // Passing an array to rows.add()
-      peronalCoachIds.forEach((coachId) => {
+      personalCoaches.forEach((coach) => {
         trainingTable.row
           .add({
-            coach_id: coachId.coach_id,
-            name: "My individual trainings",
+            coach_id: coach.coach_id,
+            name: `My individual trainings-${coach.name}`,
             sport: "sport",
             team_id: null,
           })
