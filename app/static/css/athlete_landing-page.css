@@ -545,3 +545,7 @@ footer {
 #create-exercise thead th {
   background-color: #175e97;
 }
+
+.highlight {
+  background-color: lightcyan;
+}
