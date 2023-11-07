@@ -105,3 +105,15 @@ class CoachAthleteMembership(db.Model):
     ca_membership_id = db.Column(db.Integer, primary_key=True)
     athlete_id = db.Column(db.Integer, db.ForeignKey('athletes.athlete_id'))
     coach_id = db.Column(db.Integer, db.ForeignKey('coaches.coach_id'))
+
+
+class AthleteExerciseInputLoads(db.Model):
+    __tablename__ = 'athlete_exercise_input_loads'
+    load_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    input_load = db.Column(JSON)   # Use an appropriate data type for input loads
+    athlete_id = db.Column(db.Integer, db.ForeignKey('athletes.athlete_id'), nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.exercise_id'), nullable=False)
+    athlete = db.relationship('Athletes', backref='exercise_input_loads', lazy=True)
+    exercise = db.relationship('Exercises', backref='athlete_input_loads', lazy=True)
+
+

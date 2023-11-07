@@ -248,10 +248,30 @@
                     </div>
                     <table id="create-exercise">
                       <thead id="create-exercise-heads">
-                        <th id="header-set">SET</th>
-                        <th id="header-load">LOAD</th>
-                        <th id="header-reps">REPS</th>
-                        <th id="header-input">input_load</th>
+                        <th
+                          id="header-set"
+                          style="text-align: center; color: white"
+                        >
+                          SET
+                        </th>
+                        <th
+                          id="header-load"
+                          style="text-align: center; color: white"
+                        >
+                          LOAD
+                        </th>
+                        <th
+                          id="header-reps"
+                          style="text-align: center; color: white"
+                        >
+                          REPS
+                        </th>
+                        <th
+                          id="header-input"
+                          style="text-align: center; color: white"
+                        >
+                          input_load
+                        </th>
                       </thead>
                       <tbody class="create-exercise-rows">
                         <div id="buttonContainer">
@@ -262,15 +282,21 @@
                           >
                             Submit
                           </button>
-                          <button id="modifyButton" class="btn btn-secondary">
+                          <button
+                            id="modifyButton"
+                            class="btn btn-secondary"
+                            disabled
+                          >
                             Modify
                           </button>
-                          <button id="returnButton" class="btn btn-secondary">
+                          <!-- <button id="returnButton" class="btn btn-secondary">
                             Return
-                          </button>
+                          </button> -->
                         </div>
                       </tbody>
                     </table>
+                    <div id="error-message" style="color: red"></div>
+                    <div id="success-message" style="color: green"></div>
                   </form>
                   <!-- Table will be generated here -->
                 </div>
@@ -291,7 +317,7 @@
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
-    <script src="../static/js/calendar.js"></script>
+    <script src="../static/js/calendar_.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 
