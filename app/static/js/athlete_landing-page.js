@@ -154,7 +154,7 @@ async function fetchWorkouts(
   date = ""
 ) {
   const response = await fetch(
-    `getWorkout?athleteId=${athlete_id}&teamId=${team_id}&date=${date}&coachId=${coach_id}`
+    `getWorkout2?athleteId=${athlete_id}&teamId=${team_id}&date=${date}&coachId=${coach_id}`
   );
   const data = await response.json();
   // console.log("These are the workouts assigned for athlete by his athleteId and for his team by teamId: ",data);
@@ -649,9 +649,11 @@ function displayExercises(e, block) {
 $(document).ready(function () {
   // Function to collect and submit form data
   $("#create-exercise-form").on("submit", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     console.log("INside the exercise form input");
     // event.preventDefault(); // Prevent the default form submission
-    event.stopPropagation();
     // Collect the values from the dynamically generated rows
     var exerciseData = [];
 
