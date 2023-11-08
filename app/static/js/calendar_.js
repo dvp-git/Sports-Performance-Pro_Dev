@@ -6,12 +6,14 @@ let currentDay;
 let currentMonth;
 let currentYear;
 let today;
+
 function updateCurrentDate() {
   today = new Date();
   currentDay = today.getDate();
   currentMonth = today.getMonth();
   currentYear = today.getFullYear();
 }
+
 selectYear = document.getElementById("year");
 selectMonth = document.getElementById("month");
 months = [
@@ -31,6 +33,7 @@ months = [
 
 monthAndYear = document.getElementById("monthAndYear");
 updateCurrentDate();
+
 selectedDate = `${currentYear}-${currentMonth + 1}-${currentDay}`;
 showCalendar(currentMonth, currentYear);
 
@@ -178,12 +181,16 @@ function handleDateSelection() {
       const selectedYear = parseInt(selectYear.value); // Use selectYear.value
 
       // Format the date as "dd-m-yyyy"
-      const selectedDate = `${selectedDay}-${
+      const selectedDate = `${selectedYear}-${
         selectedMonth + 1
-      }-${selectedYear}`;
+      }-${selectedDay}`;
 
       // Log the selected date for testing
       console.log("Selected Date:", selectedDate);
+
+      currentDate = selectedDate;
+
+      main();
     });
   });
 }

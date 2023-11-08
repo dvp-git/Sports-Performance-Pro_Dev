@@ -1,12 +1,21 @@
-today = new Date();
-currentMonth = today.getMonth();
-currentYear = today.getFullYear();
-selectYear = document.getElementById("year");
-selectMonth = document.getElementById("month");
-
 // Add a global variable to store the selected date
 let selectedDate = null;
 
+// Initialize selectedDate with the current date
+let currentDay;
+let currentMonth;
+let currentYear;
+let today;
+
+function updateCurrentDate() {
+  today = new Date();
+  currentDay = today.getDate();
+  currentMonth = today.getMonth();
+  currentYear = today.getFullYear();
+}
+
+selectYear = document.getElementById("year");
+selectMonth = document.getElementById("month");
 months = [
   "Jan",
   "Feb",
@@ -23,24 +32,41 @@ months = [
 ];
 
 monthAndYear = document.getElementById("monthAndYear");
+updateCurrentDate();
+
+selectedDate = `${currentYear}-${currentMonth + 1}-${currentDay}`;
 showCalendar(currentMonth, currentYear);
 
 function next() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
   currentYear = currentMonth === 11 ? currentYear + 1 : currentYear;
   currentMonth = (currentMonth + 1) % 12;
   showCalendar(currentMonth, currentYear);
+  handleDateSelection();
 }
 
 function previous() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
+
   currentYear = currentMonth === 0 ? currentYear - 1 : currentYear;
   currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   showCalendar(currentMonth, currentYear);
+  handleDateSelection();
 }
 
 function jump() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
+
   currentYear = parseInt(selectYear.value);
   currentMonth = parseInt(selectMonth.value);
   showCalendar(currentMonth, currentYear);
+  handleDateSelection();
 }
 
 function highlightCurrentDate() {
@@ -66,7 +92,7 @@ function highlightCurrentDate() {
 function showCalendar(month, year) {
   let firstDay = new Date(year, month).getDay();
 
-  tbl = document.getElementById("calendar-body"); // body of the calendar
+  let tbl = document.getElementById("calendar-body"); // body of the calendar
 
   // clearing all previous cells
   tbl.innerHTML = "";
@@ -133,34 +159,56 @@ function daysInMonth(iMonth, iYear) {
   return 32 - new Date(iYear, iMonth, 32).getDate();
 }
 
-// Retrieving calendar date : BUG FOR PAST MONTH DATES
-tbl.querySelectorAll("td").forEach((cell) => {
-  if (
-    cell.innerHTML === today.getDate().toString() &&
-    year === today.getFullYear() &&
-    month === today.getMonth()
-  ) {
-    cell.classList.add("today-date");
-  }
+function handleDateSelection() {
+  // Select the calendar table
+  const tbl = document.querySelector("#calendar");
 
-  // Add a click event listener to the date cell
-  cell.addEventListener("click", function () {
-    // Remove the "clicked-date" class from all cells
-    tbl
-      .querySelectorAll("td.clicked-date")
-      .forEach((c) => c.classList.remove("clicked-date"));
-    // Apply the "clicked-date" class to the clicked cell
-    cell.classList.add("clicked-date");
+  // Loop through all the date cells in the calendar
+  tbl.querySelectorAll("td").forEach((cell) => {
+    // Extract the date from the cell
+    const cellDate = parseInt(cell.innerHTML);
 
-    // Get the selected date
-    const selectedDay = parseInt(cell.innerText);
-    const selectedMonth = parseInt(selectMonth.value); // Use selectMonth.value
-    const selectedYear = parseInt(selectYear.value); // Use selectYear.value
+    // Check if the cell date matches today's date
+    if (
+      cellDate === currentDay &&
+      currentMonth === month &&
+      currentYear === year
+    ) {
+      cell.classList.add("today-date"); // Add a class to highlight today's date
+    }
 
-    // Format the date as "dd-m-yyyy"
-    selectedDate = `${selectedDay}-${selectedMonth}-${selectedYear}`;
+    // Add a click event listener to the date cell
+    cell.addEventListener("click", function () {
+      // Clear the tables
+      blockTabs.innerHTML = "";
+      exerciseDetails.innerHTML = "";
+      exerciseTabs.innerHTML = "";
 
-    // Log the selected date for testing
-    console.log("Selected Date:", selectedDate);
+      // Remove the "clicked-date" class from all cells
+      tbl
+        .querySelectorAll("td.clicked-date")
+        .forEach((c) => c.classList.remove("clicked-date"));
+      // Apply the "clicked-date" class to the clicked cell
+      cell.classList.add("clicked-date");
+
+      // Get the selected date
+      const selectedDay = cellDate; // Use the date from the cell
+      const selectedMonth = parseInt(selectMonth.value); // Use selectMonth.value
+      const selectedYear = parseInt(selectYear.value); // Use selectYear.value
+
+      // Format the date as "dd-m-yyyy"
+      const selectedDate = `${selectedYear}-${
+        selectedMonth + 1
+      }-${selectedDay}`;
+
+      // Log the selected date for testing
+      console.log("Selected Date:", selectedDate);
+
+      currentDate = selectedDate;
+
+      main();
+    });
   });
-});
+}
+
+document.addEventListener("DOMContentLoaded", handleDateSelection);
