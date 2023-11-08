@@ -5,7 +5,10 @@ let currentCoachId;
 let currentWorkout;
 let currentBlocks;
 let currentExercises;
-let currentDate;
+let currentDate = selectedDate;
+let createUpdate = 1;
+
+// console.log("This is my date: ", selectedDate);
 let personalCoaches;
 let peronalCoachIds;
 let currentExerciseId;
@@ -33,7 +36,7 @@ const getDate = function () {
 
 // FIXME: Uncomment this : For test purpose set date to 2022-10-30
 // currentDate = getDate();
-currentDate = "2022-10-30";
+currentDate = selectedDate;
 console.log(currentDate);
 // Get the athlete Username
 var athleteUsernameElement = document.getElementById("athlete-username");
@@ -266,12 +269,6 @@ function displayBlocks2(blocks) {
   exerciseDetails.innerHTML = "Select a Block to view details.";
   exerciseDropDown.innerHTML = "";
   console.log(exerciseTabs);
-  // Extract the block names
-
-  // const block_names = blocks.map(
-  //   (block) => `${block.block_id} ${block.block_name}`
-  // );
-
   blocks.forEach((block, index) => {
     exerciseTabs.innerHTML = "";
     console.log(`Adding Button ${block.block_name}`);
@@ -377,28 +374,98 @@ function viewAssignedExercise(e) {
         const loadsReps = exercise.loads_reps;
         console.log(loadsReps["coach"]);
 
-        for (let i = 0; i < loadsReps["coach"].length; i++) {
-          const rowData = [];
+        // If the AthleteInputExercise already exists display that Table
+        fetch(
+          `/showAthleteExerciseInputLoads?exerciseId=${currentExerciseId}&athleteId=${athleteId}`
+        )
+          .then((response) => {
+            response = response.json();
+            return response; // Always return this
+          })
+          .then((data) => {
+            console.log("Data:", data);
+            if (data.info) {
+              createUpdate = 0;
+              console.log(data["info"]); // Data Already exists
+            } else {
+              createUpdate = 1;
+              console.log("Data alreay exists"); // Create the Data
+            }
+            for (let i = 0; i < loadsReps["coach"].length; i++) {
+              const rowData = [];
 
-          // Set column (1-based index for human-readable numbering)
-          rowData.push(i + 1);
+              // Set column (1-based index for human-readable numbering)
+              rowData.push(i + 1);
 
-          // LOADS and REPS columns
-          rowData.push(loadsReps["coach"][i].load);
-          rowData.push(loadsReps["coach"][i].reps);
+              // LOADS and REPS columns
+              rowData.push(loadsReps["coach"][i].load);
+              rowData.push(loadsReps["coach"][i].reps);
 
-          // Input_load column
-          const inputCell = `<input type="number" data-input=${
-            i + 1
-          } name="load_entry-${i + 1}">`;
-          rowData.push(inputCell);
+              // Input_load column
+              if (createUpdate === 0) {
+                var inputCell = `<input type="number" data-input=${
+                  i + 1
+                } name="load_entry-${i + 1}">`;
+              } else {
+                // Push the input from database
+                // var inputCell = document.createElement("td");
+                // inputCell.textContent = data["input_load"][i]["load"];
+                // inputCell.dataset.loadId = data["load_id"];
+                var inputCell = data["input_load"][i]["load"];
+                console.log(inputCell);
+              }
+              rowData.push(inputCell);
+              if (!(typeof inputCell === String)) {
+                rowData.push(
+                  `<button type="button" class="edit-load-button" data-load-modify-number=${
+                    i + 1
+                  }>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/></svg></button>` +
+                    "    " +
+                    `<button type="button" class="save-load-button data-load-save-number=${
+                      i + 1
+                    }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
+                 <path d="M11 2H9v3h2V2Z"/>
+                 <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0ZM1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5Zm3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4v4.5ZM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5V15Z"/>
+               </svg></button>`
+                );
+              }
 
-          // Add the row data to the DataTable
-          dataTable.row.add(rowData);
-        }
-        $("#create-exercise tbody td:first-child input").addClass("my-input");
-        // Draw the table to display the added rows
-        dataTable.draw();
+              // Add the row data to the DataTable
+              dataTable.row.add(rowData);
+            }
+
+            $("#create-exercise tbody td:first-child input").addClass(
+              "my-input"
+            );
+            // Draw the table to display the added rows
+            dataTable.draw();
+          });
+
+        // for (let i = 0; i < loadsReps["coach"].length; i++) {
+        //   const rowData = [];
+
+        //   // Set column (1-based index for human-readable numbering)
+        //   rowData.push(i + 1);
+
+        //   // LOADS and REPS columns
+        //   rowData.push(loadsReps["coach"][i].load);
+        //   rowData.push(loadsReps["coach"][i].reps);
+
+        //   // Input_load column
+        //   const inputCell = `<input type="number" data-input=${
+        //     i + 1
+        //   } name="load_entry-${i + 1}">`;
+        //   rowData.push(inputCell);
+
+        //   // Add the row data to the DataTable
+        //   dataTable.row.add(rowData);
+        // }
+
+        // $("#create-exercise tbody td:first-child input").addClass("my-input");
+        // // Draw the table to display the added rows
+        // dataTable.draw();
       });
     });
 }
@@ -544,26 +611,13 @@ $("#trainingTable tbody").on("click", "tr", function () {
     currentTeamId = null;
     currentCoachId = data["coach_id"];
   }
-  // var redirectUrl = `/athleteSelectedTeamTraining?teamId=${currentTeamId}&athleteId=${athleteId}`;
-
-  // window.location.href = redirectUrl;
-
-  // Redirect to the new page : athlete-view-training.html and pass the query parameters: teamId and athleteId
-
-  // Append the my-training to the first td cell of the row that is clicked
-  // $(this).find("td").eq(0).append($("#my-training"));
-
-  // Get the details of the workouts for this clicked team for this athlete
-
-  // Appends the my-training details for the row - Blocks , Exercises , Exercise details
 
   // Get current Workout
   // Everytime I clikc on a Team, a fetch request is sent to get workout and display the blocks of the team
   currentWorkout =
     currentTeamId === null
-      ? // FIXME: Change the date to currentDate later
-        fetch(
-          `getWorkoutsByAthleteDirect?athleteId=${athleteId}&coachId=${currentCoachId}&date=2022-11-06`
+      ? fetch(
+          `getWorkoutsByAthleteDirect?athleteId=${athleteId}&coachId=${currentCoachId}&date=${currentDate}`
         )
           .then((response) => response.json())
           .then((data) => {
@@ -605,7 +659,7 @@ $("#trainingTable tbody").on("click", "tr", function () {
 $(document).ready(function () {
   // Function to collect and submit form data
   var table = $("#create-exercise").DataTable();
-  $("#create-exercise-form").on("submit", function (event) {
+  $("#create-exercise-form #submitExercise").on("click", function (event) {
     event.preventDefault();
     event.stopPropagation();
     successMessage.innerText = "";
@@ -694,6 +748,7 @@ function formatAthleteEntries(inputLoads) {
     athlete_id: athleteId,
     input_load: transformedLoads,
     exercise_id: currentExerciseId,
+    date: currentDate,
   });
   console.log(transformedLoads);
   return transformedLoads;
@@ -749,4 +804,10 @@ $("#modifyButton").on("click", function () {
   // $(".create-exercise-rows").append(newRow);
 });
 
+// const calendarBodyElement = document.getElementById("calendar-body");
+// console.log(calendarBodyElement);
+// calendarBodyElement.addEventListener("click", function (e) {
+
+//   }
+// });
 // You can add more functionality, like removing rows or validating inputs, as needed.

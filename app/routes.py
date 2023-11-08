@@ -1534,6 +1534,7 @@ def save_athlete_inputs():
     athlete_id = athlete_exercise_input.get('athlete_id')
     exercise_id = athlete_exercise_input.get('exercise_id')
     input_load = athlete_exercise_input.get('input_load')
+    date = athlete_exercise_input.get('date')
 
     if athlete_id is None :
         return jsonify({'error': 'athleteId is required '}), 400
@@ -1552,11 +1553,55 @@ def save_athlete_inputs():
             return jsonify({'error': 'Exercise input is already present, Only Update possible'}), 400
 
         # Create the exercise in the AthleteExerciseInputLoads table
-        athlete_exercise = AthleteExerciseInputLoads(athlete_id=athlete_id,exercise_id=exercise_id,input_load=input_load)
+        athlete_exercise = AthleteExerciseInputLoads(athlete_id=athlete_id,exercise_id=exercise_id,input_load=input_load,exercise_completed_date=date)
+
 
         db.session.add(athlete_exercise)
-
         db.session.commit()
-
         return jsonify({"success":"Input Load Saved successfully"}),200
-    return jsonify({'Error':"This Exercise is non existent"}) , 400
+    
+    return jsonify({'error':"This Exercise is non existent"}) , 400
+
+# Assuming  User input in AthleteExerciseInputLoads exists
+@app.route('/showAthleteExerciseInputLoads', methods=["GET"])
+def check_athlete_exercise_input_loads():
+    # Pass the exercise id
+    exercise_id =  request.args.get('exerciseId')
+    athlete_id = request.args.get('athleteId')
+
+    if athlete_id is None :
+            return jsonify({'error': 'athleteId is required '}), 400
+            
+    if exercise_id is None :
+            return jsonify({'error': 'exerciseId  is required '}), 400
+
+    exercise = Exercises.query.filter_by(exercise_id=exercise_id).first()
+    athlete = Athletes.query.filter_by(athlete_id=athlete_id).first()
+
+    if exercise and athlete:
+        athlete_input = AthleteExerciseInputLoads.query.filter_by(exercise_id=exercise_id, athlete_id=athlete_id).first()
+
+        if athlete_input:
+            # Send back the input_loads
+            athlete_exercise_input = {
+                'load_id': athlete_input.load_id,
+                'input_load': athlete_input.input_load,
+                'exercise_completed_date':athlete_input.exercise_completed_date,
+            }
+            return jsonify(athlete_exercise_input) , 200
+        
+    return jsonify({'info':'No exercise input found'}) , 200
+
+
+# @app.route()
+
+
+
+#FIXME: 
+# Check if all exercises of a workout has its exercise_completed_date filled
+# @app.route('/postCheckCompleted', methods=["POST"])
+# def check_exercise_workout_dates():
+
+#  athlete_id: athleteId,                 << athleteId     
+#     exercise_id: currentExerciseId,     << exerciseId
+#     date: currentDate,                  << date

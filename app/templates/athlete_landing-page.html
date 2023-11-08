@@ -33,8 +33,7 @@
 
     <nav>
       <ul>
-        <li><a href="coach-landing-page.html">Home</a></li>
-        <li><a href="workout-selection.html">Assign Workouts</a></li>
+        <li><a href="/athleteLanding2">Home</a></li>
         <li><a href="test-selection.html">Create Tests</a></li>
         <li><a href="#">Create Workouts</a></li>
         <li><a href="#">Notes</a></li>
@@ -272,6 +271,12 @@
                         >
                           input_load
                         </th>
+                        <th
+                          id="header-actions"
+                          style="text-align: center; color: white"
+                        >
+                          Actions
+                        </th>
                       </thead>
                       <tbody class="create-exercise-rows">
                         <div id="buttonContainer">
@@ -282,13 +287,13 @@
                           >
                             Submit
                           </button>
-                          <button
+                          <!-- <button
                             id="modifyButton"
                             class="btn btn-secondary"
                             disabled
                           >
                             Modify
-                          </button>
+                          </button> -->
                           <!-- <button id="returnButton" class="btn btn-secondary">
                             Return
                           </button> -->
@@ -317,7 +322,22 @@
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
-    <script src="../static/js/calendar_.js"></script>
+    <script defer>
+      window.addEventListener("DOMContentLoaded", (event) => {
+        const athleteId = 2; // Set athlete ID
+        const coachId = 223; // Set coach ID
+
+        // Select the specific anchor element for "Notes"
+        const notesLink = document.querySelector('a[href="/notes_athlete"]');
+        if (notesLink) {
+          // Update the href attribute with the variables
+          notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
+            coachId
+          )}&athleteId=${encodeURIComponent(athleteId)}`;
+        }
+      });
+    </script>
+    <script src="../static/js/calendar.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 

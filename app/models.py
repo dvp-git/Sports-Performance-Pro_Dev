@@ -97,7 +97,7 @@ class AthleteWorkouts(db.Model):
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.workout_id'), nullable=False)
     athlete = db.relationship('Athletes', backref=db.backref('workout_assignments', lazy=True))
     workout = db.relationship('Workouts', backref=db.backref('assigned_athletes', lazy=True))
-
+    date_completed = db.Column(db.Date)
 
 
 class CoachAthleteMembership(db.Model):
@@ -113,7 +113,8 @@ class AthleteExerciseInputLoads(db.Model):
     input_load = db.Column(JSON)   # Use an appropriate data type for input loads
     athlete_id = db.Column(db.Integer, db.ForeignKey('athletes.athlete_id'), nullable=False)
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.exercise_id'), nullable=False)
-    athlete = db.relationship('Athletes', backref='exercise_input_loads', lazy=True)
-    exercise = db.relationship('Exercises', backref='athlete_input_loads', lazy=True)
+    exercise_completed_date = db.Column(db.Date, server_default="NULL")
+    athlete = db.relationship('Athletes', backref=db.backref('exercise_input_loads', lazy=True))
+    exercise = db.relationship('Exercises', backref=db.backref('athlete_input_loads', lazy=True))
 
 

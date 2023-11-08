@@ -38,6 +38,9 @@ selectedDate = `${currentYear}-${currentMonth + 1}-${currentDay}`;
 showCalendar(currentMonth, currentYear);
 
 function next() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
   currentYear = currentMonth === 11 ? currentYear + 1 : currentYear;
   currentMonth = (currentMonth + 1) % 12;
   showCalendar(currentMonth, currentYear);
@@ -45,6 +48,10 @@ function next() {
 }
 
 function previous() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
+
   currentYear = currentMonth === 0 ? currentYear - 1 : currentYear;
   currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   showCalendar(currentMonth, currentYear);
@@ -52,6 +59,10 @@ function previous() {
 }
 
 function jump() {
+  blockTabs.innerHTML = "";
+  exerciseDetails.innerHTML = "";
+  exerciseTabs.innerHTML = "";
+
   currentYear = parseInt(selectYear.value);
   currentMonth = parseInt(selectMonth.value);
   showCalendar(currentMonth, currentYear);
@@ -168,6 +179,11 @@ function handleDateSelection() {
 
     // Add a click event listener to the date cell
     cell.addEventListener("click", function () {
+      // Clear the tables
+      blockTabs.innerHTML = "";
+      exerciseDetails.innerHTML = "";
+      exerciseTabs.innerHTML = "";
+
       // Remove the "clicked-date" class from all cells
       tbl
         .querySelectorAll("td.clicked-date")
