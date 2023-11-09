@@ -602,6 +602,8 @@ $("#trainingTable tbody").on("click", "tr", function () {
   // Apply the highlight using inline CSS
   row.find("td").css("background-color", "green"); // Customize the color as needed
   // Set the teamID if there is one:
+  console.log("View the data of clicked Item : ", data);
+
   if (data["team_id"] !== null) {
     currentTeamId = data["team_id"];
     console.log("The current team_id is ", currentTeamId);
@@ -619,7 +621,10 @@ $("#trainingTable tbody").on("click", "tr", function () {
       ? fetch(
           `getWorkoutsByAthleteDirect?athleteId=${athleteId}&coachId=${currentCoachId}&date=${currentDate}`
         )
-          .then((response) => response.json())
+          .then((response) => {
+            response = response.json();
+            return response;
+          })
           .then((data) => {
             console.log("This is my data:", data);
             return data;

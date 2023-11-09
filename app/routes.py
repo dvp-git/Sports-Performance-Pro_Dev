@@ -882,13 +882,10 @@ def athlete_login2():
 #Route for succesful athlete login and landing page
 @app.route('/athleteLanding')
 def athlete_landing():
-    return render_template("athlete-landing-4.html")
-
-#Route for succesful athlete login and landing page
-@app.route('/athleteLanding2')
-def athlete_landing2():
     athlete_username  = session.get('username', 'Invalid Login:BREACH')
     return render_template("athlete_landing-page.html",athlete_username=athlete_username)
+
+
 
 
 #Route for coach registration page
@@ -1026,7 +1023,7 @@ def athleteWorkout():
 
 @app.route('/teamWorkout')
 def teamWorkout():
-    return render_template('team-workout.html')
+    return render_template('coach-team-training.html')
 
 @app.route('/createTeamAndMemberships', methods=['POST'])
 def create_team_and_memberships():
