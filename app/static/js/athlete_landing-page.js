@@ -495,17 +495,7 @@ async function initialData() {
     myWorkouts = await fetchWorkoutsForAthleteAndTeams(athleteId, teamIds);
     console.log("These are my Workouts: initial Data ", myWorkouts);
 
-    // TODO: Use only if required
-    // const allBlockNames = getAllBlockNames(myWorkouts);
-    // console.log("All Block Names:", allBlockNames);
-
-    // const targetBlockName = "Zumba-dance2";
-    // const exercisesForBlock = getExercisesByBlockName(
-    //   myWorkouts,
-    //   targetBlockName
-    // );
-    // console.log(`Exercises for "${targetBlockName}":`, exercisesForBlock);
-
+    // Table creation filter date here : TODO: Ideally filter by date when pulling data itself ( optimization required )
     const dataCreation = (function () {
       // You can now work with athleteID and athleteTeams here
       console.log("Athlete ID:", athleteId);

@@ -281,7 +281,7 @@
     <nav>
       <ul>
         <li><a href="/coachLanding" class="current">Home</a></li>
-        <li><a href="workout-selection.html">Assign Workouts</a></li>
+        <li><a href="/workoutSelection">Assign Workouts</a></li>
         <li><a href="test-selection.html">Create Tests</a></li>
         <li><a href="#">Create Workouts</a></li>
         <li><a href="#">Notes</a></li>
@@ -323,12 +323,19 @@
         </tbody>
       </table>
     </div>
+    <div
+      id="coach-id"
+      data-coach-id="{{ session.get('coach_id', 0) }}"
+      style="display: none"
+    ></div>
 
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
 
     <script type="text/javascript">
+      // Use the username in your JavaScript code
+      console.log("Username:", username);
       $(document).ready(function () {
         // Create team data
         var teams = [];
@@ -341,19 +348,15 @@
             { data: "sports" },
             // { data: 'institute' },
             {
-              //   title: "Actions",
-              render: function (data = "Testing", type, row, meta) {
-                //data = data to be passed for rendering on last column
-                // type - type detection not important
-                // row - full row data source
-                // meta - information about the cell
+              title: "Actions",
+              render: function (data, type, row, meta) {
                 return `
-                                <button class="edit-button" data-id="${meta.row}">${data}
+                                <button class="edit-button" data-id="${meta.row}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
                                         <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
                                     </svg>
                                 </button>
-                                <button class="delete-button" data-id="${meta.row}">${data}
+                                <button class="delete-button" data-id="${meta.row}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
                                         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
@@ -377,10 +380,10 @@
 
         // Click event for team rows to view the team details
         $("#teamTable tbody").on("click", "tr", function (e) {
-          var data = teamTable.row(this).data(); // is an object
-          console.log("This data: ", data);
+          var data = teamTable.row(this).data();
           var teamId = data.team_id; // Replace 'team_id' with the actual property name
           if (teamId) {
+            // window.location.href = '/viewTeam?teamId=' + teamId;
             window.location.href = `/viewTeam?teamId=${teamId}`;
           }
         });
@@ -411,7 +414,6 @@
         var athleteTable = $("#athleteTable").DataTable({
           data: athletes,
           columns: [
-            // Parameters defined here are the database field values to show
             { data: "name" },
             { data: "sports" },
             { data: "institute" },
@@ -437,7 +439,6 @@
 
         $("#athleteTable tbody").on("click", "button.edit-button", function () {
           var data = athleteTable.row($(this).parents("tr")).data();
-          console.log(data);
           alert("Edit: " + data.name);
         });
 
@@ -450,18 +451,67 @@
           }
         );
 
-        // Fetch athlete data
-        $.get("/getAllAthletes", function (data) {
-          var athletes = data.athletes;
-          var athleteTable = $("#athleteTable").DataTable();
-          athleteTable.clear().rows.add(athletes).draw();
-        });
+        // // Fetch athlete data
+        // $.get("/getAllAthletes", function (data) {
+        //     var athletes = data.athletes;
+        //     var athleteTable = $("#athleteTable").DataTable();
+        //     athleteTable.clear().rows.add(athletes).draw();
+        // });
+
+        // // Define the static coach_id variable
+        // var coach_id =  sess;
+        // // Fetch athlete data
+        // $.get("/getAllAthletes", function (data) {
+        //     var athletes = data.athletes;
+        //     var athleteTable = $("#athleteTable").DataTable();
+
+        //     // Update athlete data with coach_id
+        //     athletes.forEach(function (athlete) {
+        //         var athleteDataWithCoach = {
+        //             name: athlete.name,
+        //             sports: athlete.sports,
+        //             institute: athlete.institute,
+        //             coach_id: athlete.coach_id,
+        //         };
+        //         athleteTable.row.add(athleteDataWithCoach);
+        //     });
+
+        //     athleteTable.draw();
+        // });
+
+        var coachIdElement = document.getElementById("coach-id");
+        var coach_id = coachIdElement.getAttribute("data-coach-id");
+
+        console.log(coach_id);
+
+        if (coach_id === "0") {
+          // Handle the case where coach_id is not found (e.g., redirect to a login page)
+          window.location.href = "/login";
+        } else {
+          // Fetch athlete data with the coach_id
+          $.get("/getAllAthletes?coach_id=" + coach_id, function (data) {
+            var athletes = data.athletes;
+            var athleteTable = $("#athleteTable").DataTable();
+
+            // Update athlete data with coach_id
+            athletes.forEach(function (athlete) {
+              var athleteDataWithCoach = {
+                name: athlete.name,
+                sports: athlete.sports,
+                institute: athlete.institute,
+                coach_id: athlete.coach_id,
+              };
+              athleteTable.row.add(athleteDataWithCoach);
+            });
+
+            athleteTable.draw();
+          });
+        }
 
         // Fetch team data
         $.get("/getAllTeams", function (data) {
-          var teams = data.teams; // { team_id, name, sports, coach_id }
-          console.log(teams);
-          var teamTable = $("#teamTable").DataTable(); // Has entries for 3 columns, name, sports, Action
+          var teams = data.teams;
+          var teamTable = $("#teamTable").DataTable();
           teamTable.clear().rows.add(teams).draw();
         });
       });
