@@ -10,6 +10,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/main.min.css"
       rel="stylesheet"
     /> -->
+
     <link
       rel="stylesheet"
       href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"
@@ -18,7 +19,7 @@
       href="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/css/select2.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../static/css/demo.css" />
+    <link rel="stylesheet" href="../static/css/athlete_landing-page.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/js/select2.min.js"
       defer
@@ -32,22 +33,17 @@
 
     <nav>
       <ul>
-        <li><a href="coach-landing-page.html">Home</a></li>
-        <li><a href="workout-selection.html">Assign Workouts</a></li>
+        <li><a href="/athleteLanding">Home</a></li>
         <li><a href="test-selection.html">Create Tests</a></li>
-        <li><a href="#">Create Workouts</a></li>
+        <li><a href="/athleteNotes.html">Create Workouts</a></li>
         <li><a href="#">Notes</a></li>
         <li><a href="#">Notifications</a></li>
         <li><a href="coach-profile.html">My Profile</a></li>
       </ul>
     </nav>
-    <div
-      id="athlete-id"
-      data-athlete-id="{{ session.get('athlete-id', 0) }}"
-      style="display: none"
-    ></div>
     <div class="container">
       <h1>Athlete training sessions!</h1>
+      <p id="user_id" data-user-email="{{athlete_username}}"></p>
       <!-- Container for login forms -->
       <div class="login-forms">
         <div class="login-container-1" style="margin-right: 20px">
@@ -184,77 +180,130 @@
         <div class="login-container-2">
           <div class="container">
             <!-- Search for an athlete -->
-            <div class="search-container">
+            <!-- <div class="search-container">
               <input
                 type="text"
                 id="athlete-search"
-                placeholder="Search for an athlete"
+                placeholder="Search the exercise"
               />
               <button id="search-button">Search</button>
-            </div>
+            </div> -->
 
             <div class="team-list">
-              <!-- Generate dynamically from the databas -->
+              <table id="trainingTable">
+                <thead>
+                  <tr>
+                    <th>My Training Sessions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dynamically fill in the team names here -->
+                </tbody>
+              </table>
             </div>
 
-            <!-- Tabs for blocks and exercises -->
-            <div class="tab-container">
-              <div class="horizontal-tabs" id="block-tabs">
-                <!-- <button id="add-block-button" class="add-block-btn-hide">
+            <!-- This is a test-->
+            <!-- <ul class="appendingTest">
+              <li>This is a test to check appending</li>
+            </ul> -->
+
+            <div id="my-training">
+              <!-- Generate dynamically my training session from the databas -->
+              <!-- On clicking a particular team , should generate the below and add it to the specific team -->
+              <!-- Generate dynamically from the databas -->
+              <!-- Tabs for blocks and exercises -->
+              <div class="tab-container">
+                <div class="horizontal-tabs" id="block-tabs">
+                  <!-- <button id="add-block-button" class="add-block-btn-hide">
                   Add a Block
                 </button> -->
-              </div>
-              <div class="vertical-tabs" id="exercise-tabs">
-                <!-- PUTTING THIS OUT FOR A CHANGE-->
-                <!-- <button id="add-exercise-button" class="add-exercise-btn-hide">
+                </div>
+                <div class="vertical-tabs" id="exercise-tabs">
+                  <!-- PUTTING THIS OUT FOR A CHANGE-->
+                  <!-- <button id="add-exercise-button" class="add-exercise-btn-hide">
                   Add an Exercise
                 </button> -->
+                </div>
               </div>
-            </div>
 
-            <!-- <button id="add-exercise-button" class="add-exercise-btn-hide">
+              <!-- <button id="add-exercise-button" class="add-exercise-btn-hide">
               Add an Exercise
             </button> -->
-            <!-- Display exercise details -->
-            <div id="exercise-details">
-              Select an exercise to view details.
-              <div id="table-container" class="create-exercise-table-hide">
-                <!-- MOVED FROM HERE -->
-                <div
-                  id="initial-sets"
-                  class="add-Set--btns"
-                  style="display: none"
-                  ;
-                >
-                  <!-- Table will be generated 1here -->
-                  <label for="set-number"
-                    ><strong>Number of SETS</strong>:
-                    <input type="number" id="set-number" />
-                  </label>
-                  <button id="addSets-btn">Add SETS</button>
+              <!-- Display exercise details -->
+              <div id="exercise-details">
+                Select an exercise to view details.
+                <div id="table-container" class="create-exercise-table-hide">
+                  <!-- MOVED FROM HERE -->
+
+                  <button id="addSet-btn" class="add-Set--btns">Add SET</button>
+                  <form
+                    action="demo.html"
+                    method="GET"
+                    id="create-exercise-form"
+                  >
+                    <div id="dropdown-container">
+                      <!-- Dropdowns will be created here -->
+                    </div>
+                    <table id="create-exercise">
+                      <thead id="create-exercise-heads">
+                        <th
+                          id="header-set"
+                          style="text-align: center; color: white"
+                        >
+                          SET
+                        </th>
+                        <th
+                          id="header-load"
+                          style="text-align: center; color: white"
+                        >
+                          LOAD
+                        </th>
+                        <th
+                          id="header-reps"
+                          style="text-align: center; color: white"
+                        >
+                          REPS
+                        </th>
+                        <th
+                          id="header-input"
+                          style="text-align: center; color: white"
+                        >
+                          input_load
+                        </th>
+                        <th
+                          id="header-actions"
+                          style="text-align: center; color: white"
+                        >
+                          Actions
+                        </th>
+                      </thead>
+                      <tbody class="create-exercise-rows">
+                        <div id="buttonContainer">
+                          <button
+                            type="submit"
+                            id="submitExercise"
+                            class="btn btn-primary"
+                          >
+                            Submit
+                          </button>
+                          <!-- <button
+                            id="modifyButton"
+                            class="btn btn-secondary"
+                            disabled
+                          >
+                            Modify
+                          </button> -->
+                          <!-- <button id="returnButton" class="btn btn-secondary">
+                            Return
+                          </button> -->
+                        </div>
+                      </tbody>
+                    </table>
+                    <div id="error-message" style="color: red"></div>
+                    <div id="success-message" style="color: green"></div>
+                  </form>
+                  <!-- Table will be generated here -->
                 </div>
-
-                <button id="addSet-btn" class="add-Set--btns">Add SET</button>
-                <form action="demo.html" method="get" id="create-exercise-form">
-                  <div id="dropdown-container">
-                    <!-- Dropdowns will be created here -->
-                  </div>
-                  <table id="create-exercise">
-                    <thead id="create-exercise-heads">
-                      <th>SET</th>
-                      <th>LOAD</th>
-                      <th>REPS</th>
-                      <th>Actions</th>
-                      <th></th>
-                    </thead>
-                    <tbody class="create-exercise-rows"></tbody>
-                  </table>
-
-                  <button id="assign-btn" style="display: none" type="submit">
-                    Assign Exercise
-                  </button>
-                </form>
-                <!-- Table will be generated here -->
               </div>
             </div>
           </div>
@@ -263,15 +312,34 @@
     </div>
 
     <div style="margin-top: 100px"></div>
+    <div
+      id="athlete-username"
+      data-username="{{ username }}"
+      style="display: none"
+    ></div>
 
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
+    <script defer>
+      window.addEventListener("DOMContentLoaded", (event) => {
+        const athleteId = 2; // Set athlete ID
+        const coachId = 223; // Set coach ID
+
+        // Select the specific anchor element for "Notes"
+        const notesLink = document.querySelector('a[href="/notes_athlete"]');
+        if (notesLink) {
+          // Update the href attribute with the variables
+          notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
+            coachId
+          )}&athleteId=${encodeURIComponent(athleteId)}`;
+        }
+      });
+    </script>
     <script src="../static/js/calendar.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
-
-    <script src="../static/js/athlete_landing.js" defer></script>
+    <script src="../static/js/athlete_landing-page.js" defer></script>
 
     <!-- Your custom JavaScript code -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.9/index.min.js"></script> -->

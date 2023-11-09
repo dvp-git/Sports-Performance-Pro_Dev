@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Athlete Profile</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../static/css/athlete-profile.css" />
+  </head>
+  <body>
+    <header>
+      <h1 class="title">Sports Performance Pro</h1>
+    </header>
+
+    <!-- Existing Navigation -->
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Workout</a></li>
+        <li><a href="#">Tests</a></li>
+        <li><a href="#">Notes</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="coach-profile.html" class="current">My Profile</a></li>
+      </ul>
+    </nav>
+
+    <div class="container mt-5">
+      <h1 class="text-center">Athlete Profile</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="mb-4">Profile Information</h2>
+          <dl class="row">
+            <dt class="col-sm-4">Name:</dt>
+            <dd class="col-sm-8" id="name">John Doe</dd>
+
+            <dt class="col-sm-4">Email:</dt>
+            <dd class="col-sm-8" id="email">johndoe@example.com</dd>
+
+            <dt class="col-sm-4">Phone No:</dt>
+            <dd class="col-sm-8" id="phone">123-456-7890</dd>
+
+            <dt class="col-sm-4">Gender:</dt>
+            <dd class="col-sm-8" id="gender">Male</dd>
+
+            <dt class="col-sm-4">Age:</dt>
+            <dd class="col-sm-8" id="age">25</dd>
+
+            <dt class="col-sm-4">Institute:</dt>
+            <dd class="col-sm-8" id="institute">Sports Academy</dd>
+
+            <dt class="col-sm-4">Sports:</dt>
+            <dd class="col-sm-8" id="sports">Track and Field</dd>
+          </dl>
+        </div>
+
+        <div class="col-md-6">
+          <h2 class="mb-4">Security Information</h2>
+          <p class="mb-0" id="password">Password: ********</p>
+        </div>
+      </div>
+
+      <!-- "Edit Profile" button -->
+      <div class="text-center mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#editProfileModal"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal for editing profile information -->
+    <div
+      class="modal fade"
+      id="editProfileModal"
+      tabindex="-1"
+      aria-labelledby="editProfileModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Form inside the modal -->
+            <form id="editProfileForm">
+              <div class="mb-3">
+                <label for="editName" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="editName" />
+              </div>
+              <div class="mb-3">
+                <label for="editEmail" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="editEmail" />
+              </div>
+              <div class="mb-3">
+                <label for="editPhone" class="form-label">Phone No:</label>
+                <input type="tel" class="form-control" id="editPhone" />
+              </div>
+              <div class="mb-3">
+                <label for="editGender" class="form-label">Gender:</label>
+                <select class="form-select" id="editGender">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="editAge" class="form-label">Age:</label>
+                <input type="number" class="form-control" id="editAge" />
+              </div>
+              <div class="mb-3">
+                <label for="editInstitute" class="form-label">Institute:</label>
+                <input type="text" class="form-control" id="editInstitute" />
+              </div>
+              <div class="mb-3">
+                <label for="editSports" class="form-label">Sports:</label>
+                <input type="text" class="form-control" id="editSports" />
+              </div>
+              <div class="mb-3">
+                <label for="editPassword" class="form-label">Password:</label>
+                <input type="password" class="form-control" id="editPassword" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="saveChanges()"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/athlete-profile.js" defer></script>
+  </body>
+</html>
