@@ -19,7 +19,7 @@
       href="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/css/select2.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../static/css/coach-athlete-workout.css" />
+    <link rel="stylesheet" href="../static/css/athlete_landing-page.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/js/select2.min.js"
       defer
@@ -33,14 +33,16 @@
 
     <nav>
       <ul>
-        <li><a href="/athleteLanding">Home</a></li>
+        <li><a href="coach-landing-page.html">Home</a></li>
+        <li><a href="workout-selection.html">Assign Workouts</a></li>
         <li><a href="test-selection.html">Create Tests</a></li>
-        <li><a href="/athleteNotes.html">Create Workouts</a></li>
+        <li><a href="#">Create Workouts</a></li>
         <li><a href="#">Notes</a></li>
         <li><a href="#">Notifications</a></li>
         <li><a href="coach-profile.html">My Profile</a></li>
       </ul>
     </nav>
+
     <div class="container">
       <h1>Athlete training sessions!</h1>
       <p id="user_id" data-user-email="{{athlete_username}}"></p>
@@ -179,30 +181,19 @@
 
         <div class="login-container-2">
           <div class="container">
-            <!-- Search for an athlete -->
-            <!-- <div class="search-container">
-              <input
-                type="text"
-                id="athlete-search"
-                placeholder="Search the exercise"
-              />
-              <button id="search-button">Search</button>
-            </div> -->
-
             <div class="team-list">
               <table id="trainingTable">
                 <thead>
                   <tr>
-                    <!-- FIXME: PUT athletes username here -->
-                    <th>{ PUT ATHLETE USERNAME } Sessions</th>
+                    <th>Team Training Sessions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Dynamically fill in the team names here -->
+                  (Dynamically fill in the team names here)
                 </tbody>
               </table>
             </div>
-
+            -->
             <!-- This is a test-->
             <!-- <ul class="appendingTest">
               <li>This is a test to check appending</li>
@@ -247,35 +238,29 @@
                     </div>
                     <table id="create-exercise">
                       <thead id="create-exercise-heads">
-                        <th
-                          id="header-set"
-                          style="text-align: center; color: white"
-                        >
-                          SET
-                        </th>
-                        <th
-                          id="header-load"
-                          style="text-align: center; color: white"
-                        >
-                          LOAD
-                        </th>
-                        <th
-                          id="header-reps"
-                          style="text-align: center; color: white"
-                        >
-                          REPS
-                        </th>
-                        <th
-                          id="header-input"
-                          style="text-align: center; color: white"
-                        >
-                          athletes_load
-                        </th>
+                        <th>SET</th>
+                        <th>LOAD</th>
+                        <th>REPS</th>
+                        <th>input_load</th>
                       </thead>
-                      <tbody class="create-exercise-rows"></tbody>
+                      <tbody class="create-exercise-rows">
+                        <div id="buttonContainer">
+                          <button
+                            type="submit"
+                            id="submitExercise"
+                            class="btn btn-primary"
+                          >
+                            Submit
+                          </button>
+                          <button id="modifyButton" class="btn btn-secondary">
+                            Modify
+                          </button>
+                          <button id="returnButton" class="btn btn-secondary">
+                            Return
+                          </button>
+                        </div>
+                      </tbody>
                     </table>
-                    <div id="error-message" style="color: red"></div>
-                    <div id="success-message" style="color: green"></div>
                   </form>
                   <!-- Table will be generated here -->
                 </div>
@@ -296,25 +281,11 @@
     <footer>
       <div class="footer">2023 Sports Performance Pro</div>
     </footer>
-    <script defer>
-      window.addEventListener("DOMContentLoaded", (event) => {
-        const athleteId = 2; // Set athlete ID
-        const coachId = 223; // Set coach ID
-
-        // Select the specific anchor element for "Notes"
-        const notesLink = document.querySelector('a[href="/notes_athlete"]');
-        if (notesLink) {
-          // Update the href attribute with the variables
-          notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
-            coachId
-          )}&athleteId=${encodeURIComponent(athleteId)}`;
-        }
-      });
-    </script>
     <script src="../static/js/calendar.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
-    <script src="../static/js/coach-athlete-workout.js" defer></script>
+
+    <script src="../static/js/athlete-view-training.js" defer></script>
 
     <!-- Your custom JavaScript code -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.9/index.min.js"></script> -->
