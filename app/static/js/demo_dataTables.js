@@ -142,6 +142,7 @@ function displayAthletes() {
 
 // Function to display blocks for the selected athlete
 function displayBlocks(athlete) {
+  console.log(`Athlete:`, athlete);
   selectedBlock = blockTabs.innerHTML = "";
   exerciseTabs.innerHTML = "";
   exerciseDetails.innerHTML = "Select a Block to view details.";
