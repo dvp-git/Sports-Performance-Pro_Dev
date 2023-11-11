@@ -2,14 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="athlete-styles.css" /> -->
-    <!-- Include Bootstrap CSS -->
-
-    <!-- <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/main.min.css"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=yes" />
+    <!-- Include jQuery and jQuery UI libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
       rel="stylesheet"
-    /> -->
+      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Other CSS and JavaScript libraries -->
+    <!-- ... -->
 
     <link
       rel="stylesheet"
@@ -35,147 +38,53 @@
       <ul>
         <li><a href="/athleteLanding">Home</a></li>
         <li><a href="test-selection.html">Athlete Tests</a></li>
-        <li><a id="notesLink" href="/notes_athlete">Notes</a></li>
+        <li><a href="/athleteNotes.html">Notes</a></li>
         <li><a href="#">Notifications</a></li>
-        <li><a href="/athleteProfile">My Profile</a></li>
+        <li><a href="coach-profile.html">My Profile</a></li>
       </ul>
     </nav>
+
+
+
     <div class="container">
       <h1>Athlete training sessions!</h1>
       <p id="user_id" data-user-email="{{athlete_username}}"></p>
       <!-- Container for login forms -->
       <div class="login-forms">
         <div class="login-container-1" style="margin-right: 20px">
-          <div class="container mt-7">
-            <h1 class="text-center">Athlete Workout</h1>
-            <div class="row">
-              <div class="col-md-7">
-                <!-- Left side div for the calendar -->
-                <!-- <div id="athlete-calendar"></div> -->
-                <div
-                  class="container col-sm-4 col-md-7 col-lg-4 mt-5 d-flex justify-content-center"
-                  id="athlete-calendar"
-                >
+                <!-- Left side div for the date picker -->
                   <div class="card">
-                    <h3 class="card-header" id="monthAndYear"></h3>
-                    <table
-                      class="table table-bordered table-responsive-sm"
-                      id="calendar"
-                    >
-                      <thead>
-                        <tr>
-                          <th>Sun</th>
-                          <th>Mon</th>
-                          <th>Tue</th>
-                          <th>Wed</th>
-                          <th>Thu</th>
-                          <th>Fri</th>
-                          <th>Sat</th>
-                        </tr>
-                      </thead>
-                      <tbody id="calendar-body"></tbody>
-                    </table>
-                    <div class="form-inline" style="width: 100%">
+                    <h4 class="card-header">Pick a Date</h3>
+                    <div class="card-body">
+                      <input
+                        type="text"
+                        id="selectedDate"
+                        class="form-control"
+                        placeholder="DD/MM/YYYY"  
+                      />
                       <button
-                        class="btn btn-outline-primary"
-                        style="width: 50%"
-                        id="previous"
-                        onclick="previous()"
+                        class="btn btn-primary mt-3"
+                        onclick="openDatePicker()"
                       >
-                        Previous
-                      </button>
-                      <button
-                        class="btn btn-outline-primary"
-                        style="width: 50%"
-                        id="next"
-                        onclick="next()"
-                      >
-                        Next
+                        Open Date Picker
                       </button>
                     </div>
-                    <br />
-                    <form class="form-inline" style="width: 100%">
-                      <label class="lead mr-2" for="month">Jump To:</label>
-                      <select
-                        class="form-control col-sm-6"
-                        name="month"
-                        id="month"
-                        onchange="jump()"
-                      >
-                        <option value="0">Jan</option>
-                        <option value="1">Feb</option>
-                        <option value="2">Mar</option>
-                        <option value="3">Apr</option>
-                        <option value="4">May</option>
-                        <option value="5">Jun</option>
-                        <option value="6">Jul</option>
-                        <option value="7">Aug</option>
-                        <option value="8">Sep</option>
-                        <option value="9">Oct</option>
-                        <option value="10">Nov</option>
-                        <option value="11">Dec</option>
-                      </select>
-
-                      <label for="year"></label>
-                      <select
-                        class="form-control col-sm-6"
-                        name="year"
-                        id="year"
-                        onchange="jump()"
-                      >
-                        <option value="1990">1990</option>
-                        <option value="1991">1991</option>
-                        <option value="1992">1992</option>
-                        <option value="1993">1993</option>
-                        <option value="1994">1994</option>
-                        <option value="1995">1995</option>
-                        <option value="1996">1996</option>
-                        <option value="1997">1997</option>
-                        <option value="1998">1998</option>
-                        <option value="1999">1999</option>
-                        <option value="2000">2000</option>
-                        <option value="2001">2001</option>
-                        <option value="2002">2002</option>
-                        <option value="2003">2003</option>
-                        <option value="2004">2004</option>
-                        <option value="2005">2005</option>
-                        <option value="2006">2006</option>
-                        <option value="2007">2007</option>
-                        <option value="2008">2008</option>
-                        <option value="2009">2009</option>
-                        <option value="2010">2010</option>
-                        <option value="2011">2011</option>
-                        <option value="2012">2012</option>
-                        <option value="2013">2013</option>
-                        <option value="2014">2014</option>
-                        <option value="2015">2015</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                        <option value="2030">2030</option>
-                      </select>
-                    </form>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <!-- Right side div (vacant for now) -->
+                <!-- Right side div (workout display) -->
+                <div id="workout-display" class="mt-5" style="display: none">
+                  <!-- Display workout for selected date here -->
+                  <h2>Workout for Selected Date:</h2>
+                  <div id="selectedDateWorkout"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+       
         <div class="login-container-2">
           <div class="container">
             <!-- Search for an athlete -->
@@ -322,28 +231,28 @@
     </footer>
 
     <script src="../static/js/calendar.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
     <script src="../static/js/athlete_landing-page.js" defer></script>
+
     <script>
-      // Wait for the DOM to load
-      document.addEventListener("DOMContentLoaded", function () {
-        const notesLink = document.querySelector('a[href="/notes_athlete"]');
-        if (notesLink) {
-          // Update the href attribute with the variables
-          // notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(coachId)}&athleteId=${encodeURIComponent(athleteId)}`;
+      // Function to open the date picker
+      function openDatePicker() {
+        $("#selectedDate").datepicker({
+          dateFormat: "mm/dd/yy",
+          onSelect: function (dateText, inst) {
+            // When a date is selected, you can load the workout for that date here
+            var selectedDate = dateText;
+            // For demonstration, we'll just display the selected date's workout
+            $("#selectedDateWorkout").text(
+              "Workout for " + selectedDate + " will be displayed here."
+            );
+            // Display the workout section
+            $("#workout-display").show();
+          },
+        });
 
-          // Add an event listener to the link
-          notesLink.addEventListener("click", function (event) {
-            // Call your function here
-            onNotesClick(event);
-          });
-        }
-      });
+        // Show the date picker
+        $("#selectedDate").datepicker("show");
+      }
     </script>
-
-    <!-- Your custom JavaScript code -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.9/index.min.js"></script> -->
-    <!-- <script src="calendar.js"></script> -->
   </body>
 </html>

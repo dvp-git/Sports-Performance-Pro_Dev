@@ -486,20 +486,28 @@ async function initialData() {
     console.log("My coach Ids :", coachIds); // is an array of coach_ids json
 
     personalCoaches = await fetchPersonalCoaches(athleteId);
-    if (personalCoaches.error === "No coaches found for the athlete") {
-      personalCoaches = [];
-    } else {
-      peronalCoachIds = personalCoaches.map(
-        (personcalCoach) => personcalCoach.coach_id
-      );
-    }
+    peronalCoachIds = personalCoaches.map(
+      (personcalCoach) => personcalCoach.coach_id
+    );
 
     console.log("My personal coach Ids :", peronalCoachIds);
+    console.log("tilak :", peronalCoachIds[0]);
+
 
     myWorkouts = await fetchWorkoutsForAthleteAndTeams(athleteId, teamIds);
     console.log("These are my Workouts: initial Data ", myWorkouts);
 
-    // Table creation filter date here : TODO: Ideally filter by date when pulling data itself ( optimization required )
+    // TODO: Use only if required
+    // const allBlockNames = getAllBlockNames(myWorkouts);
+    // console.log("All Block Names:", allBlockNames);
+
+    // const targetBlockName = "Zumba-dance2";
+    // const exercisesForBlock = getExercisesByBlockName(
+    //   myWorkouts,
+    //   targetBlockName
+    // );
+    // console.log(`Exercises for "${targetBlockName}":`, exercisesForBlock);
+
     const dataCreation = (function () {
       // You can now work with athleteID and athleteTeams here
       console.log("Athlete ID:", athleteId);
@@ -596,8 +604,6 @@ $("#trainingTable tbody").on("click", "tr", function () {
   // Apply the highlight using inline CSS
   row.find("td").css("background-color", "green"); // Customize the color as needed
   // Set the teamID if there is one:
-  console.log("View the data of clicked Item : ", data);
-
   if (data["team_id"] !== null) {
     currentTeamId = data["team_id"];
     console.log("The current team_id is ", currentTeamId);
@@ -615,10 +621,7 @@ $("#trainingTable tbody").on("click", "tr", function () {
       ? fetch(
           `getWorkoutsByAthleteDirect?athleteId=${athleteId}&coachId=${currentCoachId}&date=${currentDate}`
         )
-          .then((response) => {
-            response = response.json();
-            return response;
-          })
+          .then((response) => response.json())
           .then((data) => {
             console.log("This is my data:", data);
             return data;
@@ -775,21 +778,25 @@ function validateInputField(loadInput, maxLoad) {
     return true;
   }
 }
+console.log(peronalCoachIds)
 
 //Function for notes additional
-function onNotesClick(event) {
+function onNotesClick(event){
   // event.preventDefault();
+ 
 
-  // Select the specific anchor element for "Notes"
-  console.log("tests");
-  const notesLink = document.getElementById("notesLink");
-  if (notesLink) {
-    // Update the href attribute with the variables
-    notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
-      peronalCoachIds
-    )}&athleteId=${encodeURIComponent(athleteId)}`;
-  }
+    // Select the specific anchor element for "Notes"
+    console.log("tests")
+    const notesLink = document.getElementById('notesLink');
+    if (notesLink) {
+      // Update the href attribute with the variables
+      notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
+        peronalCoachIds
+      )}&athleteId=${encodeURIComponent(athleteId)}`;
+    }
+
 }
+
 
 // Function to check if all input fields are filled
 // function areAllFieldsFilled() {

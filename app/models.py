@@ -26,7 +26,7 @@ class Athletes(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     age = db.Column(db.Integer)
     sports = db.Column(db.String(255))
-    gender = db.Column(db.String(30), db.CheckConstraint("gender IN ('Male', 'Female', 'Non-binary','Transgender','Genderqueer','Other')"),nullable=False) 
+    gender = db.Column(db.String(30), db.CheckConstraint("gender IN ('Male', 'Female', 'Non-binary','Transgender','Genderqueer','Other')"),nullable=False)  # FIXME: check_constraint="gender IN ('male', 'female', 'other')")
     institute = db.Column(db.String(255))
     password = db.Column(db.String(60), nullable=False)
     # coach_id = db.Column(db.Integer, db.ForeignKey('coaches.coach_id'), nullable=False)
@@ -101,6 +101,7 @@ class AthleteWorkouts(db.Model):
 
 
 class CoachAthleteMembership(db.Model):
+    # coach_athlete_membership_id 
     __tablename__ = 'coach_athlete_membership'
     ca_membership_id = db.Column(db.Integer, primary_key=True)
     athlete_id = db.Column(db.Integer, db.ForeignKey('athletes.athlete_id'))

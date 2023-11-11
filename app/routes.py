@@ -1,7 +1,7 @@
 # app/routes.py
 from mysqlx import IntegrityError
 from app import app,db
-from app.models import Coaches, CoachAthleteMembership, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises, Notes, AthleteWorkouts, TeamWorkoutsAssignments,AthleteExerciseInputLoads
+from app.models import Coaches, CoachAthleteMembership, Athletes, Teams, TeamMemberships, Workouts, Blocks, Exercises, Notes, AthleteWorkouts, TeamWorkoutsAssignments,AthleteExerciseInputLoads #, DefineExercise, Sports, InstitutesmCategory , ExerciseType
 
 # AthleteExercises, AthleteBlocks, 
 from flask import jsonify,request, Flask, render_template, request, redirect, url_for, session
@@ -69,6 +69,76 @@ def add_new_coach():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/updateCoach', methods=['POST'])
+def update_coach():
+    try:
+        data = request.json
+        # Ensure that 'email' is present in the JSON data
+        if 'email' not in data:
+            return jsonify({'error': 'Email address is required for updating a coach'}), 400
+        # Find the coach by email
+        coach = Coaches.query.filter_by(email=data['email']).first()
+
+        if coach:
+            # Update the coach's information
+            coach.name = data['name']
+            coach.phone = data['phone']
+            coach.sports = data['sports']
+            coach.institute = data['institute']
+
+            db.session.commit()
+            return jsonify({'message': 'Coach updated successfully'}), 200
+        else:
+            return jsonify({'error': 'Coach not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/deleteCoach', methods=['DELETE'])
+def delete_coach():
+    try:
+        email = request.args.get('email')
+
+        if email is not None:
+            # Find the coach by email
+            coach = Coaches.query.filter_by(email=email).first()
+
+            if coach:
+                # Delete the coach from the database
+                db.session.delete(coach)
+                db.session.commit()
+                return jsonify({'message': 'Coach deleted successfully'}), 200
+            else:
+                return jsonify({'error': 'Coach not found'}), 404
+        else:
+            return jsonify({'error': 'Email address is required for deleting a coach'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/deleteAthlete', methods=['DELETE'])
+def delete_athlete():
+    try:
+        email = request.args.get('email')
+
+        if email is not None:
+            # Find the coach by email
+            athlete = Athletes.query.filter_by(email=email).first()
+
+            if athlete:
+                # Delete the coach from the database
+                db.session.delete(athlete)
+                db.session.commit()
+                return jsonify({'message': 'Athlete deleted successfully'}), 200
+            else:
+                return jsonify({'error': 'Athlete not found'}), 404
+        else:
+            return jsonify({'error': 'Email address is required for deleting a coach'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 #Add an athlete
@@ -146,6 +216,52 @@ def add_team_membership():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/addNewWorkout', methods=['POST'])
+def add_workout():
+    try:
+        data = request.get_json()
+        if 'name' not in data or 'coach_id' not in data:
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        if 'athlete_id' in data:
+            athlete = Athletes.query.get(data['athlete_id'])
+            if not athlete:
+                return jsonify({'error': 'Athlete not found'}), 404
+
+            new_workout = Workouts(name=data['name'], coach_id=data['coach_id'])
+            db.session.add(new_workout)
+            db.session.commit()
+
+            athlete_workout = AthleteWorkouts(
+                athlete_id=data['athlete_id'],
+                workout_id=new_workout.workout_id,
+                date_completed=data.get('date_completed')
+            )
+            db.session.add(athlete_workout)
+        elif 'team_id' in data:
+            team = Teams.query.get(data['team_id'])
+            if not team:
+                return jsonify({'error': 'Team not found'}), 404
+
+            new_workout = Workouts(name=data['name'], coach_id=data['coach_id'])
+            db.session.add(new_workout)
+            db.session.commit()
+
+            team_workout_assignment = TeamWorkoutsAssignments(
+                team_id=data['team_id'],
+                workout_id=new_workout.workout_id
+            )
+            db.session.add(team_workout_assignment)
+        else:
+            return jsonify({'error': 'Either athlete_id or team_id must be provided in the payload'}), 400
+
+        db.session.commit()
+
+        return jsonify({'message': 'Workout added successfully', 'workout_id': new_workout.workout_id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+    
 
 
 #Get athletes team wise for a particular coach
@@ -192,51 +308,10 @@ def get_coach_with_teams_and_athletes():
 
 
 # Add a workout
-@app.route('/addNewWorkout', methods=['POST'])
-def add_workout():
-    try:
-        data = request.get_json()
-        if 'name' not in data or 'coach_id' not in data:
-            return jsonify({'error': 'Missing required fields'}), 400
 
-        if 'athlete_id' in data:
-            athlete = Athletes.query.get(data['athlete_id'])
-            if not athlete:
-                return jsonify({'error': 'Athlete not found'}), 404
 
-            new_workout = Workouts(name=data['name'], coach_id=data['coach_id'])
-            db.session.add(new_workout)
-            db.session.commit()
 
-            athlete_workout = AthleteWorkouts(
-                athlete_id=data['athlete_id'],
-                workout_id=new_workout.workout_id,
-                date_completed=data.get('date_completed')
-            )
-            db.session.add(athlete_workout)
-        elif 'team_id' in data:
-            team = Teams.query.get(data['team_id'])
-            if not team:
-                return jsonify({'error': 'Team not found'}), 404
 
-            new_workout = Workouts(name=data['name'], coach_id=data['coach_id'])
-            db.session.add(new_workout)
-            db.session.commit()
-
-            team_workout_assignment = TeamWorkoutsAssignments(
-                team_id=data['team_id'],
-                workout_id=new_workout.workout_id
-            )
-            db.session.add(team_workout_assignment)
-        else:
-            return jsonify({'error': 'Either athlete_id or team_id must be provided in the payload'}), 400
-
-        db.session.commit()
-
-        return jsonify({'message': 'Workout added successfully', 'workout_id': new_workout.workout_id}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 400
 
 
 # Add a new block
@@ -789,7 +864,8 @@ def coach_login():
             message="Wrong coach username password!"
             return message
         
-   
+
+
 
    
 # @app.route('/getCoachUsername', methods=['GET'])
@@ -884,7 +960,7 @@ def post_athlete():
         return "User exists, try logging in!"
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     if 'sports' in data and isinstance(data['sports'], list):
-        sports_string = ', '.join(data['sports'])
+        sports_string = ','.join(data['sports'])
     # If email does not exist, create a new athlete
     new_athlete = Athletes(
         name=data['name'],
@@ -949,7 +1025,28 @@ def admin_post():
 #Route for succesful athlete login and landing page
 @app.route('/adminLanding')
 def admin_landing():
-    return render_template("Admin_landing.html")
+    if 'username' in session:
+        return render_template("admin-coach.html")
+    else:
+        return redirect(url_for('admin_login')) 
+
+#Route for succesful athlete login and landing page
+@app.route('/adminExercises')
+def admin_exercises():
+    if 'username' in session:
+        return render_template("admin-define-exercises.html")
+    else:
+        return redirect(url_for('admin_login')) 
+
+
+#Route for admin athlete view
+@app.route('/adminAthlete')
+def admin_athlete():
+    if 'username' in session:
+        return render_template("admin-athlete.html")
+    else:
+        return redirect(url_for('admin_login')) 
+
 
 #Route for coach landing
 @app.route('/coachLanding')
@@ -986,17 +1083,68 @@ def addTeamAthlete():
 def workoutSelection():
     return render_template('workout-selection.html')
 
+@app.route('/testSelection')
+def testSelection():
+    return render_template('test-selection.html')
+
 @app.route('/athleteSelection')
 def athleteSelection():
     return render_template('athlete-datatable.html')
 
-@app.route('/coachAthleteWorkout')
-def athleteWorkout():
-    return render_template('coach-athlete-workouts.html')
+@app.route('/testAthleteSelection')
+def testAthleteSelection():
+    return render_template('test-athlete-datatable.html')
 
-@app.route('/coachTeamTraining')
+@app.route('/teamSelection')
+def teamSelection():
+    return render_template('team-datatable.html')
+
+@app.route('/testTeamSelection')
+def testTeamSelection():
+    return render_template('test-team-datatable.html')
+
+@app.route('/athleteWorkout')
+def athleteWorkout():
+    return render_template('athlete-workout.html')
+
+@app.route('/coachAthleteWorkout')
+def coachAthleteWorkout():
+    return render_template('coach-athlete-training.html')
+
+@app.route('/teamWorkout')
+def teamWorkout():
+    return render_template('team-workout.html')
+
+
+@app.route('/coachTeamWorkout')
 def coachTeamWorkout():
     return render_template('coach-team-training.html')
+
+@app.route('/coachNotes')
+def coachNotes():
+    return render_template('coachNotes.html')
+
+@app.route('/defineExercises')
+def defineExercises():
+    return render_template('define-exercises.html')
+
+@app.route('/coachProfile')
+def coachProfile():
+    # return render_template('/coach-profile.html')
+        # Get the session data and pass it to the template
+    session_data = {
+        'username': session.get('username')
+        # Add other session data as needed
+    }
+    return render_template('coach-profile.html', session=session_data)
+
+@app.route('/athleteProfile')
+def athleteProfile():
+    session_data = {
+        'username': session.get('username')
+        # Add other session data as needed
+    }
+    return render_template('athlete-profile.html', session=session_data)
 
 @app.route('/createTeamAndMemberships', methods=['POST'])
 def create_team_and_memberships():
@@ -1077,6 +1225,97 @@ def get_athletes_for_team():
         return jsonify({'error': 'teamId not found in the request'}), 400
     
 
+
+@app.route('/getTeamsForAthleteByCoach', methods=['GET'])
+def get_teams_for_athlete_by_coach():
+    athlete_id = request.args.get('athleteId',type=int)
+    coach_id = request.args.get('coachId', type=int)
+    if athlete_id is not None:
+        try:
+            # Check condition for athlete
+            athlete = Athletes.query.filter_by(athlete_id=athlete_id).first()
+            # print(athlete)
+            if not athlete:
+                return jsonify({"Error" : "Athlete note found"}), 400
+            
+            teams =  Teams.query.join(TeamMemberships).filter(Teams.coach_id == coach_id).filter(TeamMemberships.athlete_id == athlete_id).all()
+            if teams is not None: 
+                teams_list = []
+
+                for team in teams:
+                    team_data = {
+                        'team_id': team.team_id,
+                        'name': team.name,
+                        'sport': team.sport,
+                        'coach_id': team.coach_id,
+                    }
+                    teams_list.append(team_data)
+
+                return jsonify(teams=teams_list), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+    else:
+        return jsonify({'error': 'teamId not found in the request'}), 400
+    
+
+@app.route('/getWorkoutforAthletebyTeamsByCoach')
+def get_workouts():
+    athlete_id = request.args.get('athleteId')
+    coach_id = request.args.get('coachId')
+    date = request.args.get('date')
+    
+    if date:
+        teams = db.session.query(Teams).filter(Teams.coach_id == coach_id)
+        # teams = teams.filter(Workouts.date_added == date)
+    else:
+        teams = db.session.query(Teams).filter(Teams.coach_id == coach_id)
+
+    teams = teams.join(TeamMemberships).filter(TeamMemberships.athlete_id == athlete_id)
+    teams = teams.all()
+
+    result = []
+    for team in teams:
+        team_data = {
+            "team_id": team.team_id,
+            "team_name": team.name,
+            "workouts": []
+        }
+
+        team_workouts = db.session.query(TeamWorkoutsAssignments).filter_by(team_id=team.team_id).all()
+
+        for team_workout in team_workouts:
+            workout_data = {
+                "workout_name": db.session.query(Workouts).get(team_workout.workout_id).name,
+                "date_added": db.session.query(Workouts).get(team_workout.workout_id).date_added.strftime('%Y-%m-%d'),
+                "blocks": []
+            }
+
+            blocks = db.session.query(Blocks).filter_by(workout_id=team_workout.workout_id).all()
+
+            for block in blocks:
+                block_data = {
+                    "block_name": block.name,
+                    "exercises": []
+                }
+
+                exercises = db.session.query(Exercises).filter_by(block_id=block.block_id).all()
+
+                for exercise in exercises:
+                    exercise_data = {
+                        "exercise_name": exercise.name,
+                        "loads_reps": exercise.loads_reps,
+                        "sets": exercise.sets
+                    }
+
+                    block_data["exercises"].append(exercise_data)
+
+                workout_data["blocks"].append(block_data)
+
+            team_data["workouts"].append(workout_data)
+
+        result.append(team_data)
+
+    return jsonify(result)
 @app.route('/getTeamsForAthlete', methods=['GET'])
 def get_teams_for_athlete():
     athlete_id = int(request.args.get('athleteId'))
@@ -1285,27 +1524,69 @@ def get_all_athletes():
     if coach_id is None:
         return jsonify(error="Missing coach_id parameter")
 
-    # Query the database to get athletes for the specified coach_id
-    athletes = Athletes.query.filter_by(coach_id=coach_id).all()
+    # Query the database to get athletes associated with the specified coach_id
+    athlete_membership_records = CoachAthleteMembership.query.filter_by(coach_id=coach_id).all()
 
     # Create a list to store the athlete data
     athlete_list = []
 
-    # Iterate through the athletes and convert them to dictionaries
-    for athlete in athletes:
-        athlete_data = {
-            'athlete_id': athlete.athlete_id,
-            'name': athlete.name,
-            'sports': athlete.sports,
-            'institute': athlete.institute,
-            'coach_id': athlete.coach_id
-            # Add more fields as needed
-        }
-        athlete_list.append(athlete_data)
+    # Iterate through the athlete_membership_records and retrieve athlete details
+    for record in athlete_membership_records:
+        athlete = Athletes.query.get(record.athlete_id)
+        if athlete:
+            athlete_data = {
+                'athlete_id': athlete.athlete_id,
+                'name': athlete.name,
+                'sports': athlete.sports,
+                'institute': athlete.institute,
+                'coach_id': coach_id  # Since coach_id is from the request parameter
+                # Add more fields as needed
+            }
+            athlete_list.append(athlete_data)
 
     # Return the athlete data as JSON
     return jsonify(athletes=athlete_list)
 
+
+
+@app.route('/getAthletesForAdmin', methods=['GET'])
+def get_athletes_for_admin():
+    try:
+        # Query the Athletes table to get all athletes
+        athletes = Athletes.query.all()
+
+        # Initialize a list to store athlete data
+        athlete_list = []
+
+        for athlete in athletes:
+            # Retrieve team memberships for the athlete
+            team_memberships = TeamMemberships.query.filter_by(athlete_id=athlete.athlete_id).all()
+
+            # Initialize a list to store team names for the athlete
+            athlete_teams = []
+
+            for membership in team_memberships:
+                team = Teams.query.get(membership.team_id)
+                if team:
+                    athlete_teams.append(team.name)
+
+            athlete_data = {
+                'name': athlete.name,
+                'phone': athlete.phone,
+                'age': athlete.age,
+                'gender': athlete.gender,
+                'sports': athlete.sports,
+                'institute': athlete.institute,
+                'teams': athlete_teams,
+                'email': athlete.email
+            }
+
+            athlete_list.append(athlete_data)
+
+        return jsonify(athletes=athlete_list)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 @app.route('/getAllTeams', methods=['GET'])
@@ -1419,6 +1700,61 @@ def add_coach_athlete_membership():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+# Update coach profile endpoint
+@app.route('/updateCoachProfile', methods=['POST'])
+def update_coach_profile():
+    if request.method == 'POST':
+        # Get the coach's email from the session
+        email = session.get('username')
+        if email is None:
+            return jsonify({'error': 'Coach not authenticated'}), 401
+        
+        # Retrieve the coach from the database
+        coach = Coaches.query.filter(Coaches.email == email).first()
+        if coach is None:
+            return jsonify({'error': 'Coach not found'}), 404
+        
+        # Get the updated data from the POST request
+        data = request.get_json()
+        
+        # Convert the list of sports to a string
+        updated_sports = ",".join(data.get('sports'))
+        
+        # Update the coach's data, except for the email
+        coach.name = data.get('name')
+        coach.phone = data.get('phone')
+        coach.sports = updated_sports
+        coach.institute = data.get('institute')
+        
+        # Commit the changes to the database
+        db.session.commit()
+        
+        return jsonify({'message': 'Coach profile updated successfully'})
+    
+# Route for updating the coach's password
+@app.route('/updateCoachPassword', methods=['POST'])
+def update_coach_password():
+    if 'username' in session:
+        data = request.get_json(force=True)
+        coach = Coaches.query.filter_by(email=session['username']).first()
+        
+        if coach and bcrypt.check_password_hash(coach.password, data['oldPassword']):
+            new_password = bcrypt.generate_password_hash(data['newPassword']).decode('utf-8')
+            coach.password = new_password
+            db.session.commit()
+            return jsonify({'message': 'Password updated successfully'})
+        else:
+            return jsonify({'message': 'Invalid old password'}), 401
+    else:
+        return jsonify({'message': 'Unauthorized'}), 401
+    
+# Route for logging out
+@app.route('/logout', methods=['POST'])
+def logout():
+    # Clear the session data
+    session.clear()
+    return jsonify(message='Logged out successfully')
 
 
 @app.route('/getBlocksByWorkout', methods=['GET'])
@@ -1469,6 +1805,174 @@ def get_exercises_by_block():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+# get defined exercises
+#FIXME: Include later after models are updated
+# @app.route('/exercises', methods=['GET'])
+# def get_exercises():
+#     exercises = DefineExercise.query.join(
+#         ExerciseType, DefineExercise.type_id == ExerciseType.id
+#     ).join(Category, ExerciseType.category_id == Category.id).all()
+
+#     exercise_list = []
+
+#     for exercise in exercises:
+#         exercise_data = {
+#             'id': exercise.id,
+#             'name': exercise.name,
+#             'category': exercise.exercise_type.category.name,
+#             'exercise_type': exercise.exercise_type.name
+#         }
+#         exercise_list.append(exercise_data)
+
+#     return jsonify({'exercises': exercise_list})
+
+# deleting defined exercises
+#FIXME: Include later after models are updated
+# @app.route('/exercises/<int:exercise_id>', methods=['DELETE'])
+# def delete_exercise(exercise_id):
+#     try:
+#         # Fetch the exercise from the database
+#         exercise = DefineExercise.query.get(exercise_id)
+
+#         if exercise is not None:
+#             # Delete the exercise, and SQLAlchemy will automatically delete related records
+#             db.session.delete(exercise)
+#             db.session.commit()
+#             return jsonify({'message': 'Exercise and its references deleted successfully'}), 200
+#         else:
+#             return jsonify({'message': 'Exercise not found'}), 404
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
+# Adding new Category for defined exercises
+#FIXME: Include later after models are updated
+# @app.route('/add_category', methods=['POST'])
+# def add_category():
+#     try:
+#         # Get the category name from the request
+#         category_name = request.json.get('name')
+
+#         # Check if the category already exists
+#         existing_category = Category.query.filter_by(name=category_name).first()
+#         if existing_category:
+#             return jsonify({'message': 'Category already exists'}), 400
+
+#         # Create a new category
+#         new_category = Category(name=category_name)
+
+#         # Add the category to the database
+#         db.session.add(new_category)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Category added successfully'}), 201
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# Adding exercise-type for defined exercises
+#FIXME: Include later after models are updated
+# @app.route('/add_exercise_type', methods=['POST'])
+# def add_exercise_type():
+#     data = request.get_json()
+
+#     if 'name' not in data or 'category_id' not in data:
+#         return jsonify({'error': 'Exercise type name and category ID are required'}), 400
+
+#     exercise_type_name = data['name']
+#     category_id = data['category_id']
+
+#     # Check if the category exists
+#     category = Category.query.get(category_id)
+#     if not category:
+#         return jsonify({'error': 'Category does not exist'}), 400
+
+#     # Check if the exercise type already exists in the category
+#     existing_exercise_type = ExerciseType.query.filter_by(name=exercise_type_name, category=category).first()
+#     if existing_exercise_type:
+#         return jsonify({'error': 'Exercise type already exists in the category'}), 400
+
+#     # Create a new exercise type
+#     new_exercise_type = ExerciseType(name=exercise_type_name, category=category)
+
+#     try:
+#         db.session.add(new_exercise_type)
+#         db.session.commit()
+#         return jsonify({'message': 'Exercise type added successfully'}), 201
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({'error': 'Error adding exercise type'}), 500
+
+# API endpoint to get all categories
+#FIXME: Include later after models are updated
+# @app.route('/categories', methods=['GET'])
+# def get_categories():
+#     try:
+#         categories = Category.query.all()
+#         categories_list = [{'id': category.id, 'name': category.name} for category in categories]
+#         return jsonify({'categories': categories_list})
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# API endpoint to get all exercise types for a specific category
+#FIXME: Include later after models are updated
+# @app.route('/exercise-types', methods=['GET'])
+# def get_exercise_types():
+#     try:
+#         category_id = request.args.get('category_id')
+
+#         # Check if the category_id is provided
+#         if category_id is None:
+#             return jsonify({'error': 'Category ID is required'}), 400
+
+#         # Query the database to get exercise types for the specified category
+#         exercise_types = ExerciseType.query.filter_by(category_id=category_id).all()
+
+#         # Convert the SQLAlchemy objects to a list of dictionaries
+#         exercise_types_list = [{'id': exercise.id, 'name': exercise.name} for exercise in exercise_types]
+
+#         return jsonify({'exercise_types': exercise_types_list})
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# API endpoint to add a new exercise
+#FIXME: Include later after models are updated
+# @app.route('/add-exercise', methods=['POST'])
+# def add_defined_exercise():
+#     try:
+#         data = request.get_json()
+#         name = data.get('name')
+#         type_id = data.get('type_id')
+
+#         # Validate and add the exercise to the database
+#         if not name or not type_id:
+#             return jsonify({'error': 'Name and type_id are required parameters'}), 400
+
+#         # Create an instance of DefineExercise
+#         exercise = DefineExercise(name=name, type_id=type_id)
+
+#         # Check if the ExerciseType with the given type_id exists
+#         exercise_type = ExerciseType.query.get(type_id)
+#         if not exercise_type:
+#             return jsonify({'error': 'ExerciseType with the given type_id does not exist'}), 404
+
+#         # Check if the Category with the given category_id exists
+#         category_id = exercise_type.category_id
+#         category = Category.query.get(category_id)
+#         if not category:
+#             return jsonify({'error': 'Category with the given category_id does not exist'}), 404
+
+#         # Add the exercise to the database
+#         db.session.add(exercise)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Exercise added successfully!'}), 201
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
 
 # Get Exercise Details by exercise ID
 @app.route('/getExerciseDetails', methods=['GET'])
@@ -1517,7 +2021,7 @@ def save_athlete_inputs():
 
     if exercise and athlete:
         # Check athleteinput for exericse is  existing ? UPDATE : INSERT
-        exercise_input_present = AthleteExerciseInputLoads.query.filter_by(exercise_id=exercise_id).first()
+        exercise_input_present = AthleteExerciseInputLoads.query.filter_by(exercise_id=exercise_id, athlete_id=athlete_id).first()
 
         if exercise_input_present :
             return jsonify({'error': 'Exercise input is already present, Only Update possible'}), 400
@@ -1539,6 +2043,7 @@ def check_athlete_exercise_input_loads():
     exercise_id =  request.args.get('exerciseId')
     athlete_id = request.args.get('athleteId')
 
+    
     if athlete_id is None :
             return jsonify({'error': 'athleteId is required '}), 400
             
@@ -1550,6 +2055,7 @@ def check_athlete_exercise_input_loads():
 
     if exercise and athlete:
         athlete_input = AthleteExerciseInputLoads.query.filter_by(exercise_id=exercise_id, athlete_id=athlete_id).first()
+
 
         if athlete_input:
             # Send back the input_loads
@@ -1563,101 +2069,138 @@ def check_athlete_exercise_input_loads():
     return jsonify({'info':'No exercise input found'}) , 200
 
 
+@app.route('/notesLanding')
+def notesLanding():
+    return render_template('coachNotes_landing.html')
+
+#FIXME: Include later after models are updated
+# @app.route('/getAllSports', methods=['GET'])
+# def get_all_sports():
+#     try:
+#         # Query the database to retrieve all sports
+#         sports = Sports.query.all()
+
+#         # Create a list to store the sport names
+#         sport_list = [sport.name for sport in sports]
+
+#         return jsonify(sports=sport_list)
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+#FIXME: Include later after models are updated
+# @app.route('/getAllInstitutes', methods=['GET'])
+# def get_all_institutes():
+#     try:
+#         # Query the database to retrieve all institutes
+#         institutes = Institutes.query.all()
+
+#         # Create a list to store the institute names
+#         institute_list = [institute.name for institute in institutes]
+
+#         return jsonify(institutes=institute_list)
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+#FIXME: Include later after models are updated
+# @app.route('/addSport', methods=['POST'])
+# def add_sport():
+#     try:
+#         # Get the sport name from the request JSON
+#         sport_name = request.json.get('name')
+
+#         # Create a new Sport instance and add it to the database
+#         new_sport = Sports(name=sport_name)
+#         db.session.add(new_sport)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Sport added successfully'}), 201
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 400
+
+#FIXME: Include later after models are updated
+# @app.route('/addInstitute', methods=['POST'])
+# def add_institute():
+#     try:
+#         # Get the institute name from the request JSON
+#         institute_name = request.json.get('name')
+
+#         # Create a new Institute instance and add it to the database
+#         new_institute = Institutes(name=institute_name)
+#         db.session.add(new_institute)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Institute added successfully'}), 201
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/getWorkoutforAthletebyTeamsByCoach')
-def get_workouts():
-    athlete_id = request.args.get('athleteId')
-    coach_id = request.args.get('coachId')
-    date = request.args.get('date')
-    
-    if date:
-        teams = db.session.query(Teams).filter(Teams.coach_id == coach_id)
-        # teams = teams.filter(Workouts.date_added == date)
-    else:
-        teams = db.session.query(Teams).filter(Teams.coach_id == coach_id)
+@app.route('/updateAthlete', methods=['POST'])
+def update_athlete():
+    try:
+        # Parse the JSON data from the request
+        data = request.json
+        # Retrieve athlete data from the request or database
+        email=data['email']
+        updated_phone = data['phone']
+        updated_sports = data['sports']
+        updated_institute = data['institute']
+        
+        # Retrieve the athlete from the database
+        athlete = Athletes.query.filter_by(email=email).first()
 
-    teams = teams.join(TeamMemberships).filter(TeamMemberships.athlete_id == athlete_id)
-    teams = teams.all()
+        if not athlete:
+            return jsonify({'error': 'Athlete not found'}), 404
+        # Update athlete information
+        athlete.phone = updated_phone
+        athlete.sports = updated_sports
+        athlete.institute = updated_institute
 
-    result = []
-    for team in teams:
-        team_data = {
-            "team_id": team.team_id,
-            "team_name": team.name,
-            "workouts": []
-        }
+        # Commit the changes to the database
+        db.session.commit()
 
-        team_workouts = db.session.query(TeamWorkoutsAssignments).filter_by(team_id=team.team_id).all()
+        return jsonify({'message': 'Athlete updated successfully'}), 200
 
-        for team_workout in team_workouts:
-            workout_data = {
-                "workout_name": db.session.query(Workouts).get(team_workout.workout_id).name,
-                "date_added": db.session.query(Workouts).get(team_workout.workout_id).date_added.strftime('%Y-%m-%d'),
-                "blocks": []
-            }
-
-            blocks = db.session.query(Blocks).filter_by(workout_id=team_workout.workout_id).all()
-
-            for block in blocks:
-                block_data = {
-                    "block_name": block.name,
-                    "exercises": []
-                }
-
-                exercises = db.session.query(Exercises).filter_by(block_id=block.block_id).all()
-
-                for exercise in exercises:
-                    exercise_data = {
-                        "exercise_name": exercise.name,
-                        "loads_reps": exercise.loads_reps,
-                        "sets": exercise.sets
-                    }
-
-                    block_data["exercises"].append(exercise_data)
-
-                workout_data["blocks"].append(block_data)
-
-            team_data["workouts"].append(workout_data)
-
-        result.append(team_data)
-
-    return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
+@app.route('/updateCoachesinAdmin', methods=['POST'])
+def update_coaches_in_admin():
+    try:
+        # Parse the JSON data from the request
+        data = request.json
+        # Retrieve athlete data from the request or database
+        email=data['email']
+        updated_phone = data['phone']
+        updated_sports = data['sports']
+        updated_institute = data['institute']
+        
+        # Retrieve the athlete from the database
+        coach = Coaches.query.filter_by(email=email).first()
+
+        if not coach:
+            return jsonify({'error': 'Athlete not found'}), 404
+        # Update athlete information
+        coach.phone = updated_phone
+        coach.sports = updated_sports
+        coach.institute = updated_institute
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return jsonify({'message': 'Coach updated successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
-@app.route('/getTeamsForAthleteByCoach', methods=['GET'])
-def get_teams_for_athlete_by_coach():
-    athlete_id = request.args.get('athleteId',type=int)
-    coach_id = request.args.get('coachId', type=int)
-    if athlete_id is not None:
-        try:
-            # Check condition for athlete
-            athlete = Athletes.query.filter_by(athlete_id=athlete_id).first()
-            # print(athlete)
-            if not athlete:
-                return jsonify({"Error" : "Athlete note found"}), 400
-            
-            teams =  Teams.query.join(TeamMemberships).filter(Teams.coach_id == coach_id).filter(TeamMemberships.athlete_id == athlete_id).all()
-            if teams is not None: 
-                teams_list = []
-
-                for team in teams:
-                    team_data = {
-                        'team_id': team.team_id,
-                        'name': team.name,
-                        'sport': team.sport,
-                        'coach_id': team.coach_id,
-                    }
-                    teams_list.append(team_data)
-
-                return jsonify(teams=teams_list), 200
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
-    else:
-        return jsonify({'error': 'teamId not found in the request'}), 400
-    
+@app.route('/logoutAdmin')
+def logout_admin():
+    # Clear the session to log the user out
+    session.pop('username', None)
+    return redirect(url_for('admin_login'))
 
 
 # route for athlete Profile
@@ -1731,6 +2274,24 @@ def update_athlete_password():
         return jsonify({'message': 'Unauthorized'}),401
     
 
+# Now I am adding this to retrieve coachname using coach_id
+@app.route('/getCoachNameById', methods=['GET'])
+def get_coach_name_by_id():
+    coach_id = request.args.get('coachId')  # Assuming the ID is passed as a query parameter
+
+    if coach_id:
+        coach = Coaches.query.filter_by(coach_id=coach_id).first()
+        if coach:
+            return jsonify({'name': coach.name})
+        else:
+            return jsonify({'error': 'Coach not found'}), 404
+    else:
+        return jsonify({'error': 'No coach ID provided'}), 400
+            # "/testSelection"
+            # "/defineExercises"
+            # "/notesLanding"
+            # "#"
+            # "/coachProfile"
 
 #FIXME: 
 # Check if all exercises of a workout has its exercise_completed_date filled
@@ -1742,10 +2303,9 @@ def update_athlete_password():
 #     date: currentDate,                  << date
 
 
-@app.route('/athleteProfile')
-def athleteProfile():
-    session_data = {
-        'username': session.get('username')
-        # Add other session data as needed
-    }
-    return render_template('athlete-profile.html', session=session_data)
+
+
+
+@app.route('/notes_athlete')
+def athleteNotes():
+    return render_template('athleteNotes.html')

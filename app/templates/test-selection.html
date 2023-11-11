@@ -21,6 +21,12 @@
             padding: 150px;
             margin-top: 50px;
             background-color: #0077B5;
+            transition: background-color 0.3s, transform 0.3s; 
+        }
+
+        .card:hover {
+            background-color: #005599;
+            transform: scale(1.05);
         }
 
         header {
@@ -145,43 +151,47 @@
 
     <nav>
         <ul>
-            <li><a href="coach-landing-page.html">Home</a></li>
-            <li><a href="workout-selection.html">Create Workouts</a></li>
-            <li><a href="test-selection.html" class="current">Create Tests</a></li>
-            <li><a href="#">Notes</a></li>
+            <li><a href="/coachLanding">Home</a></li>
+            <li><a href="/workoutSelection">Assign Workouts</a></li>
+            <li><a href="/testSelection" class="current">Assign Tests</a></li>
+            <li><a href="/defineExercises">Create Exercises</a></li>
+            <li><a href="/coachNotes">Notes</a></li>
             <li><a href="#">Notifications</a></li>
-            <li><a href="coach-profile.html">My Profile</a></li>
+            <li><a href="/coachProfile">My Profile</a></li>
         </ul>
     </nav>
 
     <div class="container">
         <div>
             <ul>
-                <h1 class="text-center">Test time! Lets find out the progress so far!</h1>
+                <h1 class="text-center">Time to test some progress!</h1>
             </ul>
         </div>
     
         <div class="row">
             <div class="col-md-6">
-                <div class="card workout-card" id="teamCard">
-                    <div class="card-body">
-                        <h5 class="card-title">Select Team</h5>
-                        <p class="card-text">Click here to select a team.</p>
+                <!-- <a href="team-workout.html">  -->
+                    <div class="card workout-card" id="teamCard">
+                        <div class="card-body">
+                            <h5 class="card-title">Select Team</h5>
+                            <p class="card-text">Click here to select a team.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6">
-                <div class="card workout-card" id="athleteCard">
-                    <div class="card-body">
-                        <h5 class="card-title">Select Athlete</h5>
-                        <p class="card-text">Click here to select an athlete.</p>
+                <!-- <a href="athlete-workout.html">  -->
+                    <div class="card workout-card" id="athleteCard">
+                        <div class="card-body">
+                            <h5 class="card-title">Select Athlete</h5>
+                            <p class="card-text">Click here to select an athlete.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
     
-
     <footer>
         <div class="footer">
             2023 Sports Performance Pro
@@ -192,12 +202,14 @@
     <script type="text/javascript">
         // Team Card Click Event
         document.getElementById("teamCard").addEventListener("click", function() {
-            alert("Team workout selected!"); // You can replace this with your desired action
+            // Redirect to team-workout.html
+            window.location.href = "/testTeamSelection";
         });
-
+    
         // Athlete Card Click Event
         document.getElementById("athleteCard").addEventListener("click", function() {
-            alert("Athlete workout selected!"); // Replace with your desired action
+            // Redirect to athlete-workout.html
+            window.location.href = "/testAthleteSelection";
         });
     </script>
 </body>

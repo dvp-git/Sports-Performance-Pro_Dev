@@ -1,3 +1,30 @@
+@media (max-width: 400px) {
+  nav {
+    width: 100%; /* Full width on smaller screens */
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav a {
+    font-size: 16px;
+    padding: 10px;
+  }
+}
+
+/* Default styles for larger screens */
+body {
+  /* Define styles for body (entire HTML content) on larger screens */
+  overflow: hidden; /* Hidden overflow by default */
+}
+
+/* Media query for smaller screens (e.g., screens with a max-width of 768px) */
+@media (max-width: 768px) {
+  body {
+    /* Allow overflow for the entire HTML content on smaller screens */
+    overflow: auto; /* Enable vertical and horizontal scrollbars as needed */
+  }
+}
+
 #athlete-calendar .card table {
   width: 100%;
   height: 100%;
@@ -105,6 +132,21 @@ nav a {
 nav a:hover {
   color: #005599;
 }
+
+/* Media query to adjust navigation for mobile screens */
+@media (max-width: 768px) {
+  nav {
+    padding: 5px 0; /* Reduced padding for mobile */
+  }
+
+  nav li {
+    margin: 0 10px; /* Reduced margin for mobile */
+  }
+
+  nav a {
+    font-size: 10px; /* Extremely small font size for mobile */
+  }
+}
 /* 
 .container {
   margin: 0 auto;
@@ -170,8 +212,11 @@ select {
   display: grid;
   grid-template-columns: 0.4fr 0.6fr;
   justify-content: stretch; /* Center horizontally */
+  min-width: 300px;
   /*align-items: center; /* Center vertically */
   flex-wrap: wrap; /* Wrap login containers if the screen is narrow */
+  max-height: 90vh; /* Adjust the maximum height as needed */
+  overflow-y: auto;
 }
 
 .login-container-1 {
@@ -182,6 +227,8 @@ select {
   text-align: center;
   width: max-width;
   margin: 20px; /* Added margin */
+  flex: 1; /* Takes up 50% of the available space */
+  box-sizing: border-box;
 }
 
 .login-container-2 {
@@ -192,6 +239,8 @@ select {
   /* text-align: center; */
   width: max-width;
   margin: 20px; /* Added margin */
+  flex: 1; /* Takes up 50% of the available space */
+  box-sizing: border-box;
 }
 
 h1 {
@@ -320,6 +369,11 @@ addExercise-btn {
   margin-bottom: 10px;
 }
 
+.input-added {
+  /* display: none; */
+  display: block;
+}
+
 .team-train-sessions {
   max-height: 450px; /* Adjust the height as needed */
   overflow-y: scroll; /* Add a vertical scrollbar */
@@ -379,4 +433,48 @@ addExercise-btn {
 /* Apply styles to JSON items for spacing */
 .json-item {
   margin: 10px 0;
+}
+@media (max-width: 500px) {
+  /* Media query for screens smaller than 768px */
+  .login-forms {
+    grid-template-columns: 1fr; /* Stack the containers on top of each other */
+  }
+  .login-container-1 {
+    order: -1; /* Move the right container to the top of the stacking order */
+    padding: 0;
+  }
+  /* h2 {
+    
+  } */
+}
+
+@media (max-width: 500px) {
+  nav {
+    padding: 5px 0; /* Reduced padding for mobile */
+  }
+
+  nav li {
+    margin: 0 5px; /* Reduced margin for mobile */
+  }
+
+  nav a {
+    font-size: 10px; /* Reduced font size for mobile */
+  }
+}
+
+/* Media query for small screens, e.g., mobile devices */
+@media (max-width: 500px) {
+  body {
+    font-size: 14px; /* Smaller font size for body text on mobile screens */
+  }
+
+  h1,
+  h2,
+  p {
+    font-size: 20px;
+    padding: 2px;
+    margin: 2px; /* Smaller font size for h2 headings on mobile screens */
+  }
+
+  /* Add additional rules for making other text smaller and readable on mobile screens */
 }

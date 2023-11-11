@@ -2,32 +2,40 @@
 
 // Get athleteId, coachId, and selectedDate from the URL
 const urlParams = new URLSearchParams(window.location.search);
-const teamId = urlParams.get("teamId");
+const athleteId = urlParams.get("athleteId");
 const coachId = urlParams.get("coachId");
 
-// let myAthleteId = 2; // Should be ideally fetched from the sessionStorage
-let currentTeamId = teamId;
-let currentCoachId = coachId; // FIXME: change to selectedDate later
+let myAthleteId = athleteId; 
+let currentCoachId = coachId; 
 let currentWorkout;
 let currentBlocks;
 let currentExercises;
-// let currentDate = "2023-11-08";
 let currentDate = selectedDate;
 let myAthleteIds;
 let exerciseAvailable = 0;
-console.log("This is my date: ", selectedDate);
+// console.log("This is my date: ", selectedDate);
 
 let currentExerciseId;
 const successMessage = document.getElementById("success-message");
 const errorMessage = document.getElementById("error-message");
 
-let athleteId;
+// FIXME: Uncomment this : For test purpose set date to 2022-10-30
+// currentDate = getDate();
+currentDate = selectedDate;
+console.log(currentDate);
+// Get the athlete Username
+// var athleteUsernameElement = document.getElementById("athlete-username"); // Replace with coach
+// var athleteUsername = athleteUsernameElement.getAttribute("data-username");
+
+currentCoachId = 15; // # FIXME: CHANGE TO DYNAMIC FROM PREVIOUS PAGE
+// console.log(" Athlete Username ", athleteUsername);
+
 let teams;
 let myTrainingData;
 let myTeamsTrainingData;
 let athleteTeams;
 let clickedTeam;
-let teamIds = [];
+// let myteamIds;
 let coachIds = [];
 let myWorkouts;
 const blockTabs = document.getElementById("block-tabs");
@@ -91,12 +99,25 @@ async function fetchWorkoutsByAthleteDirect(athlete_id, coachId, selectedDate) {
   return data;
 }
 
-async function fetchAthletesForTeam(coachId, teamId) {
+async function fetcWorkoutforAthletebyTeamsByCoach(
+  athleteId,
+  coachId,
+  selectedDate
+) {
   const response = await fetch(
-    `/getAthletesForTeam?coachId=${coachId}&teamId=${teamId}`
+    `/getWorkoutforAthletebyTeamsByCoach?athleteId=${athleteId}&coachId=${coachId}&date=${selectedDate}`
   );
   const data = await response.json();
-  console.log("These are the Athletes  assigned for coach: ", data);
+  //console.log("These are the workouts : ", data);
+  return data;
+}
+
+
+async function fetchTeamsForAthleteByCoach(athlete_id, coach_id) {
+  const response = fetch(
+    `/getTeamsForAthleteByCoach?athleteId=${athlete_id}&coachId=${coachId}`
+  );
+  const data = (await response).json();
   return data;
 }
 
@@ -114,6 +135,7 @@ async function fetchWorkouts(
   return data;
 }
 
+// #TODO:
 async function fetchWorkoutsForAthleteAndTeams(athleteId, teamIds) {
   try {
     // Once you have athleteIds and teamIds, fetch workouts
@@ -347,45 +369,79 @@ function viewAssignedExercise(e) {
 
 async function initialData() {
   try {
-    // var teamId = 89;
+    // var athleteId = 12; // #TODO: SET THE ATHLETE ID FROM PREVIOUS PAGE
     //
 
-    console.log("This is the teamId", teamId);
+    console.log("This is the athleteId", athleteId);
     console.log("Im inside Initial Data");
     // athleteId = await fetchAthleteID(userEmail); // Fetch athlete UserEmail
     // athleteTeams = await fetchAthleteTeams(athleteId); // Fetch Athlete Teams
-    const teamsAthletes = await fetchAthletesForTeam(coachId, teamId); // Fetch Teams for the coach
-    let myAthletes = teamsAthletes;
+    const athletesTeams = await fetchTeamsForAthleteByCoach(athleteId, coachId); // Fetch Teams for the coach
+    let myTeams = athletesTeams;
     // Remove the team by teamId
-    myAthleteIds = teamsAthletes.athletes.map((athlete) => athlete.athlete_id);
-    console.log("My Team athletes Id's : ", myAthleteIds);
+
+    console.log("Getting MY TEAMS : ", athletesTeams);
+    var myTeamIds = athletesTeams.teams.map((team) => team.team_id);
+
+    console.log("My Team athletes Id's : ", myTeamIds);
 
     // myAthletes = teamsAthletes.athletes.map((team) => team.name);
-    console.log("My Team athletes are : ", myAthletes);
+    console.log("My Teams are : ", myTeams);
 
-    myWorkouts = await fetchWorkoutsByTeam(teamId, currentDate, coachId);
-    console.log("These are my teams Workouts: initial Data ", myWorkouts);
+    console.log("I am the coach and my ID is ", coachId);
 
+    // Get workouts by athelete & coach
+    // Get workouts byt athlete & teams.
+    // Merge
+    const myIndividualWorkout = await fetchWorkouts(
+      athleteId,
+      currentDate,
+      coachId
+    ); //[{}]
+    let myTeamWorkout = await fetcWorkoutforAthletebyTeamsByCoach(
+      athleteId,
+      coachId,
+      currentDate
+    ); // [ {} , {}]
+
+    console.log("My individual Workout", myIndividualWorkout);
+    console.log("Teams workouts ", myTeamWorkout);
+
+    // let allmyAthletesWorkouts;
+    myTeamWorkout.push(...myIndividualWorkout); // Including the Personal Workout in the TeamWorkout itself
+
+    console.log("Adding team + individual workout", myTeamWorkout);
+
+    // Table creation filter date here : TODO: Ideally filter by date when pulling data itself ( optimization required )
     const dataCreation = (function () {
       // You can now work with athleteID and athleteTeams here
-      console.log("Team ID:", teamId);
-      console.log("Athletes :", myAthletes); // [ {} {}]
-      console.log("Teams Workouts:", myWorkouts);
+      //   console.log("Team ID:", teamId);
+      console.log("My Teams :", myTeams); // [ {} {}]
+      console.log("Teams Workouts:", myTeamWorkout);
       // teams = athleteTeams.map((team) => team.name);
       // const myAthletes = myAthletes.map((athlete) => [athlete]);
       // INITIALIZING THE ATHLETES OF THE TRAINING TABLE
       const trainingTable = $("#trainingTable").DataTable();
 
       trainingTable.clear().rows;
-      myAthletes.athletes.forEach((athlete) => {
+      myTeams.teams.forEach((team) => {
         // trainingTable.row.add([athlete.name]).draw()
         trainingTable.row
-          .add([athlete.name])
-          .node().id = `${athlete.athlete_id}`;
+          .add([team.name])
+          .node().id = `team-id-${team.team_id}`;
         trainingTable.draw();
       });
+
+      //   console.log(`${myTeamWorkout[myTeamWorkout.length - 1].coach_name}`);
+      trainingTable.row
+        .add([
+          `${myTeamWorkout[myTeamWorkout.length - 1].coach_name}
+             's assigned trainings`,
+        ])
+        .node().id = `coach-id-${coachId}`;
+      trainingTable.draw(false);
     })();
-    return myAthletes, myAthleteIds;
+    return myTeams, myTeamIds;
   } catch (error) {
     console.log("Could not fetch the details " + error);
   }
@@ -416,17 +472,17 @@ $(document).ready(function () {
 $("#trainingTable tbody").on("click", "tr", function (event) {
   // Get the team ID from the clicked row
   const clickedRow = event.currentTarget;
-
   // Get the team ID from the clicked row
-  athleteId = $(clickedRow).attr("id"); // Assuming you've set the ID of the row
-  console.log("Athlete ID:", athleteId);
+  let clickedId = $(clickedRow).attr("id");
 
-  console.log("My teams workouts, clicked an athlete", myWorkouts);
+  // Assuming you've set the ID of the row
+  console.log(" ID clicked:", clickedId);
+
   var trainingTable = $("#trainingTable").DataTable();
   // Gives the object details for the row
   // var data = trainingTable.row(this).data(); // Object { coach_id, , ....}
   // Displays the object for the row
-  var data = myWorkouts;
+  var data = trainingTable.row(this).data();
   // console.log(data);
   $("#trainingTable tbody tr")
     .removeClass("highlighted-row")
@@ -443,25 +499,59 @@ $("#trainingTable tbody").on("click", "tr", function (event) {
 
   console.log("View the data of clicked Item : ", data);
 
+
   // Everytime I clikc on a Team, a fetch request is sent to get workout and display the blocks of the team
   // FIXME: Change the date to currentDate later
-  currentWorkout = fetch(
-    `/getWorkoutsByTeam?teamId=${currentTeamId}&date=${currentDate}&coachId=${coachId}`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("This is my data fetched inside clicking an athlete:", data);
-      return data;
-    })
-    .then((workout_data) => {
-      console.log(workout_data);
-      currentBlocks = getMyBlockNames(workout_data);
-      console.log("Current Blocks:", currentBlocks);
-      displayBlocks2(currentBlocks);
-    })
-    .catch((error) => {
-      console.error("There was an error fetching", error);
-    });
+  currentWorkout = clickedId.includes("team-id")
+    ? (function () {
+        //console.log(clickedId);
+        let clickedTeamId = clickedId.split("-");
+        clickedTeamId = clickedTeamId[clickedTeamId.length - 1];
+        //console.log(clickedTeamId);
+        fetch(
+          `/getWorkoutsByTeam?teamId=${clickedTeamId}&date=${currentDate}&coachId=${coachId}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(
+              "This is my data fetched inside clicking an athlete:",
+              data
+            );
+            return data;
+          })
+          .then((workout_data) => {
+            console.log(workout_data);
+            currentBlocks = getMyBlockNames(workout_data);
+            console.log("Current Blocks:", currentBlocks);
+            displayBlocks2(currentBlocks);
+          })
+          .catch((error) => {
+            console.error("There was an error fetching", error);
+          });
+      })()
+    : (function () {
+        // console.log(clickedId);
+        let clickedCoachId = clickedId.split("-");
+        clickedCoachId = clickedCoachId[clickedCoachId.length - 1];
+        console.log(clickedCoachId);
+        fetch(
+          `getWorkoutsByAthleteDirect?coachId=${coachId}&athleteId=${athleteId}&date=${currentDate}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("This is my data:", data);
+            return data;
+          })
+          .then((workout_data) => {
+            console.log(workout_data);
+            currentBlocks = getMyBlockNames(workout_data);
+            console.log("Current Blocks:", currentBlocks);
+            displayBlocks2(currentBlocks);
+          })
+          .catch((error) => {
+            console.error("There was an error fetching", error);
+          });
+      })();
 });
 
 // $(document).ready(function () {
