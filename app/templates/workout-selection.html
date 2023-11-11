@@ -21,6 +21,12 @@
             padding: 150px;
             margin-top: 50px;
             background-color: #0077B5;
+            transition: background-color 0.3s, transform 0.3s; 
+        }
+
+        .card:hover {
+            background-color: #005599;
+            transform: scale(1.05);
         }
 
         header {
@@ -145,12 +151,13 @@
 
     <nav>
         <ul>
-            <li><a href="coach-landing-page.html">Home</a></li>
-            <li><a href="workout-selection.html" class="current">Create Workouts</a></li>
-            <li><a href="test-selection.html">Create Tests</a></li>
-            <li><a href="#">Notes</a></li>
+            <li><a href="/coachLanding">Home</a></li>
+            <li><a href="/workoutSelection" class="current">Assign Workouts</a></li>
+            <li><a href="/testSelection">Assign Tests</a></li>
+            <li><a href="/defineExercises">Create Exercises</a></li>
+            <li><a href="/coachNotes">Notes</a></li>
             <li><a href="#">Notifications</a></li>
-            <li><a href="coach-profile.html">My Profile</a></li>
+            <li><a href="/coachProfile">My Profile</a></li>
         </ul>
     </nav>
 
@@ -163,7 +170,7 @@
     
         <div class="row">
             <div class="col-md-6">
-                <a href="team-workout.html"> <!-- Add this anchor tag -->
+                <!-- <a href="team-workout.html">  -->
                     <div class="card workout-card" id="teamCard">
                         <div class="card-body">
                             <h5 class="card-title">Select Team</h5>
@@ -173,7 +180,7 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="athlete-workout.html"> <!-- Add this anchor tag -->
+                <!-- <a href="athlete-workout.html">  -->
                     <div class="card workout-card" id="athleteCard">
                         <div class="card-body">
                             <h5 class="card-title">Select Athlete</h5>
@@ -185,8 +192,6 @@
         </div>
     </div>
     
-    
-
     <footer>
         <div class="footer">
             2023 Sports Performance Pro
@@ -198,13 +203,13 @@
         // Team Card Click Event
         document.getElementById("teamCard").addEventListener("click", function() {
             // Redirect to team-workout.html
-            window.location.href = "team-workout.html";
+            window.location.href = "/teamSelection";
         });
     
         // Athlete Card Click Event
         document.getElementById("athleteCard").addEventListener("click", function() {
             // Redirect to athlete-workout.html
-            window.location.href = "athlete-workout.html";
+            window.location.href = "/athleteSelection";
         });
     </script>
 </body>

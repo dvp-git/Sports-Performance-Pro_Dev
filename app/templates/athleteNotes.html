@@ -130,33 +130,33 @@
             display: none; /* Hide "Your Reply" container by default */
         }
         .reply-container p {
-        margin: 0; /* Remove margin for <p> elements inside .reply-container */
+            margin: 0; /* Remove margin for <p> elements inside .reply-container */
         }
         .note-date {
-        position: absolute;
-        top: 0;
-        right: 0;
-        background-color: #0077B5; /* Background color for the date */
-        color: #fff; /* Text color for the date */
-        padding: 3px 8px; /* Adjust padding as needed */
-        border-radius: 0 0 0 5px; /* Create a rounded corner on the left side */
-        font-size: 12px; /* Adjust font size as needed */
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #0077B5; /* Background color for the date */
+            color: #fff; /* Text color for the date */
+            padding: 3px 8px; /* Adjust padding as needed */
+            border-radius: 0 0 0 5px; /* Create a rounded corner on the left side */
+            font-size: 12px; /* Adjust font size as needed */
         }
     </style>
 </head>
 <body>
     <header>
-        <h1 class="title">Sports Performance Pro - Welcome Coach TJ!</h1>
+        <h1 class="title">Sports Performance Pro</h1>
     </header>
     <nav>
         <!-- Your navigation menu -->
         <nav>
             <ul>
-                <li><a href="coach-landing-page.html">Home</a></li>
-                <li><a href="workout-selection.html">Tests</a></li>
-                <li><a href="#" class="current">Notes</a></li>
-                <li><a href="#">Messaging</a></li>
-                <li><a href="coach-profile.html">Me</a></li>
+                <li><a href="/athleteLanding">Home</a></li>
+                <li><a href="test-selection">Athlete Tests</a></li>
+                <li><a id="notesLink" href="/notes_athlete">Notes</a></li>
+                <li><a href="#">Notifications</a></li>
+                <li><a href="/athleteProfile">My Profile</a></li>
             </ul>
         </nav>
     </nav>
@@ -174,116 +174,148 @@
         </div>
     </div>
 
+    
+
 
     <script>
-        function fetchAndDisplayNotes() {
-    var noteHistory = document.getElementById('noteHistory');
+        
+        
+        
 
-    // Replace 'your-api-endpoint-url' with the actual URL of your '/getNotes' API endpoint
-    fetch('/getNotes?coachId=1&athleteId=2')
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            if (data.error) {
-                // Handle error, e.g., display an error message
-                console.error(data.error);
-            } else if (data.notes) {
-                // Loop through the retrieved notes and create HTML elements for each note
-                data.notes.forEach(function(note) {
-                    
-                    var noteContainer = document.createElement('div');
-                    noteContainer.className = 'note';
-                    // fetchCoachName(note.coach_id);
 
-                    var noteText = document.createElement('p');
-                    noteText.className = 'note-text';
-                    noteText.innerHTML =
-                        '<strong>' + note.coach_name + '</strong><br>' +
-                        '<strong>Subject:</strong> ' + note.subject + '<br>' +
-                        '<strong>Note:</strong> ' + note.coach_reply;
+    function fetchAndDisplayNotes() {
+        var noteHistory = document.getElementById('noteHistory');
+        const urlParams = new URLSearchParams(window.location.search);
+        let coachIds = urlParams.get('coachId').split(',');
+        // const coachId = urlParams.get('coachId');
+        const athleteId = urlParams.get('athleteId');
 
-                    var noteDate = document.createElement('span');
-                    noteDate.className = 'note-date';
-                    noteDate.textContent = 'Date: ' + note.date_created;
+        coachIds.forEach(coachId => {
 
-                    var replyButton = document.createElement('button'); // Create a "Reply" button
-                    replyButton.className = 'note-reply-button';
-                    replyButton.textContent = 'Reply'; // Set the button text
-                    replyButton.onclick = function() {
-                        toggleReply(replyButton, 'note-reply-' + note.note_id, 'submit-reply-button-' + note.note_id);
-                    };
-
-                    if (note.athlete_reply) {
-                        replyButton.style.display = 'none';
-                    }
-
-                    var noteReply = document.createElement('div');
-                    noteReply.className = 'note-reply';
-                    noteReply.id = 'note-reply-' + note.note_id;
-                    noteReply.style.display = 'none'; // Hide reply by default
-
-                    var replyText = document.createElement('textarea');
-                    replyText.id = 'reply-text-' + note.note_id;
-
-                    var submitButton = document.createElement('button');
-                    submitButton.className = 'submit-reply-button';
-                    submitButton.id = 'submit-reply-button-' + note.note_id;
-                    submitButton.textContent = 'Submit Reply'; // Set the button text
-                    submitButton.dataset.replyId = 'note-reply-' + note.note_id;
-                    submitButton.onclick = function() {
-                        submitReply('note-reply-' + note.note_id, 'show-reply-' + note.note_id);
-                    };
-                    submitButton.style.display = 'none'; // Hide "Submit Reply" button by default
-
-                    var showReply = document.createElement('button');
-                    showReply.className = 'show-reply-button';
-                    showReply.textContent = 'See Reply'; // Set the button text
-                    showReply.onclick = function() {
-                        toggleSeeReply('note-reply-' + note.note_id, 'show-reply-' + note.note_id);
-                    };
-                    showReply.style.display = 'none'; // Hide "See Reply" button by default
-
-                    var replyContainer = document.createElement('div');
-                    replyContainer.className = 'reply-container';
-                    replyContainer.id = 'reply-' + note.note_id;
-                    replyContainer.style.display = 'none'; // Hide "Your Reply" container by default
-
-                    noteContainer.appendChild(noteText);
-                    noteContainer.appendChild(noteDate);
-                    noteContainer.appendChild(replyButton); // Add "Reply" button
-                    noteContainer.appendChild(noteReply);
-                    noteReply.appendChild(replyText);
-                    noteReply.appendChild(submitButton); // Add "Submit Reply" button
-                    noteReply.appendChild(showReply); // Add "See Reply" button
-                    noteContainer.appendChild(replyContainer);
-
-                    noteHistory.appendChild(noteContainer);
-                    if (note.athlete_reply) {
-                    var existingReplyText = document.createElement('p');
-                    existingReplyText.textContent = 'Your Reply: ' + note.athlete_reply;
-
-                    // Apply the styles for the blue field
-                    existingReplyText.className = 'reply-container-text'; // Add this class if you are using CSS to style
-                    // If you're not using CSS class then apply inline styles as below
-                    existingReplyText.style.backgroundColor = '#0077b5';
-                    existingReplyText.style.color = 'white';
-                    existingReplyText.style.padding = '5px';
-                    existingReplyText.style.borderRadius = '5px';
-
-                    var replyContainer = document.getElementById('reply-' + note.note_id);
-                    replyContainer.appendChild(existingReplyText);
-                    replyContainer.style.display = 'block'; // Make sure to display the container
-                }
-                });
-            } else {
-                // Handle case when no notes are found
-                console.log('No notes found for the given coach and athlete');
+        // Replace 'your-api-endpoint-url' with the actual URL of your '/getNotes' API endpoint
+        
+        fetch(`/getCoachNameById?coachId=${coachId}`)
+        .then(response => response.json())
+        .then(coachData => {
+            if (coachData.error) {
+                console.error(coachData.error);
+                return;
             }
+
+            // Store the coach name for later use
+            const coachName = coachData.name;
+            console.log("this is my coachname ",coachName)
+
+        fetch(`/getNotes?coachId=${coachId}&athleteId=${athleteId}`)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.error) {
+                    // Handle error, e.g., display an error message
+                    console.error(data.error);
+                } else if (data.notes) {
+                    // Loop through the retrieved notes and create HTML elements for each note
+                    data.notes.forEach(function(note) {
+                        
+                        var noteContainer = document.createElement('div');
+                        noteContainer.className = 'note';
+                        // fetchCoachName(note.coach_id);
+
+                        var noteText = document.createElement('p');
+                        noteText.className = 'note-text';
+                        noteText.innerHTML =
+                            '<strong>' + coachName + '</strong><br>' +
+                            '<strong>Subject:</strong> ' + note.subject + '<br>' +
+                            '<strong>Note:</strong> ' + note.coach_reply;
+
+                        var noteDate = document.createElement('span');
+                        noteDate.className = 'note-date';
+                        noteDate.textContent = 'Date: ' + note.date_created;
+
+                        var replyButton = document.createElement('button'); // Create a "Reply" button
+                        replyButton.className = 'note-reply-button';
+                        replyButton.textContent = 'Reply'; // Set the button text
+                        replyButton.onclick = function() {
+                            toggleReply(replyButton, 'note-reply-' + note.note_id, 'submit-reply-button-' + note.note_id);
+                        };
+
+                        if (note.athlete_reply) {
+                            replyButton.style.display = 'none';
+                        }
+
+                        var noteReply = document.createElement('div');
+                        noteReply.className = 'note-reply';
+                        noteReply.id = 'note-reply-' + note.note_id;
+                        noteReply.style.display = 'none'; // Hide reply by default
+
+                        var replyText = document.createElement('textarea');
+                        replyText.id = 'reply-text-' + note.note_id;
+
+                        var submitButton = document.createElement('button');
+                        submitButton.className = 'submit-reply-button';
+                        submitButton.id = 'submit-reply-button-' + note.note_id;
+                        submitButton.textContent = 'Submit Reply'; // Set the button text
+                        submitButton.dataset.replyId = 'note-reply-' + note.note_id;
+                        submitButton.onclick = function() {
+                            submitReply('note-reply-' + note.note_id, 'show-reply-' + note.note_id);
+                        };
+                        submitButton.style.display = 'none'; // Hide "Submit Reply" button by default
+
+                        var showReply = document.createElement('button');
+                        showReply.className = 'show-reply-button';
+                        showReply.textContent = 'See Reply'; // Set the button text
+                        showReply.onclick = function() {
+                            toggleSeeReply('note-reply-' + note.note_id, 'show-reply-' + note.note_id);
+                        };
+                        showReply.style.display = 'none'; // Hide "See Reply" button by default
+
+                        var replyContainer = document.createElement('div');
+                        replyContainer.className = 'reply-container';
+                        replyContainer.id = 'reply-' + note.note_id;
+                        replyContainer.style.display = 'none'; // Hide "Your Reply" container by default
+
+                        noteContainer.appendChild(noteText);
+                        noteContainer.appendChild(noteDate);
+                        noteContainer.appendChild(replyButton); // Add "Reply" button
+                        noteContainer.appendChild(noteReply);
+                        noteReply.appendChild(replyText);
+                        noteReply.appendChild(submitButton); // Add "Submit Reply" button
+                        noteReply.appendChild(showReply); // Add "See Reply" button
+                        noteContainer.appendChild(replyContainer);
+
+                        noteHistory.appendChild(noteContainer);
+                        if (note.athlete_reply) {
+                        var existingReplyText = document.createElement('p');
+                        existingReplyText.textContent = 'Your Reply: ' + note.athlete_reply;
+
+                        // Apply the styles for the blue field
+                        existingReplyText.className = 'reply-container-text'; // Add this class if you are using CSS to style
+                        // If you're not using CSS class then apply inline styles as below
+                        existingReplyText.style.backgroundColor = '#0077b5';
+                        existingReplyText.style.color = 'white';
+                        existingReplyText.style.padding = '5px';
+                        existingReplyText.style.borderRadius = '5px';
+
+                        var replyContainer = document.getElementById('reply-' + note.note_id);
+                        replyContainer.appendChild(existingReplyText);
+                        replyContainer.style.display = 'block'; // Make sure to display the container
+                    }
+                    });
+                } else {
+                    // Handle case when no notes are found
+                    console.log('No notes found for the given coach and athlete');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error fetching notes: ' + error);
+            });
         })
-        .catch(function(error) {
-            console.error('Error fetching notes: ' + error);
+        .catch(error => {
+            console.error('Error fetching coach name: ', error);
         });
+    
+    });
 }
 
 
@@ -367,4 +399,3 @@
     </script>
 </body>
 </html>
-

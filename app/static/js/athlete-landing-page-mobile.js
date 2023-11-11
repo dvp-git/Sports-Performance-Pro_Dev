@@ -1,5 +1,8 @@
 "use strict";
 // let myAthleteId = 2; // Should be ideally fetched from the sessionStorage
+
+
+
 let currentTeamId;
 let currentCoachId;
 let currentWorkout;
@@ -486,13 +489,9 @@ async function initialData() {
     console.log("My coach Ids :", coachIds); // is an array of coach_ids json
 
     personalCoaches = await fetchPersonalCoaches(athleteId);
-    if (personalCoaches.error === "No coaches found for the athlete") {
-      personalCoaches = [];
-    } else {
-      peronalCoachIds = personalCoaches.map(
-        (personcalCoach) => personcalCoach.coach_id
-      );
-    }
+    peronalCoachIds = personalCoaches.map(
+      (personcalCoach) => personcalCoach.coach_id
+    );
 
     console.log("My personal coach Ids :", peronalCoachIds);
 
@@ -773,21 +772,6 @@ function validateInputField(loadInput, maxLoad) {
   } else {
     errorMessage.innerText = "";
     return true;
-  }
-}
-
-//Function for notes additional
-function onNotesClick(event) {
-  // event.preventDefault();
-
-  // Select the specific anchor element for "Notes"
-  console.log("tests");
-  const notesLink = document.getElementById("notesLink");
-  if (notesLink) {
-    // Update the href attribute with the variables
-    notesLink.href = `/notes_athlete?coachId=${encodeURIComponent(
-      peronalCoachIds
-    )}&athleteId=${encodeURIComponent(athleteId)}`;
   }
 }
 
