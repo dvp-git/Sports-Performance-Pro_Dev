@@ -296,156 +296,7 @@
             <div class="mb-3">
               <label for="sports" class="form-label">Sports</label>
               <div class="scrollable-menu">
-                <div class="checkbox-group">
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="football"
-                      id="football"
-                    />
-                    Football
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="basketball"
-                      id="basketball"
-                    />
-                    Basketball
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="cricket"
-                      id="cricket"
-                    />
-                    Cricket
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="badminton"
-                      id="badminton"
-                    />
-                    Badminton
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="tennis"
-                      id="tennis"
-                    />
-                    Tennis
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="rugby"
-                      id="rugby"
-                    />
-                    Rugby
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="lacrose"
-                      id="lacrose"
-                    />
-                    Lacrose
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="trackandfield"
-                      id="trackandfield"
-                    />
-                    Track and Field
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="hockey"
-                      id="hockey"
-                    />
-                    Hockey
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="soccer"
-                      id="soccer"
-                    />
-                    Soccer
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="golf"
-                      id="golf"
-                    />
-                    Golf
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="swimming"
-                      id="swimming"
-                    />
-                    Swimming
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="volleyball"
-                      id="volleyball"
-                    />
-                    Volleyball
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="baseball"
-                      id="baseball"
-                    />
-                    Baseball
-                  </label>
-
-                  <label class="checkbox-container">
-                    <input
-                      type="checkbox"
-                      name="sports[]"
-                      value="softball"
-                      id="softball"
-                    />
-                    Softball
-                  </label>
+                <div class="checkbox-group" id="athleteProfileSports">
                   <!-- Add more sports options here -->
                 </div>
               </div>
@@ -453,18 +304,10 @@
 
             <!-- Institute Field (Dropdown) -->
             <div class="mb-3">
-              <label for="institute" class="form-label">Institute</label>
-              <select
-                class="form-select"
-                id="institute"
-                name="institute"
-                required
-              >
-                <option value="SUNY Buffalo">SUNY Buffalo</option>
-                <option value="SUNY Stony Brook">SUNY Stony Brook</option>
-                <option value="New York University">New York University</option>
-                <option value="Buffalo State">Buffalo State</option>
-              </select>
+              <label for="instituteInput">Institute:</label>
+                            <select class="form-control" id="athleteProfileInstitute" name="institute">
+                                <!-- Add options dynamically using JavaScript or load from the server -->
+                            </select>
             </div>
 
             <!-- Save Changes Button -->
@@ -555,12 +398,32 @@
             $("#email").val(data.email);
             $("#phone").val(data.phone);
             $("#gender").val(data.gender);
-            $("#institute").val(data.institute);
+            $.get('/getAllSports', function (sportsData) {
+              $.get('/getAllInstitutes', function (institutesData) {
+                  // Populate the Sports and Institutes dropdowns
+                  const sportsInput = $('#athleteProfileSports');
+                  const instituteInput = $('#athleteProfileInstitute');
+                  instituteInput.empty();
+                  function addSportsCheckboxes(container, data, selectedItems) {
+                  container.empty();
+                  data.forEach(sport => {
+                      const checkbox = $('<input type="checkbox">')
+                          .attr('name', 'sports[]')
+                          .attr('value', sport) // Assuming lowercase values for simplicity
+                          .attr('id', sport)
+                          .prop('checked', selectedItems.includes(sport));
 
-            // Check checkboxes for selected sports
-            data.sports.forEach(function (sport) {
-              $("#" + sport).prop("checked", true);
-            });
+                      const label = $('<label class="checkbox-container"></label>').text(sport).prepend(checkbox);
+                      container.append(label);
+                  });
+              }
+              addSportsCheckboxes($(sportsInput), sportsData.sports, data.sports);
+                  institutesData.institutes.forEach(institute => {
+                      const selected = data.institute.includes(institute) ? 'selected' : '';
+                      instituteInput.append(`<option value="${institute}" ${selected}>${institute}</option>`);
+                  });
+              });
+          });
           },
           error: function (error) {
             console.log(error.responseText);
@@ -582,11 +445,10 @@
               return this.value;
             })
             .get(),
-          institute: $("#institute").val(),
+          institute: $("#athleteProfileInstitute").val(),
           // Add more fields as needed
         };
-
-        // Make an API request to update the athlete profile
+ // Make an API request to update the athlete profile
         $.ajax({
           url: "/update_athlete_profile",
           type: "POST",

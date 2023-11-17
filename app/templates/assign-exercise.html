@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Athlete</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+    <link rel="stylesheet" href="../static/css/assign-exercise.css" />
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://code.jquery.com/jquery-3.5.1.js"
+    ></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"
+    ></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"
+    ></script>
+  </head>
+  <body>
+    <header>
+      <h1 class="title">Sports Performance Pro</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="/coachLanding">Home</a></li>
+        <li><a href="/workoutSelection">Assign Workouts</a></li>
+        <li><a href="/testSelection">Assign Tests</a></li>
+        <li><a href="/defineExercises">Create Exercises</a></li>
+        <li><a href="/coachNotes">Notes</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="/coachProfile">My Profile</a></li>
+      </ul>
+    </nav>
+
+    <div class="container mt-5">
+      <h1 id="team-name" class="text-center"></h1>
+      <label for="datepicker" class="text-center"
+        >Selected Date
+        <input
+          type="date"
+          id="datepicker"
+          name="datepicker"
+          class="text-center"
+          style="width: min-content"
+        />
+      </label>
+      <button type="button" style="margin-left: auto">
+        Return to assigned exercises
+      </button>
+      <form id="create-exercise-form">
+        <!-- Name Field -->
+        <div class="mb-3">
+          <label for="workout-name" class="form-label"
+            ><p>Workout name <span style="color: red">*</span></p></label
+          >
+          <!-- should fill in the team name using API call -->
+          <input
+            type="text"
+            class="form-control"
+            id="workout-name"
+            placeholder="Workout Name"
+            name="workout-name"
+            required
+          />
+        </div>
+
+        <div id="my-training">
+          <!-- Generate dynamically my training session from the databas -->
+          <!-- On clicking a particular team , should generate the below and add it to the specific team -->
+          <!-- Generate dynamically from the databas -->
+          <!-- Tabs for blocks and exercises -->
+          <div class="tab-container">
+            <div class="horizontal-tabs" id="block-tabs">
+              <div id="block-modal" class="block-modal-cls">
+                <!-- Block Name content -->
+                <div class="block-modal-content">
+                  <span class="block-close" id="closeBlockModalBtn"
+                    >&times;</span
+                  >
+                  <label for="block-name" class="form-label"
+                    ><p>Block name <span style="color: red">*</span></p>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="block-name"
+                      placeholder="Block Name"
+                      name="block-name"
+                      required
+                    />
+                  </label>
+                  <button type="submit" id="btn-block-Ok">Ok</button>
+                </div>
+              </div>
+
+              <button
+                id="add-block-button"
+                type="button"
+                class="add-block-btn-hide"
+              >
+                Add a Block
+              </button>
+            </div>
+
+            <div class="vertical-tabs" id="exercise-tabs">
+              <!-- PUTTING THIS OUT FOR A CHANGE-->
+              <button
+                type="button"
+                id="add-exercise-button"
+                class="add-exercise-btn-hide"
+              >
+                Add an Exercise
+              </button>
+            </div>
+          </div>
+
+          <!-- <button id="add-exercise-button" class="add-exercise-btn-hide">
+              Add an Exercise
+            </button> -->
+          <!-- Display exercise details -->
+          <div id="exercise-details">
+            Select an exercise to Set the loads and reps
+            <div id="table-container" class="create-exercise-table-hide">
+              <!-- MOVED FROM HERE -->
+              <form action="demo.html" method="GET" id="create-exercise-form">
+                <div id="dropdown-container">
+                  <!-- Dropdowns will be created here -->
+
+                  <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select
+                      class="form-select"
+                      id="category"
+                      name="category"
+                      required
+                    >
+                      <!-- Options will be dynamically generated using JavaScript -->
+                    </select>
+                  </div>
+
+                  <!-- Exercise Type Field -->
+                  <div class="mb-3">
+                    <label for="exerciseType" class="form-label"
+                      >Exercise Type</label
+                    >
+                    <select
+                      class="form-select"
+                      id="exerciseType"
+                      name="exerciseType"
+                      required
+                    >
+                      <!-- Options will be dynamically generated using JavaScript -->
+                    </select>
+                  </div>
+
+                  <!-- Exercise Name Field -->
+                  <div class="mb-3">
+                    <label for="exerciseName" class="form-label"
+                      >Exercise Name</label
+                    >
+                    <select
+                      class="form-select"
+                      id="exerciseName"
+                      name="exerciseName"
+                      required
+                    >
+                      <!-- Options will be dynamically generated using JavaScript -->
+                    </select>
+                  </div>
+                </div>
+                <table id="create-exercise">
+                  <thead id="create-exercise-heads">
+                    <th
+                      id="header-set"
+                      style="
+                        text-align: center;
+                        background-color: #005599;
+                        color: white;
+                      "
+                    >
+                      SET
+                    </th>
+                    <th
+                      id="header-load"
+                      style="
+                        text-align: center;
+                        background-color: #005599;
+                        color: white;
+                      "
+                    >
+                      LOAD
+                    </th>
+                    <th
+                      id="header-reps"
+                      style="
+                        text-align: center;
+                        background-color: #005599;
+                        color: white;
+                      "
+                    >
+                      REPS
+                    </th>
+                    <!-- <th
+                      id="header-input"
+                      style="
+                        text-align: center;
+                        background-color: #005599;
+                        color: white;
+                      "
+                    >
+                      input_load
+                    </th> -->
+                    <th
+                      id="header-actions"
+                      style="
+                        text-align: center;
+                        background-color: #005599;
+                        color: white;
+                      "
+                    >
+                      Action
+                    </th>
+                  </thead>
+                  <tbody class="create-exercise-rows">
+                    <div id="buttonContainer">
+                      <!-- <button
+                        type="submit"
+                        id="submitExercise"
+                        class="btn btn-primary"
+                      >
+                        Submit
+                      </button> -->
+                      <!-- <button
+                          id="modifyButton"
+                          class="btn btn-secondary"
+                          disabled
+                        >
+                          Modify
+                        </button> -->
+                      <!-- <button id="returnButton" class="btn btn-secondary">
+                          Return
+                        </button> -->
+                    </div>
+                    <button id="addSet-btn" type="button" class="add-Set--btns">
+                      Add SET
+                    </button>
+                  </tbody>
+                </table>
+                <button type="button" id="testing">Save Exercise</button>
+                <div id="error-message" style="color: red"></div>
+                <div id="success-message" style="color: green"></div>
+              </form>
+              <!-- Table will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <div id="buttonContainer">
+          <button id="saveChangesButton" class="btn btn-primary">
+            Submit Workout
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <footer>
+      <div class="footer">2023 Sports Performance Pro</div>
+    </footer>
+
+    <script src="../static/js/assign-exercise.js" defer></script>
+  </body>
+</html>
