@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="../static/css/coach-team-training.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/js/select2.min.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/select2@4.0.6-rc.1/dist/js/select2.min.js"
+      defer
+    ></script>
   </head>
 
   <body>
@@ -32,7 +41,6 @@
       <!-- <p id="user_id" data-user-email="{{athlete_username}}"></p> -->
       <!-- Container for login forms -->
       <div class="login-forms">
-
         <div class="login-container-1" style="margin-right: 20px">
           <div class="container mt-7">
             <h1 class="text-center">Teams</h1>
@@ -166,7 +174,14 @@
 
         <div class="login-container-2">
           <div class="container">
-            <h1>Team: {Team Name}</h1>
+            <h1 style="color: black">Indication of training:</h1>
+            <button
+              type="button"
+              id="assign-session"
+              style="position: relative"
+            >
+              Assign Exercise
+            </button>
             <div class="team-list">
               <table id="trainingTable">
                 <thead>

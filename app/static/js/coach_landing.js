@@ -1,5 +1,11 @@
 let allTeams = {};
 
+// athleteUserElement.textContent = `Welcome :  ${userEmail.replace(
+//   /@[^ ]+/g,
+//   ""
+// )}, We're rooting for you !`;
+// console.log(`UserEmail : ${userEmail}`);
+
 fetch("/getAllTeams")
   .then((resp) => {
     allTeams = resp.json();
