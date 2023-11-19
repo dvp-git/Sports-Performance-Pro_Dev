@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Notifications</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Styles are kept similar to your example */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #0077B5;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav a.current {
+            color: #fff;
+            background-color: #005599;
+        }
+
+        .container {
+            width: 80%; /* Set the container width to half of the page */
+            margin: auto;
+            padding: 40px;
+        }
+
+        .notification-section {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            color: #0077B5;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        
+        .title {
+            font-size: 28px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #fff; /* White color */
+        }
+
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .notification-list li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .notification-list li:hover {
+            background-color: #0077B5;
+            color: #fff;
+        }
+
+        /* Additional styles for modal and close button */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sports Performance Pro </h1>
+        <nav>
+            <ul>
+                <li><a href="/coachLanding" class="current">Home</a></li>
+                <li><a href="/workoutSelection">Assign Workouts</a></li>
+                <li><a href="/testSelection">Assign Tests</a></li>
+                <li><a href="/defineExercises">Create Exercises</a></li>
+                <li><a href="/notesLanding">Notes</a></li>
+                <li><a href="/coachhNotifications">Notifications</a></li>
+                <li><a href="/coachProfile">My Profile</a></li>
+            </ul>
+          </nav>
+    </header>
+
+    <div class="container">
+        <div class="notification-section" id="coachNotifications">
+            <h2 class="section-title">Notifications</h2>
+            <ul class="notification-list">
+                <!-- Coach notifications will be listed here -->
+            </ul>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+    function fetchNotifications() {
+        $.ajax({
+            url: '/getCoachnotifications', // API endpoint
+            type: 'GET',
+            success: function(notifications) {
+                var list = $('#coachNotifications .notification-list');
+                list.empty(); // Clear existing list items
+
+                notifications.forEach(function(notification) {
+                    // Create a list item for each notification
+                    var listItem = $('<li>')
+                        .text(notification.content + ' - ' + notification.date)
+                        .appendTo(list);
+
+                    if (notification.status === 'unopened') {
+                        listItem.css('font-weight', 'bold'); // Style for unopened notifications
+                    }
+
+                    // Add click event handler
+                    listItem.click(function() {
+                        $(this).css('font-weight', 'normal'); // Change font-weight to normal when clicked
+                        // Here you can also add code to update the notification status in your database
+                    });
+                });
+            },
+            error: function(error) {
+                console.error("Error fetching notifications:", error);
+            }
+        });
+    }
+
+    fetchNotifications(); // Fetch notifications on page load
+});
+
+
+    </script>
+
+    <!-- Modal and script sections similar to your example -->
+
+</body>
+</html>

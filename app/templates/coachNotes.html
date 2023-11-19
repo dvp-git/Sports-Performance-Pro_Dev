@@ -190,6 +190,26 @@
     border-radius: 3px;
     margin-top: 5px;
     }
+    
+    .athlete-details {
+        background-color: #0077b5; /* Background color for highlight */
+        color: #fff; /* Text color */
+        padding: 10px;
+        border-radius: 8px;
+        margin: 20px 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .athlete-details h2 {
+        margin: 0;
+        color: #ffd700; /* Gold color for the athlete's name */
+        font-size: 1.5em;
+    }
+
+    .athlete-details p {
+        margin: 5px 0;
+        font-size: 1.1em;
+    }
 
 </style>
 <body>
@@ -203,7 +223,7 @@
             <li><a href="/testSelection">Create Tests</a></li>
             <li><a href="/defineExercises">Create Exercises</a></li>
             <li><a href="/notesLanding" class="current">Notes</a></li>
-            <li><a href="#">Notifications</a></li>
+            <li><a href="/coachhNotifications">Notifications</a></li>
             <li><a href="/coachProfile" class="current">My Profile</a></li>
         </ul>
     </nav>
@@ -259,6 +279,25 @@
             const modalOverlay = document.getElementById("modalOverlay");
             const notesContainer = document.getElementById("notesContainer");
             const queryParams = getQueryParams();
+
+            function fetchAthleteDetails() {
+                const apiURL = "/getAthleteById"; // Your API endpoint
+                fetch(`${apiURL}?athlete_id=${queryParams.athlete_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            athleteNameHeading.textContent = "Athlete details not found.";
+                        } else {
+                            athleteNameHeading.textContent = `Athlete: ${data.name}, Institute: ${data.institute}, Sports: ${data.sports}, Team: ${data.team || 'N/A'}`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching athlete details:', error);
+                        athleteNameHeading.textContent = "Error fetching athlete details.";
+                    });
+            }
+
+            fetchAthleteDetails();
 
 
             // Function to filter and highlight notes

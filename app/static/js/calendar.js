@@ -6,6 +6,7 @@ let currentDay;
 let currentMonth;
 let currentYear;
 let today;
+let monthValue;
 
 function updateCurrentDate() {
   today = new Date();
@@ -45,6 +46,7 @@ function next() {
   currentMonth = (currentMonth + 1) % 12;
   showCalendar(currentMonth, currentYear);
   handleDateSelection();
+  highlightWorkoutDates(athleteId, teamIds);
 }
 
 function previous() {
@@ -56,6 +58,7 @@ function previous() {
   currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   showCalendar(currentMonth, currentYear);
   handleDateSelection();
+  highlightWorkoutDates(athleteId, teamIds);
 }
 
 function jump() {
@@ -67,6 +70,7 @@ function jump() {
   currentMonth = parseInt(selectMonth.value);
   showCalendar(currentMonth, currentYear);
   handleDateSelection();
+  highlightWorkoutDates(athleteId, teamIds);
 }
 
 function highlightCurrentDate() {
@@ -209,6 +213,42 @@ function handleDateSelection() {
       main();
     });
   });
+  monthValue = selectYear.value + "-" + (parseInt(selectMonth.value) + 1);
+}
+
+async function highlightWorkoutDates(athleteIdForDate, teamIdForDate) {
+  try {
+      const response = await fetch(
+          `getWorkoutDates?athleteId=${athleteIdForDate}&teamId=${teamIdForDate}&date_param=${monthValue}`
+      );
+
+      const jsonData = await response.json();
+
+      const cells = document.querySelectorAll("td");
+      const workoutDates = jsonData.workoutDates;
+
+      workoutDates.forEach((workoutDate) => {
+          const dateObject = new Date(workoutDate);
+          const workoutMonth = dateObject.getMonth() + 1; // January is 0, so we add 1
+          const workoutYear = dateObject.getFullYear();
+
+          // Check if the month and year match the currentMonth and currentYear
+          if (workoutMonth === currentMonth+1 && workoutYear === currentYear) {
+              // Find the corresponding cell and highlight it
+              
+              cells.forEach((cell) => {
+                console.log(parseInt(cell.innerHTML));
+                      console.log(dateObject.getDate())
+                  const cellDate = cell.innerHTML;
+                  if (parseInt(cellDate) === dateObject.getDate()) {
+                      cell.classList.add("workout-date");
+                  }
+              });
+          }
+      });
+  } catch (error) {
+      console.error('Error fetching or processing data:', error);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", handleDateSelection);

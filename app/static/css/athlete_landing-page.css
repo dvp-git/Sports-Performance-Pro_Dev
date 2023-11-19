@@ -94,6 +94,12 @@ h2 {
 }
 
 .today-date {
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 12px;
+}
+
+.workout-date {
   background-color: #9308cf;
   color: #fff;
   border-radius: 12px;

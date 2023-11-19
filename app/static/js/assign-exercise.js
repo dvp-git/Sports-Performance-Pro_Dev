@@ -7,6 +7,8 @@ var teamId = params.get("teamId");
 var coachId = params.get("coachId");
 var teamName = params.get("teamName");
 var currentDate = params.get("date");
+var athleteId = params.get("athleteId");
+var athleteName = params.get("athleteName");
 
 const inputWorkout = document.getElementById("workout-name");
 const datePicker = document.getElementById("datepicker");
@@ -16,8 +18,10 @@ console.log(`Date fetched : ${currentDate}`);
 datePicker.value = formatDateToYYYYMMDD(currentDate);
 console.log(`Date formatted : ${currentDate}`);
 
+console.log(`Team name ${teamName}`);
 // Set the Team name :
-document.querySelector("#team-name").textContent = teamName;
+document.querySelector("#team-name").textContent =
+  teamName !== null ? teamName : athleteName;
 
 // Additional feature : If required
 
@@ -25,6 +29,30 @@ console.log("This is the teamId", teamId);
 console.log("This is my coachId :", coachId);
 console.log("This is my TeamName :", teamName);
 
+async function fetchWorkoutsByTeam(teamId, selectedDate, coachId) {
+  const response = await fetch(
+    `/getWorkoutsByTeam?teamId=${teamId}&date=${selectedDate}&coachId=${coachId}`
+  );
+  const data = await response.json();
+  //console.log("These are the workouts : ", data);
+  return data;
+}
+
+async function fetchWorkouts(
+  athlete_id = null,
+  team_id = null,
+  coach_id = null,
+  date = ""
+) {
+  const response = await fetch(
+    `getWorkout2?athleteId=${athlete_id}&teamId=${team_id}&date=${date}&coachId=${coach_id}`
+  );
+  const data = await response.json();
+  // console.log("These are the workouts assigned for athlete by his athleteId and for his team by teamId: ",data);
+  return data;
+}
+
+let myAssignedWorkouts = [];
 let newBlockName;
 let myWorkouts = [];
 let SampleWorkoutData = {
@@ -150,6 +178,8 @@ let tbodyCount = tbodyExercise.childElementCount;
 const exerciseDropDown = document.getElementById("dropdown-container");
 const exerciseTableContainer = document.getElementById("table-container");
 const formExercise = document.getElementById("create-exercise-form");
+const returnBtn = document.getElementById("return-button");
+
 let dataTableExercise;
 
 let categorySelect;
@@ -158,6 +188,13 @@ let exerciseNameSelect;
 const addSetBtn = document.getElementById("addSet-btn");
 
 const blockBtnCheck = document.getElementById("btn-block-Ok");
+
+returnBtn.addEventListener("click", function (e) {
+  if (teamId !== null)
+    window.location.href = `/coachTeamWorkout?teamId=${teamId}&coachId=${coachId}&teamName=${teamName}`;
+  else if (athleteId !== null)
+    window.location.href = `/coachAthleteWorkout?athleteId=${athleteId}&coachId=${coachId}`;
+});
 
 function addSingleSet() {
   // dataTableExercise.rows().invalidate().draw(false);  // RESOLVED INdexing issues of internal state
@@ -220,8 +257,10 @@ function handleDeleteButtonClick(e) {
 function deleteRow(rowIdx) {
   // TODO: UNCOMMENT if not working dataTableExercise.row(rowIdx).remove().draw(false);
   dataTableExercise.row(rowIdx).remove();
-  dataTableExercise.order([0, "asc"]).draw(false);
-  dataTableExercise.rows().invalidate().draw(false);
+  // FIXME: UNCOMMENT BELOW IF DELETE DISFUNCTIONS WORKING
+
+  // dataTableExercise.order([0, "asc"]).draw(false);
+  // dataTableExercise.rows().invalidate().draw(false);
   updateSetNumbers();
 
   dataTableExercise.rows().invalidate().draw(false); //: DO NOT REMOVE THIS FROM HERE
@@ -349,21 +388,6 @@ function loadsRepsFormatter(loadsArray, RepsArray) {
 // Done while switching Tabs or during Submit // pass the array here
 function validateLoadsReps(loadRepsArray) {
   let check = false;
-  // Sample:
-  //   [
-  //     {
-  //         "load": 3,
-  //         "reps": 1
-  //     },
-  //     {
-  //         "load": 4,
-  //         "reps": 3
-  //     },
-  //     {
-  //         "load": 1,
-  //         "reps": 5
-  //     }
-  // ]
 
   // For each loadReps
 
@@ -387,39 +411,6 @@ function validateLoadsReps(loadRepsArray) {
       return (check = true);
     }
   });
-}
-
-// $(document).ready(function () {
-//   const trainingTable = $("#trainingTable").DataTable({
-//     //columns: [{ data: "athlere_name" }], // Display only team name
-//     dom: "Blfrtip",
-//     searching: true, // Enable the search bar
-//     paging: true,
-//     //
-//   });
-// });
-
-async function fetchWorkoutsByTeam(teamId, selectedDate, coachId) {
-  const response = await fetch(
-    `/getWorkoutsByTeam?teamId=${teamId}&date=${selectedDate}&coachId=${coachId}`
-  );
-  const data = await response.json();
-  //console.log("These are the workouts : ", data);
-  return data;
-}
-
-async function fetchWorkouts(
-  athlete_id = null,
-  team_id = null,
-  coach_id = null,
-  date = ""
-) {
-  const response = await fetch(
-    `getWorkout2?athleteId=${athlete_id}&teamId=${team_id}&date=${date}&coachId=${coach_id}`
-  );
-  const data = await response.json();
-  // console.log("These are the workouts assigned for athlete by his athleteId and for his team by teamId: ",data);
-  return data;
 }
 
 function getMyBlockNames(workoutData) {
@@ -1283,66 +1274,6 @@ function checkExerciseExists(exercise_id, block_id) {
   }
 }
 
-// async function initialData() {
-//   try {
-//     // var teamId = 89;
-//     //
-//     console.log("This is the teamId", teamId);
-//     console.log("This is my coachId :", coachId);
-//     console.log("This is my TeamName :", teamName);
-
-//     console.log("Im inside Initial Data");
-
-//     // athleteId = await fetchAthleteID(userEmail); // Fetch athlete UserEmail
-//     // athleteTeams = await fetchAthleteTeams(athleteId); // Fetch Athlete Teams
-//     const teamsAthletes = await fetchAthletesForTeam(coachId, teamId); // Fetch Teams for the coach
-//     let myAthletes = teamsAthletes;
-//     // Remove the team by teamId
-//     myAthleteIds = teamsAthletes.athletes.map((athlete) => athlete.athlete_id);
-//     console.log("My Team athletes Id's : ", myAthleteIds);
-
-//     // myAthletes = teamsAthletes.athletes.map((team) => team.name);
-//     console.log("My Team athletes are : ", myAthletes);
-
-//     myWorkouts = await fetchWorkoutsByTeam(teamId, currentDate, coachId);
-//     console.log("These are my teams Workouts: initial Data ", myWorkouts);
-
-//     const dataCreation = (function () {
-//       // You can now work with athleteID and athleteTeams here
-//       console.log("Team ID:", teamId);
-//       console.log("Athletes :", myAthletes); // [ {} {}]
-//       console.log("Teams Workouts:", myWorkouts);
-//       // teams = athleteTeams.map((team) => team.name);
-//       // const myAthletes = myAthletes.map((athlete) => [athlete]);
-//       // INITIALIZING THE ATHLETES OF THE TRAINING TABLE
-//       const trainingTable = $("#trainingTable").DataTable();
-
-//       trainingTable.clear().rows;
-//       myAthletes.athletes.forEach((athlete) => {
-//         // trainingTable.row.add([athlete.name]).draw()
-//         trainingTable.row
-//           .add([athlete.name])
-//           .node().id = `${athlete.athlete_id}`;
-//         trainingTable.draw();
-//       });
-//     })();
-//     return myAthletes, myAthleteIds;
-//   } catch (error) {
-//     console.log("Could not fetch the details " + error);
-//   }
-// }
-
-// Main Function which has all details:
-// async function main() {
-//   try {
-//     const data = await initialData(); // Gets all the initial Data
-//   } catch (error) {
-//     console.error("An error occured", error);
-//   }
-// }
-
-// main();
-
 // Once the workout is filled
 
 // Initialize DataTable
@@ -1395,32 +1326,65 @@ $("#createExercise tbody").on("click", "button.delete-button", function (e) {
   }
 });
 
-// Handle the "Save Changes" button
-$("#saveChangesButton").click(function (e) {
+// Handle the "Assign Workout" button
+$("#saveChangesButton").on("click", function (e) {
   e.preventDefault();
 
+  const workOutName = document.getElementById("workout-name").value;
+  SampleWorkoutData = SampleWorkoutDataFormatter(
+    SampleWorkoutData,
+    workOutName,
+    datePicker.value,
+    coachId,
+    teamId,
+    athleteId
+  );
+
+  console.log("This is the workout", workOutName);
   // Get the new team name from the input field
-  var newTeamName = $("#name").val();
 
   // Send a PUT request to update the team name
-  $.ajax({
-    type: "PUT",
-    url: "/updateTeamName?teamId=" + teamId,
-    contentType: "application/json",
-    data: JSON.stringify({ newTeamName: newTeamName }),
-    success: function (response) {
-      // Show a success message (you can customize this part)
-      alert(response.message);
-
-      // Redirect to the previous page (coachLanding) or any other desired page
-      window.location.href = "/coachLanding";
-    },
-    error: function (xhr, status, error) {
-      console.error("API request failed with status: " + status);
-      console.error("Error details: " + error);
-    },
-  });
+  // Send the entries to database
+  fetch("/addWorkoutAndAssign", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(SampleWorkoutData),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("This is the data", data);
+      if (data.Success) {
+        SampleWorkoutData.workout_id = data.workout_id;
+        console.log("Successful");
+      } else {
+        console.log("Unsuccefful");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      console.log({ error: "Failed to store data on server" });
+    });
 });
+
+function SampleWorkoutDataFormatter(
+  SampleWorkoutData,
+  WorkoutName,
+  dateAdded,
+  coachId,
+  teamId = null,
+  athleteId = null
+) {
+  SampleWorkoutData.name = WorkoutName;
+  SampleWorkoutData.date_added = dateAdded;
+  SampleWorkoutData.coach_id = coachId;
+  SampleWorkoutData.team_id = teamId; // Add teamId
+  SampleWorkoutData.athlete_id = athleteId;
+
+  console.log("This is the workout", SampleWorkoutData);
+  return SampleWorkoutData;
+}
 
 // Handle the "Return" button
 $("#returnButton").click(function (e) {
@@ -1515,6 +1479,7 @@ $("#trainingTable tbody").on("click", "tr", function (event) {
     })
     .then((workout_data) => {
       console.log(workout_data);
+      myAssignedWorkouts.push(workout_data);
       currentBlocks = getMyBlockNames(workout_data);
       console.log("Current Blocks:", currentBlocks);
       displayBlocks2(currentBlocks);
@@ -1535,3 +1500,15 @@ function formatAthleteEntries(inputLoads) {
   console.log(transformedLoads);
   return transformedLoads;
 }
+
+function modifyWorkout(WorkoutDataId) {}
+
+function deleteWorkout(WorkoutDataId) {}
+
+
+
+
+
+
+
+

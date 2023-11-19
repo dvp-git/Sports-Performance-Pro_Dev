@@ -345,6 +345,7 @@
             <li><a href="/adminLanding">Coaches</a></li>
             <li><a href="/adminAthlete" class="current">Athletes</a></li>
             <li><a href="/adminExercises">Exercises</a></li>
+            <li><a href="/adminNotifications" >Notifications</a></li>
             <li><a href="/logoutAdmin">Logout</a></li>
         </ul>
     </nav>
@@ -367,7 +368,10 @@
             <!-- Table rows will be inserted here dynamically -->
         </tbody>
     </table>
-
+    <div id="loadingSpinner" style="display: none;">
+        Loading...
+        <!-- You can replace this with an actual loading spinner -->
+    </div>
     <div class="modal fade" id="updateAthleteModal" tabindex="-1" role="dialog" aria-labelledby="updateAthleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -419,7 +423,9 @@
         $('#updateAthleteModal').modal('hide');
     });
 function populateAthleteTable() {
+    $('#loadingSpinner').show();
     $.get('/getAthletesForAdmin', function (data) {
+        $('#loadingSpinner').hide();
         if (data) {
             const athleteTableBody = $('#athleteTable tbody');
 

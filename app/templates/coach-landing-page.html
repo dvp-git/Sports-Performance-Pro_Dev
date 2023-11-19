@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sports Performance Pro</title>
 
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
@@ -118,10 +125,10 @@
         }
 
         .title {
-            font-size: 28px;
+            font-size: 30px;
             margin-top: 20px;
             margin-bottom: 30px;
-            color: #fff; /* White color */
+            color: #fff;
         }
 
         h2 {
@@ -240,12 +247,99 @@
             font-weight: bold;
         }
 
+        #welcomeMessageContainer {
+            background-color: #3498db; 
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        #welcomeMessage {
+            color: white;
+        }
+
+        /* Style for form labels */
+        .ui-dialog label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px; /* Adjust the width as needed */
+            margin-right: 10px; /* Add spacing between label and input */
+        }
+
+        /* Style for input text fields */
+        .ui-dialog input[type="text"],
+        .ui-dialog select {
+            width: 200px; /* Adjust the width as needed */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Style for validation messages */
+        .validation-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        /* Style for buttons in dialog boxes */
+        .ui-dialog-buttonpane {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .ui-dialog-buttonset button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .ui-dialog-buttonset button:hover {
+            background-color: #005599;
+        }
+
+        /* Style for the success message dialog */
+        #successDialog {
+            text-align: center;
+        }
+        .ui-dialog .input-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        }
+
+        .scrollable-menu {
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: var(--bs-border-radius);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column; /* Display checkboxes in a vertical coln */
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center; /* Center the checkbox and text vertically */
+            margin-bottom: 5px; /* Add spacing between checkboxes */
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px; /* Add spacing between the checkbox and text */
+        }
+
     </style>
 </head>
 <body>
     
     <header>
-        <h1 class="title">Sports Performance Pro - Welcome Coach TJ!</h1>
+        <h1 class="title">Sports Performance Pro</h1>
     </header>
 
     <nav>
@@ -255,12 +349,15 @@
             <li><a href="/testSelection">Assign Tests</a></li>
             <li><a href="/defineExercises">Create Exercises</a></li>
             <li><a href="/notesLanding">Notes</a></li>
-            <li><a href="#">Notifications</a></li>
+            <li><a href="/coachhNotifications">Notifications</a></li>
             <li><a href="/coachProfile">My Profile</a></li>
         </ul>
     </nav>
 
     <div class="container mt-5">
+        <div id="welcomeMessageContainer" class="text-center">
+            <h1 id="welcomeMessage">{Coach Name}</h1>
+        </div>
         <!-- Team Section -->        
         <h1 class="text-center">Teams</h1>
         <table id="teamTable" class="display">
@@ -292,7 +389,32 @@
                 <!-- Dynamic data will be inserted here -->
             </tbody>
         </table>
-        
+    </div>
+
+    <!-- Dialog box for team -->
+    <div id="confirmDeleteTeamDialog" title="Confirm Delete Team" style="display: none;">
+        <p>Are you sure you want to delete the team: <span id="teamNameToDelete"></span>?</p>
+    </div>
+
+    <div id="alertDeleteTeamSuccessDialog" title="Team Deleted" style="display: none;">
+        <p></p>
+    </div>
+
+    <div id="alertDeleteTeamErrorDialog" title="Error" style="display: none;">
+        <p></p>
+    </div>
+
+    <!-- Dialog box for athlete  -->
+    <div id="confirmDeleteAthleteDialog" title="Confirm Delete Athlete" style="display: none;">
+        <p>Are you sure you want to delete the athlete: <span id="athleteNameToDelete"></span>?</p>
+    </div>
+
+    <div id="alertDeleteAthleteSuccessDialog" title="Athlete Deleted" style="display: none;">
+        <p></p>
+    </div>
+
+    <div id="alertDeleteAthleteErrorDialog" title="Error" style="display: none;">
+        <p></p>
     </div>
 
     <footer>
@@ -304,6 +426,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+            // Fetch the coach_id using the coach's email
+            var coachEmail = "{{ session['username'] }}";
             // Create team data
             var teams = [];
 
@@ -335,7 +460,7 @@
                 dom: 'Blfrtip',
                 buttons: [
                     {
-                        text: 'Add a new Team',
+                        text: 'Create a new Team',
                         action: function () {
                             // Handle the "New Team" action here
                             window.location.href = '/createTeam';
@@ -347,6 +472,7 @@
 
             // Click event for team rows to view the team details
             $('#teamTable tbody').on('click', 'tr', function (e) {
+                e.stopPropagation(); // Prevent the event from propagating to the parent
                 var data = teamTable.row(this).data();
                 var teamId = data.team_id; // Replace 'team_id' with the actual property name
                 if (teamId) {
@@ -357,21 +483,83 @@
 
             $('#teamTable tbody').on('click', 'button.edit-button', function (e) {
                 // var data = teamTable.row($(this).parents('tr')).data();
-                // console.log("should not be a table row");
-                // alert('Edit: ' + data.name);
                 e.stopPropagation(); // Prevent the event from propagating to the parent
-                var data = teamTable.row($(this).parents('tr')).data();
-                console.log("should not be a table row");
-                alert('Edit: ' + data.name);
-            });
+                var rowIndex = $(this).data('id');
+                var data = teamTable.row(rowIndex).data();
 
+                // Log the entire data object to the console for debugging
+                console.log('Team data:', data);
+
+                if (data && data.team_id) {
+                    var teamId = data.team_id;
+                    window.location.href = `/viewTeam?teamId=${teamId}`;
+                } else {
+                    console.error("Team data or team_id is undefined.");
+                }
+            });   
+
+            // Handle the "Delete Team" button
             $('#teamTable tbody').on('click', 'button.delete-button', function (e) {
-                // var data = teamTable.row($(this).parents('tr')).data();
-                // alert('Delete: ' + data.name);
                 e.stopPropagation(); // Prevent the event from propagating to the parent
                 var data = teamTable.row($(this).parents('tr')).data();
-                alert('Delete: ' + data.name);
-            });    
+                var teamId = data.team_id;
+
+                // Log the entire data object to the console for debugging
+                console.log('Team data:', data);
+
+                // Confirm with the user before deleting the team using a dialog
+                $("#confirmDeleteTeamDialog").dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        "Yes": function () {
+                            // Make an Ajax request to delete the team
+                            $.ajax({
+                                url: '/deleteTeam',
+                                type: 'DELETE',
+                                data: { teamId: teamId },
+                                success: function (response) {
+                                    // Show a success message in the success dialog
+                                    $("#alertDeleteTeamSuccessDialog p").text(response.message);
+                                    $("#alertDeleteTeamSuccessDialog").dialog({
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                // Refresh the page after successfully deleting the team
+                                                location.reload();
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function (xhr) {
+                                    // Show an error message in the error dialog
+                                    $("#alertDeleteTeamErrorDialog p").text('Error deleting team. Please try again.');
+                                    $("#alertDeleteTeamErrorDialog").dialog({
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                    console.error('Error deleting team:', xhr.responseText);
+                                }
+                            });
+
+                            // Set the team name in the confirmation dialog
+                            $("#teamNameToDelete").text(data.name);
+
+                            $(this).dialog("close");
+                        },
+                        "No": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            });
             
             //Athlete section
 
@@ -401,60 +589,146 @@
                                 </button>`;
                         }
                     }
+                ],
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        text: 'Add a new Signed Up Athlete',
+                        action: function () {
+                            // Handle the "New Team" action here
+                            window.location.href = '/addNewAthlete';
+                        },
+                        className: 'new-team-button'
+                    }
                 ]
             });
 
-            $('#athleteTable tbody').on('click', 'button.edit-button', function () {
-                var data = athleteTable.row($(this).parents('tr')).data();
-                alert('Edit: ' + data.name);
+            $('#athleteTable tbody').on('click', 'button.edit-button', function (e) {
+                // var data = athleteTable.row($(this).parents('tr')).data();
+                // var data = teamTable.row($(this).parents('tr')).data();
+
+                e.stopPropagation(); // Prevent the event from propagating to the parent
+                var rowIndex = $(this).data('id');
+                var data = athleteTable.row(rowIndex).data();
+
+                // Log the entire data object to the console for debugging
+                console.log('Athlete data:', data);
+
+                if (data && data.athlete_id) {
+                    var athleteEmail = data.email;
+                    // window.location.href = `/viewTeam?teamId=${teamId}`;
+                    console.log("athlete email: ", athleteEmail);
+                    window.location.href = `/editAthleteDetails?athleteEmail=${athleteEmail}`;
+                } else {
+                    console.error("Athlete data or athlete email is undefined.");
+                }
             });
 
+            // Handle the "Delete Athlete" button
             $('#athleteTable tbody').on('click', 'button.delete-button', function () {
                 var data = athleteTable.row($(this).parents('tr')).data();
-                alert('Delete: ' + data.name);
-            });
+                var athleteEmail = data.email;
 
+                console.log('Athlete data:', data);
 
-
-            $(document).ready(function () {
-                // Fetch the coach_id using the coach's email
-                var coachEmail = "{{ session['username'] }}"; 
-
-                $.get("/getAllCoaches?email=" + coachEmail, function (data) {
-                    if (data.error) {
-                        // Handle the case where the coach is not found (e.g., redirect to a login page)
-                        window.location.href = '/coachAthleteHome';
-                    } else {
-                        var coachId = data.coach_id;
-
-                        // Use coachId to fetch athlete data
-                        $.get("/getAllAthletes?coach_id=" + coachId, function (athleteData) {
-                            var athletes = athleteData.athletes;
-                            var athleteTable = $("#athleteTable").DataTable();
-                            athleteTable.clear();
-
-                            // Iterate through athletes and add them to the table
-                            athletes.forEach(function (athlete) {
-                                var athleteDataWithCoach = {
-                                    name: athlete.name,
-                                    sports: athlete.sports,
-                                    institute: athlete.institute,
-                                    coach_id: coachId,  // Use the coach_id from the request parameter
-                                };
-                                athleteTable.row.add(athleteDataWithCoach);
+                // Confirm with the user before deleting the athlete using a dialog
+                $("#confirmDeleteAthleteDialog").dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        "Yes": function () {
+                            // Make an Ajax request to delete the athlete
+                            $.ajax({
+                                url: '/deleteAthlete',
+                                type: 'DELETE',
+                                data: { email: athleteEmail },
+                                success: function (response) {
+                                    // Show a success message in the success dialog
+                                    $("#alertDeleteAthleteSuccessDialog p").text(response.message);
+                                    $("#alertDeleteAthleteSuccessDialog").dialog({
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                // Refresh the page after successfully deleting the athlete
+                                                location.reload();
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function (xhr) {
+                                    // Show an error message in the error dialog
+                                    $("#alertDeleteAthleteErrorDialog p").text('Error deleting athlete. Please try again.');
+                                    $("#alertDeleteAthleteErrorDialog").dialog({
+                                        modal: true,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                    console.error('Error deleting athlete:', xhr.responseText);
+                                }
                             });
-                            athleteTable.draw();
-                        });
 
-                        $.get("/getAllTeams?coach_id=" + coachId, function (teamData) {
-                            var teams = teamData.teams;
-                            var teamTable = $("#teamTable").DataTable();
-                            teamTable.clear().rows.add(teams).draw();
-                        });
+                            // Set the athlete name in the confirmation dialog
+                            $("#athleteNameToDelete").text(data.name);
+
+                            $(this).dialog("close");
+                        },
+                        "No": function () {
+                            $(this).dialog("close");
+                        }
                     }
                 });
             });
+
+            // Fetch the coach_id using the coach's email
+            $.get("/getAllCoaches?email=" + coachEmail, function (data) {
+                if (data.error) {
+                    // Handle the case where the coach is not found (e.g., redirect to a login page)
+                    window.location.href = '/coachAthleteHome';
+                } else {
+                    var coachName = data.name;
+
+                    // Update the welcome message with the coach's name
+                    $("#welcomeMessage").text("Coach: " + coachName);
+                    var coachId = data.coach_id;
+
+                    // Use coachId to fetch athlete data
+                    $.get("/getAllAthletes?coach_id=" + coachId, function (athleteData) {
+                        var athletes = athleteData.athletes;
+                        var athleteTable = $("#athleteTable").DataTable();
+                        athleteTable.clear();
+
+                        // Iterate through athletes and add them to the table
+                        athletes.forEach(function (athlete) {
+                            var athleteDataWithCoach = {
+                                name: athlete.name,
+                                athlete_id: athlete.athlete_id,
+                                email: athlete.email,
+                                sports: athlete.sports,
+                                institute: athlete.institute,
+                                coach_id: coachId,  // Use the coach_id from the request parameter
+                            };
+                            athleteTable.row.add(athleteDataWithCoach);
+                        });
+                        athleteTable.draw();
+                    });
+
+                    $.get("/getAllTeams?coach_id=" + coachId, function (teamData) {
+                        var teams = teamData.teams;
+                        var teamTable = $("#teamTable").DataTable();
+                        teamTable.clear().rows.add(teams).draw();
+                    });
+                }
+            });
+
         });   
     </script>
+
+
 </body>
 </html>

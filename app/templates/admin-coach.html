@@ -369,6 +369,7 @@
             <li><a href="/adminLanding" class="current">Coaches</a></li>
             <li><a href="/adminAthlete">Athletes</a></li>
             <li><a href="/adminExercises">Exercises</a></li>
+            <li><a href="/adminNotifications" >Notifications</a></li>
             <li><a href="/logoutAdmin">Logout</a></li>
         </ul>
     </nav>
@@ -453,7 +454,10 @@
             </div>
         </div>
     </div>    
-
+    <div id="loadingSpinner" style="display: none;">
+        Loading...
+        <!-- You can replace this with an actual loading spinner -->
+    </div>
     <div class="modal fade" id="addSportsModal" tabindex="-1" role="dialog" aria-labelledby="addSportsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -562,62 +566,67 @@ $(document).ready(function () {
 
 
 
-        function populateCoachTable() {
-            $.get('/getAllCoaches', function (data) {
-                if (data.coaches) {
-                    const coachTableBody = $('#coachTableBody');
-    
-                    // Clear existing table rows
-                    coachTableBody.empty();
-    
-                    // Iterate through the received coach data and create table rows
-                    data.coaches.forEach(function (coach) {
-                        const newRow = `
-                            <tr>
-                                <td>${coach.name}</td>
-                                <td>${coach.institute}</td>
-                                <td>${coach.sports}</td>
-                                <td>${coach.phone}</td>
-                                <td>${coach.email}</td>
-                                <td>
-                                    <button class="delete" data-coach-id="${coach.email}">Delete</button>
-                                    <button class="update" data-coach-id="${coach.email}">Update</button>
-                                </td>
-                            </tr>
-                        `;
-                        coachTableBody.append(newRow);
-                        const updateButton = coachTableBody.find('.update').last();
-                        updateButton.click(function () {
-                        populateUpdateCoachFields(coach);
-                        
-                });
-                    });
-                    var table = $('#coachTable').DataTable({
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "pageLength": 10
-            });
-                    // Attach event handlers for delete and update buttons
-                    $('.delete').click(function () {
-                        const coachId = $(this).data('coach-id');
-                        deleteCoach(coachId);
-                    });
+function populateCoachTable() {
+    // Show loading spinner while data is being fetched
+    $('#loadingSpinner').show();
 
-                    $('#updateCoachButton').click(function () {
-                    updateCoaches();
+    $.get('/getAllCoaches', function (data) {
+        // Hide loading spinner after data is loaded
+        $('#loadingSpinner').hide();
+
+        if (data.coaches) {
+            const coachTableBody = $('#coachTableBody');
+
+            // Clear existing table rows
+            coachTableBody.empty();
+
+            // Iterate through the received coach data and create table rows
+            data.coaches.forEach(function (coach) {
+                const newRow = `
+                    <tr>
+                        <td>${coach.name}</td>
+                        <td>${coach.institute}</td>
+                        <td>${coach.sports}</td>
+                        <td>${coach.phone}</td>
+                        <td>${coach.email}</td>
+                        <td>
+                            <button class="delete" data-coach-id="${coach.email}">Delete</button>
+                            <button class="update" data-coach-id="${coach.email}">Update</button>
+                        </td>
+                    </tr>
+                `;
+                coachTableBody.append(newRow);
+                const updateButton = coachTableBody.find('.update').last();
+                updateButton.click(function () {
+                    populateUpdateCoachFields(coach);
                 });
-    
-                   
-                } else {
-                    // Handle error or no data
-                    console.log('No coach data found');
-                }
             });
+
+            var table = $('#coachTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "pageLength": 10
+            });
+
+            // Attach event handlers for delete and update buttons
+            $('.delete').click(function () {
+                const coachId = $(this).data('coach-id');
+                deleteCoach(coachId);
+            });
+
+            $('#updateCoachButton').click(function () {
+                updateCoaches();
+            });
+        } else {
+            // Handle error or no data
+            console.log('No coach data found');
         }
+    });
+}
     
         // Function to delete a coach
         function deleteCoach(coachEmail) {

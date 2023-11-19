@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Coach Profile</title>
+
+    <!-- Include jQuery and jQuery UI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
     <!-- Include Bootstrap CSS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
@@ -157,46 +167,6 @@
             margin-left: 10px;
         }
 
-        /* Modal styles */
-        .modal {
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-        }
-
-        .modal-header {
-            background-color: #0077B5; /* Header background color */
-            color: #fff; /* Header text color */
-            border: none; /* Remove the header border */
-        }
-
-        .modal-title {
-            font-size: 24px; /* Header title font size */
-        }
-
-        .modal-body {
-            padding: 20px; /* Padding for the modal body */
-        }
-
-        .modal-footer {
-            background-color: #fff; /* Footer background color */
-            border: none; /* Remove the footer border */
-        }
-
-        .modal-footer button {
-            background-color: #0077B5; /* Button background color */
-            color: #fff; /* Button text color */
-            border: none; /* Remove button border */
-        }
-
-        /* Close button */
-        .close {
-            color: #fff; /* Close button color */
-            font-size: 30px; /* Close button size */
-        }
-
-        .close:hover {
-            color: #ccc; /* Close button color on hover */
-        }
-
     </style>
 </head>
 <body>
@@ -211,7 +181,7 @@
             <li><a href="/testSelection">Assign Tests</a></li>
             <li><a href="/defineExercises">Create Exercises</a></li>
             <li><a href="/notesLanding">Notes</a></li>
-            <li><a href="#">Notifications</a></li>
+            <li><a href="/coachhNotifications">Notifications</a></li>
             <li><a href="/coachProfile" class="current">My Profile</a></li>
         </ul>
     </nav>
@@ -302,15 +272,24 @@
         </div>
     </div>
 
+    <!-- Your HTML code with the success dialog -->
+    <div id="successDialog" title="Success" style="display: none;">
+        <p id="successMessage"></p>
+    </div>
+
+    <div id="errorDialog" title="Error" style="display: none;">
+        <p id="errorMessage"></p>
+    </div>
+
+    <div id="confirmLogoutDialog" title="Confirm Logout" style="display: none;">
+        <p>Are you sure you want to log out?</p>
+    </div>
+
     <footer>
         <div class = footer>
             2023 Sports Performance Pro
         </div>
     </footer>
-
-    <!-- Include Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         var coachEmail = "{{ session['username'] }}"; 
@@ -382,13 +361,30 @@
                 data: JSON.stringify(updatedData),
                 success: function (response) {
                     console.log(response.message);
-                    // Display the success modal
-                    alert('Coach profile updated successfully!')
+
+                    // Display the success dialog
+                    $('#successMessage').text('Coach profile updated successfully!');
+                    $('#successDialog').dialog({
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                                location.reload();
+                            }
+                        }
+                    });
                 },
                 error: function () {
                     console.log('Error updating coach profile.');
-                    // Display the error modal
-                    alert('Error updating coach profile.');
+                    $('#errorMessage').text('Error updating coach profile.');
+                    $('#errorDialog').dialog({
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
                 }
             });
         }
@@ -407,7 +403,16 @@
             var confirmNewPassword = $('#confirmNewPassword').val();
 
             if (newPassword !== confirmNewPassword) {
-                alert('New passwords do not match. Please retype new password correctly.');
+                // Display an error dialog if new passwords do not match
+                $('#errorMessage').text('New passwords do not match. Please retype new password correctly.');
+                $('#errorDialog').dialog({
+                    modal: true,
+                    buttons: {
+                        Ok: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
                 return;
             }
 
@@ -422,15 +427,45 @@
                 }),
                 success: function (response) {
                     console.log(response.message);
-                    alert('Password updated successfully');
+
+                    // Display the success dialog
+                    $('#successMessage').text('Password updated successfully.');
+                    $('#successDialog').dialog({
+                        modal: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
                 },
                 error: function (xhr) {
                     if (xhr.status === 401) {
                         console.log('Invalid old password');
-                        alert('Invalid old password. Please enter the correct old password.');
+
+                        // Display an error dialog for invalid old password
+                        $('#errorMessage').text('Invalid old password. Please enter the correct old password.');
+                        $('#errorDialog').dialog({
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
                     } else {
                         console.log('Error updating password');
-                        alert('An error occurred while updating the password.');
+
+                        // Display a generic error dialog for other errors
+                        $('#errorMessage').text('An error occurred while updating the password.');
+                        $('#errorDialog').dialog({
+                            modal: true,
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
                     }
                 }
             });
@@ -444,27 +479,50 @@
 
         // Function to log out and clear session data
         function logOut() {
-            var confirmLogout = confirm("Are you sure you want to log out?");
-            if (confirmLogout) {
-                // Make an API request to log out on the server side if necessary
-                // For example, you can call a log out API endpoint
+            // Display a confirmation dialog
+            $("#confirmLogoutDialog").dialog({
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: true,
+                buttons: {
+                    "Yes": function () {
+                        // Make an API request to log out on the server side if necessary
+                        // For example, you can call a log out API endpoint
 
-                // Clear the session data on the client side
-                $.ajax({
-                    url: '/logout',  // Replace with your log out API endpoint if needed
-                    type: 'POST',
-                    success: function (response) {
                         // Clear the session data on the client side
+                        $.ajax({
+                            url: '/logout',  // Replace with your log out API endpoint if needed
+                            type: 'POST',
+                            success: function (response) {
+                                // Clear the session data on the client side
 
-                        // Redirect to /coachAthtleteHome
-                        window.location.href = '/coachAthleteHome';
+                                // Redirect to /coachAthleteHome
+                                window.location.href = '/coachAthleteHome';
+                            },
+                            error: function () {
+                                // Handle the error if log out fails
+
+                                // Display an error dialog
+                                $('#errorMessage').text('Error logging out.');
+                                $('#errorDialog').dialog({
+                                    modal: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                        $(this).dialog("close");
                     },
-                    error: function () {
-                        // Handle the error if log out fails
-                        alert('Error logging out.');
+                    "No": function () {
+                        $(this).dialog("close");
                     }
-                });
-            }
+                }
+            });
         }
 
         // Call the logOut function when the Log out button is clicked
@@ -474,6 +532,33 @@
 
         // Call the populateCoachData function when the page loads
         $(document).ready(function() {
+
+            $.get("/getAllSports", function (data) {
+                // Check if the request was successful
+                if (data && data.sports) {
+                    // Populate the sports checkboxes dynamically
+                    data.sports.forEach(function (sport) {
+                        $('#sportsContainer').append(`
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="sports[]" value="${sport}" id="${sport.toLowerCase()}">
+                                ${sport}
+                            </label>
+                        `);
+                    });
+                }
+            });
+
+            // Fetch institutes data from the API
+            $.get("/getAllInstitutes", function (data) {
+                // Check if the request was successful
+                if (data && data.institutes) {
+                    // Populate the institute dropdown dynamically
+                    data.institutes.forEach(function (institute) {
+                        $('#institute').append(`<option value="${institute}">${institute}</option>`);
+                    });
+                }
+            });
+
             populateCoachData();
         });
     </script>   
