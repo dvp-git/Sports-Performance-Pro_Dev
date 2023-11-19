@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -203,8 +204,12 @@
       const adminSignIn = document.getElementById("admin_signin");
       function validateAdminEmail() {
         const adminEmailInput = document.getElementsByName("admin_username")[0];
+        const adminPasswordInput = document.getElementsByName("admin_password")[0];
         const adminEmailError = document.getElementById("adminEmailError");
-
+        var adminLoginData = {
+          "username": adminEmailInput.value,
+          "password": adminPasswordInput.value
+        };
         // Regular expression for email validation
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -212,10 +217,23 @@
           adminEmailError.textContent = "Invalid email format";
         } else {
           adminEmailError.textContent = "";
-          // Add your sign-in logic for admins here
-          window.location.href = "Admin_landing.html";
+          $.post("/adminPost", JSON.stringify(adminLoginData), function (response) {
+            if (response === 'Successful') {
+              window.location.href = "/adminLanding";
+            } else {
+              adminEmailError.textContent = response;
+          }  
+          });
         }
       }
+      function handleAdminKeyPress(e) {
+        if (e.keyCode === 13) { // 13 is the keycode for the Enter key
+          validateAdminEmail();
+        }
+      }
+      document.getElementsByName("admin_username")[0].addEventListener('keypress', handleAdminKeyPress);
+      document.getElementsByName("admin_password")[0].addEventListener('keypress', handleAdminKeyPress);
+
 
       adminSignIn.addEventListener("click", function (e) {
         validateAdminEmail();

@@ -135,26 +135,25 @@
             <li><a href="coach-landing-page.html">Home</a></li>
             <li><a href="workout-selection.html">Create Workouts</a></li>
             <li><a href="test-selection.html">Create Tests</a></li>
-            <li><a href="#">Notes</a></li>
+            <li><a href="/notesLanding">Notes</a></li>
             <li><a href="#">Notifications</a></li>
             <li><a href="coach-profile.html">My Profile</a></li>
         </ul>
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center">Add New Exercise</h1>
+        <h1 class="text-center">Add a new Exercise</h1>
         <div class="row">
             <div class="col-md-12">
                 <h2>Exercise Details</h2>
+                <!-- Add a container for exercise data -->
+
                 <form id="addExerciseForm">
                     <!-- Category Field -->
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
                         <select class="form-select" id="category" name="category" required>
-                            <option value="Cardio">Cardio</option>
-                            <option value="Strength training">Strength training</option>
-                            <option value="Core">Core</option>
-                            <option value="Yoga">Yoga</option>
+                            <!-- Options will be dynamically generated using JavaScript -->
                         </select>
                     </div>
     
@@ -173,30 +172,13 @@
                             <!-- Options will be dynamically generated using JavaScript -->
                         </select>
                     </div>
-    
-                    <!-- Loads Field -->
-                    <div class="mb-3">
-                        <label for="loads" class="form-label">Loads</label>
-                        <input type="number" class="form-control" id="loads" name="loads">
-                    </div>
-    
-                    <!-- Sets Field -->
-                    <div class="mb-3">
-                        <label for="sets" class="form-label">Sets</label>
-                        <input type="number" class="form-control" id="sets" name="sets">
-                    </div>
-    
-                    <!-- Reps Field -->
-                    <div class="mb-3">
-                        <label for="reps" class="form-label">Reps</label>
-                        <input type="number" class="form-control" id="reps" name="reps">
-                    </div>
                 </form>
             </div>
 
             <!-- Save Exercise Button -->
             <div class="mb-3 text-center">
                 <button type="button" id="addExerciseButton" class="btn btn-primary">Add Exercise</button>
+                <button type="button" id="cancelButton" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
@@ -217,90 +199,81 @@
         const categorySelect = document.getElementById("category");
         const exerciseTypeSelect = document.getElementById("exerciseType");
         const exerciseNameSelect = document.getElementById("exerciseName");
-        
-        const exerciseData = {
-            Cardio: {
-                "Treadmill": ["Running"],
-                "Elliptical": ["Elliptical training"],
-                "Stationary bike": ["Cycling"],
-                "Rowing machine": ["Rowing"],
-                "Stair climber": ["Stair climbing"],
-            },
-            "Strength training": {
-                "Push": ["Bench press", "Overhead press", "Push-ups", "Machine chest press"],
-                "Pull": ["Pull-ups", "Lat pulldown", "Barbell row", "Dumbbell row", "Cable row"],
-                "Hip hinge": ["Deadlift", "Good morning", "Romanian deadlift", "Clean", "Kettlebell swing"],
-                "Squat": ["Squat", "Front squat", "Bulgarian split squat", "Goblet squat", "Leg press"],
-            },
-            Core: {
-                "Plank": ["Plank", "Side plank", "Knee raise plank", "Hollow body hold"],
-                "Crunches": ["Crunches", "Leg raises", "Sit-ups"],
-                "Russian twists": ["Russian twists"],
-            },
-            Yoga: {
-                "Downward-facing dog": ["Downward-facing dog"],
-                "Warrior I pose": ["Warrior I pose"],
-                "Triangle pose": ["Triangle pose"],
-                "Tree pose": ["Tree pose"],
-                "Bridge pose": ["Bridge pose"],
-            },
-        };
-        
-        categorySelect.addEventListener("change", updateExerciseTypes);
-        exerciseTypeSelect.addEventListener("change", updateExerciseNames);
-        
+
+        // Function to fetch data from the server
+        function fetchData(endpoint, params, callback) {
+            $.get(endpoint, params, callback);
+        }
+
+        // Function to populate dropdowns with data
+        function populateDropdown(element, data) {
+            element.innerHTML = "";
+            data.forEach((item) => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                option.textContent = item.name;
+                element.appendChild(option);
+            });
+        }
+
+        // Function to update exercise types dropdown
         function updateExerciseTypes() {
-            const selectedCategory = categorySelect.value;
-            exerciseTypeSelect.innerHTML = "";
-            exerciseNameSelect.innerHTML = "";
-        
-            if (exerciseData[selectedCategory]) {
-                const exerciseTypes = Object.keys(exerciseData[selectedCategory]);
-                exerciseTypes.forEach((type) => {
-                    const option = document.createElement("option");
-                    option.value = type;
-                    option.textContent = type;
-                    exerciseTypeSelect.appendChild(option);
-                });
-            }
-        
-            updateExerciseNames();
+            const selectedCategoryId = categorySelect.value;
+
+            fetchData('/exercise-types', { category_id: selectedCategoryId }, function (data) {
+                populateDropdown(exerciseTypeSelect, data.exercise_types);
+                updateExerciseNames(); // Update exercise names after updating exercise types
+            });
         }
-        
+
+        // Event listener for category dropdown change
+        categorySelect.addEventListener("change", updateExerciseTypes);
+
+        // Event listener for exercise type dropdown change
+        exerciseTypeSelect.addEventListener("change", updateExerciseNames);
+
+        // Function to update exercise names dropdown
         function updateExerciseNames() {
-            const selectedCategory = categorySelect.value;
-            const selectedExerciseType = exerciseTypeSelect.value;
-            exerciseNameSelect.innerHTML = "";
-        
-            if (exerciseData[selectedCategory] && exerciseData[selectedCategory][selectedExerciseType]) {
-                exerciseData[selectedCategory][selectedExerciseType].forEach((name) => {
-                    const option = document.createElement("option");
-                    option.value = name;
-                    option.textContent = name;
-                    exerciseNameSelect.appendChild(option);
-                });
-            }
+            const selectedCategoryId = categorySelect.value;
+            const selectedExerciseTypeId = exerciseTypeSelect.value;
+
+            fetchData('/getDefinedExercises', { exercise_type_id: selectedExerciseTypeId }, function (data) {
+                populateDropdown(exerciseNameSelect, data.exercises);
+            });
         }
-        
-        // Initial population of Exercise Types
-        updateExerciseTypes();
+
+        // Initial population of categories
+        fetchData('/categories', {}, function (data) {
+            populateDropdown(categorySelect, data.categories);
+            updateExerciseTypes(); // Update exercise types after populating categories
+        });
 
         // Save Exercise Button Click Event
         const addExerciseButton = document.getElementById("addExerciseButton");
         addExerciseButton.addEventListener("click", function (event) {
-            const loadsValue = document.getElementById("loads").value;
-            const repsValue = document.getElementById("reps").value;
-            const setsValue = document.getElementById("sets").value;
+            const exerciseNameSelect = document.getElementById("exerciseName");
 
-            if (!loadsValue || !repsValue || !setsValue) {
+            // Get the selected option
+            const selectedOption = exerciseNameSelect.options[exerciseNameSelect.selectedIndex];
+
+            if (!selectedOption) {
                 event.preventDefault(); // Prevent form submission
-                alert("Please fill in all the required fields (Loads, Reps, and Sets).");
+                alert("Please fill in all the required fields (Loads, Reps, Sets, and select an Exercise).");
             } else {
+                const selectedExerciseName = selectedOption.text; // Get the text of the selected option
+
                 // Continue with form submission or data handling
+
+                // Redirect to the new page with the selected exercise name
+                const redirectUrl = `/coachTeamWorkout?exerciseName=${encodeURIComponent(selectedExerciseName)}`;
+                window.location.href = redirectUrl;
             }
         });
-    </script>
 
+        cancelButton.addEventListener("click", function (event) {
+            // Cancel button click event
+        });
+    </script>
 </body>
 </html>
     

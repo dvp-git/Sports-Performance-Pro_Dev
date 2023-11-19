@@ -131,18 +131,6 @@ registerButton.addEventListener("click", function (event) {
         return response.json();
       })
       .then((data) => {
-        // Display the message as a pop-up on top
-        // const popupRegister = document.createElement("div");
-        // popupRegister.classList.add(["popupRegister"]);
-        // popupRegister.style.display = "block";
-        // popupRegister.textContent = "Account created";
-
-        // document.body.appendChild(popupRegister);
-        // Redirect to a new page after a delay (e.g., 3 seconds)
-        setTimeout(function () {
-          window.location.href = "http://127.0.0.1:5000/login"; // Replace 'new_page.html' with the actual URL
-        }, 5000);
-        // Re-direct to login
         console.log(data);
       })
       .catch((error) => console.error("Error:", error));

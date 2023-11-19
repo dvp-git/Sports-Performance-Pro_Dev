@@ -499,7 +499,7 @@ async function initialData() {
 
     teamIds = athleteTeams.map((team) => team.team_id);
     console.log("My coach Ids :", coachIds); // is an array of coach_ids json
-
+    highlightWorkoutDates(athleteId, teamIds);
     personalCoaches = await fetchPersonalCoaches(athleteId);
     if (personalCoaches.error === "No coaches found for the athlete") {
       personalCoaches = [];
